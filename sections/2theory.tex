@@ -1,0 +1,187 @@
+\section{Overview and goals of the theory chapter}
+
+This chapter is structured into three main parts. Section 2.1 covers aspects of human physiology relevant to both electrodermal activity (EDA) and electromyography (EMG). Sections 2.2 and 2.3 focus in greater depth on EDA and EMG, respectively, discussing the guiding principles behind each technique and clarifying how the underlying physiological mechanisms shape each. 
+
+\section{Human Physiology}
+\subsection{Human nervous system}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/human_nervous_system_tree.png}
+    \caption{Tree diagram of how the human nervous system is structured}
+    \label{fig:hms}
+\end{figure}
+The human nervous system is divided into two main parts: the central nervous system (CNS) and the peripheral nervous system (PNS). For this thesis, we will focus solely on the PNS and its subdivisions. 
+
+As illustrated in Figure \ref{fig:hms}, the PNS is further divided into two subcategories: the somatic nervous system (SNS) and the autonomic nervous system (ANS). The ANS is then divided into three additional subcategories: the sympathetic autonomic nervous system (SANS), the parasympathetic nervous system, and the enteric nervous system. The two most relevant aspects of the nervous system for this thesis are the SNS and the SANS. 
+
+The SNS 
+
+\subsection{The skin}
+
+\subsubsection{Skin structure}
+
+
+\subsubsection{Sweat Glands}
+
+
+\subsubsection{Electrical Properties}
+
+
+
+\subsection{Skeletal Muscle}
+\subsubsection{My own writing}
+Skeletal muscle (commonly referred to as muscle) is one of two major muscle types, the other being cardiac muscle \cite{mukund_skeletal_2020}. As mentioned earlier, the nervous system controls muscles; specifically, the somatic nervous system (SNS) is responsible for this function. 
+
+The muscle consists of multiple muscle fibers that are innervated by a single motor neuron. A single motor neuron and all the muscle fibers it innervates are called a motor unit (MU) \cite{whittaker_fundamentals_2012}. The term "units" describes how all muscle fibers within a given motor unit behave collectively during the innervation process \cite{konrad_abc_2006}. The firing of a motor neuron leads to the nearly simultaneous activation of many muscle fibers \cite{kamen_essentials_2010}. (Should I mention muscle fiber types, myoelectric activity, and action potential?) The number of muscle fibers per MU differs among muscles. On average, there are 80 to 100 muscle fibers per motor unit. Generally, motor units are recruited from the smallest to the largest, meaning those with fewer fibers are activated first \cite{cavalcanti_garcia_surface_2010}. 
+
+When a motor neuron activates a muscle fiber, it generates a muscle fiber action potential (MFAP). The sum of all the MFAPs from a single motor unit is referred to as the Motor Unit Action Potential (MUAP), which is responsible for muscle contraction.\cite{cavalcanti_garcia_surface_2010}.
+\subsubsection{Muscle physiology}
+\subsubsection{Action potentials}
+\subsection{Electrical properties}
+
+
+\section{Electrodermal Activity}
+
+\subsection{From ChatGPT - what to include when writing the theory part of EDA}
+\begin{itemize}
+    \item Introduction
+    \begin{itemize}
+        \item \textbf{Definition:} Explain what EDA is, briefly describing it as a measure of the electrical conductance of the skin, which varies with sweat gland activity
+        \item \textbf{Relevance:} Discuss its applications in fields such as psychology, medicine, and human-computer interaction
+    \end{itemize}
+    \item Physiological basis
+    \begin{itemize}
+        \item \textbf{Skin structure:} Provide a brief overview of the skin layers relevant to EDA
+        \item \textbf{Sweat Glands:} Explain the role of eccrine sweat glands in EDA and how the sympathetic nervous system influences their activity
+        \item \textbf{Electrical Properties:} Describe how EDA relates to the ionic composition of sweat and skin moisture.
+    \end{itemize}
+    \item Measurement techniques
+    \begin{itemize}
+        \item \textbf{Instrumentation:} Outline common methods for measuring EDA, such as galvanic skin response (GSR) sensors
+        \item \textbf{Electrode Placement:} Explain how electrode configuration can impact signal quality and interpretation
+        \item \textbf{Signal Processing:} Briefly mention techniques used for filtering and analyzing EDA data. 
+    \end{itemize}
+\end{itemize}
+
+Electrodermal activity (EDA) refers to the variations in the electrical properties of the skin that arise from the sweat glands' activity \cite{bari_disturbances_2024}. Increased sweating enhances the skin's electrical conductance, because while sweat contains minerals, lactic acid, and urea, it is primarily composed of water \cite{posada-quintero_innovations_2020}. Sweat secretion not only alters \gls{sc} but also affects other electrical properties, such as \gls{sp} and capacitance \cite{tronstad_current_2022}. Although the primary function of sweat glands is thermoregulation, they have also been shown to respond to psychologically significant stimuli. \cite{berntson_handbook_2007}. One primary application of EDA is in clinical psychophysiology, where it serves as a quantitative measure of sudomotor activity, providing an objective assessment of arousal \cite{ellaway_sweat_2010, benedek_continuous_2010}. Given that EDA has been identified as a valuable indicator in emotion and stress research, its measurement is particularly important in the assessment and treatment evaluation of anxiety-related psychopathologies \cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}.
+
+\subsection{EDA signal structure}
+%Tonic SCL and Phasic SCR
+Electrodermal activity is usually measured as skin conductance (SC) or skin potential (SP). Both signals are conventionally described as having a tonic (slowly varying) component, termed electrodermal level (EDL), and a phasic (fast) component, termed electrodermal response (EDR) \cite{boucsein_electrodermal_2012, tronstad_current_2022, banganho_electrodermal_2022}. For SC, the tonic part is called the skin conductance level (SCL), i.e.\ the magnitude of conductance in the absence of sudomotor bursts, and the phasic components are the skin conductance responses (SCRs), which appear as rapid increases in conductance followed by a slower decay \cite{tronstad_current_2022, posada-quintero_innovations_2020}. Analogously, for SP, the tonic and phasic components are termed the skin potential level (SPL) and the skin potential response (SPR), respectively \cite{tronstad_current_2022}. The recorded SC signal can be viewed as the sum of a slowly varying SCL and superimposed SCRs. Morphologically, SCL reflects very slow changes (approximately 0--0.05~Hz), whereas the energy of SCRs lies roughly in the 0.05--1.5~Hz band \cite{zangroniz_electrodermal_2017}. In practice, signal-processing methods are used to separate or parameterize these tonic and phasic components.
+%Find info about SCR and SCL
+
+\subsection{Measurement techniques}
+% Endosomatic recording
+Electrodermal activity (EDA) can be measured either without externally applied current (endosomatic) or with an external source (exosomatic). In endosomatic measurements, only the potential difference between an active and an inactive site in the skin is recorded. In contrast, exosomatic measurements apply an external direct current (DC) or alternating current (AC) via electrodes and measure the resulting voltage or current to derive skin conductance, impedance, or admittance \cite{boucsein_electrodermal_2012, tronstad_current_2022}. Because endosomatic responses can be monophasic, biphasic, or triphasic and are therefore more difficult to parameterize and interpret, most contemporary EDA devices use exosomatic techniques \cite{boucsein_electrodermal_2012, posada-quintero_innovations_2020}.
+
+\subsubsection*{Exosomatic DC Recording}
+% Exosomatic recording DC (Physical quantities: Skin conductance/resistance - Why DC? Not only because of AC clashes with EMG measurements, but maybe from a psychological viewpoint - Refer to Pabst AC vs DC EDA in methodology)
+
+%Chat rewrite
+Exosomatic DC recording is by far the most commonly used method in electrodermal research. It is the basis of the "standard methodology" described by Boucsein, which uses constant-voltage or constant-current operation within safety limits \cite{boucsein_electrodermal_2012}. DC exosomatic recording with a constant-voltage source is the most common approach in psychophysiology because of its simplicity: a constant DC voltage and a differential amplifier or op-amp front end are sufficient \cite{posada-quintero_innovations_2020, gersak_electrodermal_2020}. In such DC recordings, a single SC channel provides both tonic SCL and phasic SCRs, i.e.\ a slowly varying baseline level with superimposed stimulus-evoked responses \cite{zangroniz_electrodermal_2017, tronstad_current_2022}. Because the majority of EDA studies have used exosomatic DC recordings, much more is known about the psychological correlates of this type of measurement, making it directly comparable to the established psychophysiological literature \cite{boucsein_electrodermal_2012, posada-quintero_innovations_2020}.
+
+The main disadvantage of DC-source devices is electrode polarization and the generation of counter-electromotive forces at the electrode–skin interface, which can corrupt the collected EDA signal, even when using "nonpolarizable" Ag/AgCl electrodes \cite{posada-quintero_innovations_2020}. These effects become more likely in long-term recordings and can contribute to baseline drift \cite{pabst_comparison_2017}. In addition, with typical DC excitation levels, current densities may approach ranges where non-linearities in the current–voltage relationship appear, further affecting the conductance level \cite{pabst_comparison_2017, boucsein_electrodermal_2012}.
+
+\subsubsection*{Exosomatic AC Recording}
+% Exosomatic recording AC (Physical quantities: Impedance, Phase, and Capacitance - Skin admittance or skin impedance)
+% Write more about what info the AC recording gives us?
+As previously mentioned, exosomatic AC recording involves applying a small sinusoidal current or voltage at a constant excitation frequency and measuring the resulting skin admittance (or impedance). The admittance is a complex quantity with an in-phase term (conductance) and an out-of-phase term (susceptance) that reflects the capacitive properties of the skin \cite{boucsein_electrodermal_2012, tronstad_current_2022}. AC recording thus provides not only skin conductance, but also skin susceptance and phase angle, and even allows simultaneous recording of endogenous skin potential at the same site \cite{pabst_comparison_2017}. 
+
+As in DC recordings, the AC EDA signal can be decomposed into tonic and phasic components, but the tonic "level" measured with AC includes both the purely conductive pathways and additional frequency-dependent (capacitive) contributions from the skin and deeper tissues \cite{tronstad_current_2022, pabst_comparison_2017}.
+
+In exosomatic AC electrodermal activity (EDA), the excitation frequency must balance sensitivity to sweat-duct activity, measurement speed, and lock-in quality. According to \cite{martinsen_sources_2015}, there is a trade-off between the measuring system's ability to detect rapid changes, which requires a high frequency, and its sensitivity to sweat duct activity, which requires a low frequency. To ensure that the measurement remains sensitive to sweat-duct related changes while allowing sufficiently fast and noise-robust lock-in detection, low excitation frequencies on the order of 5--100~Hz are recommended \cite{boucsein_electrodermal_2012, tronstad_current_2022}. At lower frequencies, the AC conductance is dominated by ionic pathways in the stratum corneum and sweat ducts; at higher frequencies, dielectric loss and deeper tissue pathways increasingly dominate the admittance, and sweat-gland contributions become comparatively smaller \cite{tronstad_current_2022, martinsen_sources_2015, pabst_comparison_2017}.
+
+Although AC recording is less common than DC, it offers several methodological advantages. First, it avoids electrode polarization and counter-EMF, because the polarity of the applied signal switches continuously and there is no net charge transfer \cite{pabst_comparison_2017, posada-quintero_innovations_2020, boucsein_electrodermal_2012}. This elimination of polarization effects reduces long-term drift and is particularly attractive for long-duration or wearable recordings. Second, although filtering problems in AC EDA can be more complex than in DC (because noise can lie within the same frequency range as the signal), many artifacts exhibit characteristic frequency components that can be attenuated with appropriate filtering. In wearable devices, environmental noise often lies outside the low-frequency EDA band and can therefore be filtered effectively within the device \cite{posada-quintero_innovations_2020, tronstad_current_2022}.
+
+On the other hand, AC-source devices require more sophisticated instrumentation than DC systems. The excitation frequency must be chosen, constant-amplitude AC generated, and the complex admittance decomposed into conductance and susceptance using phase-sensitive rectification (lock-in amplification) \cite{posada-quintero_innovations_2020, pabst_comparison_2017}. As a result, many AC EDA systems are custom-built and relatively expensive, and no generally accepted "standard technique" for exosomatic AC recording has yet been established \cite{boucsein_electrodermal_2012}. Furthermore, because the AC EDA signal occupies a defined frequency band, any noise or other biosignals that fall into the same band can interfere if isolation and filtering are not carefully designed; Boucsein notes that noise elimination is more complicated than in DC recording when the noise lies in the same frequency range as the to-be-recorded signal \cite{boucsein_electrodermal_2012}. Simultaneous AC and DC recordings can show cross-talk if the inputs are not galvanically separated \cite{boucsein_electrodermal_2012}.
+
+
+
+
+
+
+\section{Electromyography}
+\subsection{From ChatGPT - what to include about the theory part of EMG}
+\begin{itemize}
+    \item Introduction
+    \begin{itemize}
+        \item \textbf{Definition:} Briefly define EMG and its significance in measuring muscle electrical activity
+        \item \textbf{Applications:} Discuss various applications of EMG in clinical settings, sport science, and rehabilitation
+    \end{itemize}
+    \item Biological basis of EMG
+    \begin{itemize}
+        \item \textbf{Muscle Physiology:} Provide an overview of muscle structure and function, focusing on:
+        \begin{itemize}
+            \item Muscle fibers (Type I vs. Type II)
+            \item Motor units and the neuromuscular junction
+        \end{itemize}
+        \item \textbf{Action Potentials:} Explain how action potentials are generated in the muscle fibers and the role of motor neuron activation
+        \item \textbf{Electrophysiology:} Discuss the propagation of electrical signals in muscles and how these signals relate to muscle contractions
+    \end{itemize}
+    \item Measurement techniques
+    \begin{itemize}
+        \item \textbf{Preprocessing:} Explain the importance of preprocessing steps, such as filtering to remove noise
+        \item \textbf{Feature Extraction:} Cover common methods for extracting meaningful features from EMG signals (root mean square, mean frequency, signal amplitude)
+        \item \textbf{Analysis techniques:} Mention techniques for analyzing EMG signals, including time-domain, frequency-domain,n, and time-frequency analysis
+    \end{itemize}
+\end{itemize}
+
+Electromyography (EMG) is a measurement technique used to assess the electrical activity generated by muscle contractions, which are controlled by the nervous system \cite{chowdhury_surface_2013}.
+
+Neurophysiology is one of the main application fields of EMG. It provides a valuable method for assessing muscle activation, analysing human movement, and diagnosing neuromuscular disorders, serving as a cornerstone in the clinical assessment of patients with such conditions \cite{kamen_essentials_2010, whittaker_fundamentals_2012, alcan_current_2023}. 
+
+\subsection{Physiological basis and signal origin}
+
+Before exploring the EMG measurement technique in greater detail, it is essential to understand the physiological origin of the EMG signal. EMG measurements capture passive recordings of bioelectricity—endogenously generated electrical potentials in biological tissues \cite{grimnes_bioimpedance_2015}. In this thesis, the primary bioelectric sources are skeletal muscle fibers, and the resulting signal is commonly referred to as myoelectric activity.
+
+As described in Section~\ref{sec:muscle_anatomy}, skeletal muscle is organized into motor units. The motor unit, defined as the smallest functional unit responsible for the neural control of muscle contraction, consists of a single $\alpha$-motoneuron and all the muscle fibers it innervates \cite{konrad_abc_2006}. When a single action potential occurs in the motoneuron, it activates every muscle fiber it supplies; thus, the motor unit represents the smallest indivisible component of voluntary muscle activity \cite{whittaker_fundamentals_2012, kamen_essentials_2010}. In Sherrington's terminology, it serves as the "final common pathway" from the nervous system to the muscle fibers \cite{kamen_essentials_2010}.
+
+When the motoneuron fires, action potentials are generated almost simultaneously in all its muscle fibers. At the fiber membrane, these muscle fiber action potentials (MFAPs) emerge from depolarization-repolarization cycles, resulting in a traveling depolarization zone, or electrical dipole, that propagates along the fiber at a conduction velocity typically ranging from 2 to 6 m/s \cite{konrad_abc_2006}. The summed activity of all MFAPs linked to a motor unit produces a motor unit action potential (MUAP), which constitutes the basic contribution of that unit to the myoelectric signal and can be detected with appropriate electrodes and amplifiers \cite{kamen_essentials_2010}. Thus, myoelectric activity refers to the electrical activity generated by muscle fibers and motor units, while EMG represents the recorded representation of that activity at the electrode site \cite{cavalcanti_garcia_surface_2010}.
+
+The magnitude and temporal density of the interference EMG signal reflect the nervous system's regulation of muscular force. Two primary mechanisms are involved: recruitment of additional motor units and modulation of their firing rates \cite{kamen_essentials_2010}. Generally, motor units are recruited in order from smallest to largest, meaning that units with fewer and/or smaller fibers are activated first as force demand increases, in accordance with the Henneman size principle \cite{cavalcanti_garcia_surface_2010}. As contraction intensity increases, more units are recruited, and their firing rates rise, resulting in a higher density of overlapping MUAPs. Consequently, EMG amplitude is frequently utilized as an index of muscle activation intensity. However, the relationship between EMG magnitude and force is not strictly linear and depends on various physiological and biomechanical factors \cite{duchateau_distribution_2022, kamen_essentials_2010}.
+
+In addition to amplitude, the frequency content of the EMG signal also carries important physiological information. Features like mean or median power frequency are influenced by muscle fiber conduction velocity, fiber type composition, and changes associated with muscle fatigue and the ionic environment surrounding the fibers \cite{kamen_essentials_2010, cavalcanti_garcia_surface_2010}. As discussed later, these factors, along with volume conduction through intervening tissues, shape both the amplitude and spectral characteristics of the recorded EMG.
+
+The surface electromyography (sEMG)  signal represents the superposition of MUAPs from all active motor units within the electrode's detection area, rather than the activity of a single MU. Because the set of recruited motor units and their firing times continuously change, the resulting signal exhibits a stochastic nature, meaning that its exact waveform cannot be predicted or reproduced \cite{konrad_abc_2006}. This combination appears as a bipolar signal with approximately symmetric positive and negative amplitudes, resulting in a mean close to zero, which is commonly referred to as an interference pattern \cite{konrad_abc_2006}. At low levels of muscle contraction, individual MUAPs may still be distinguishable; however, as the contraction intensity increases, they merge into a dense interference pattern \cite{cavalcanti_garcia_surface_2010}. Therefore, while sEMG provides a global measure of muscle activation, it typically cannot resolve the activity of individual motor units \cite{cavalcanti_garcia_surface_2010}.
+ 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/MUAP_superposition.png}
+    \caption{A visual presentation of individual MFAPs summing into a MUAP}
+    \label{fig:muap}
+\end{figure}
+
+
+\subsection{Measurement techniques}
+There are two main types of EMG measurements: those that use surface electrodes placed on the skin surface over the target muscle (surface EMG, sEMG) and those that use invasive needle electrodes (intramuscular EMG) inserted directly into the muscle tissue \cite{kamen_essentials_2010}. Approaches differ not only in their invasiveness but in the spatial scale they sample and in the information they can extract. Each method has its own advantages depending on the specific application.
+
+\subsubsection{Intramuscular EMG}
+%Invasive EMG
+Intramuscular EMG involves inserting either a rigid concentric needle electrode or a fine flexible wire electrode through the skin and into the muscle belly. The recording surface of the electrode targets a small volume of tissue, usually just a few cubic millimeters, which allows the signal to reflect the summed activity of only a small number of MUs in the immediate vicinity of the electrode tip \cite{kamen_essentials_2010, karacan_comparison_2025}. 
+
+This spatial selectivity is the main advantage of the technique, as it enables the accurate identification of individual MUAPs in the recorded trace. This allows researchers to study the order of MU recruitment, discharge rates, and the properties of single units. Intramuscular multi-motor unit (MMU) recording is particularly useful for examining deep or small muscles and assessing muscle recruitment and fatigue. In contrast, single-motor unit (SMU) recording is well suited for investigating postsynaptic potentials in neuronal pathways between stimulated sites and motor neurons \cite{karacan_comparison_2025}. However, this level of resolution comes with several limitations, especially in practical and non-laboratory settings, as well as invasiveness. The insertion of electrodes through the skin can cause discomfort and poses risks such as bleeding and infection \cite{whittaker_fundamentals_2012, karacan_comparison_2025}.
+
+In this study, an additional constraint arises from the need to record EDA simultaneously from the same skin site. EDA measurements are based on changes in the electrical properties of the skin surface. Any electrode penetrating the skin disrupts the electrodermal signal and damages the tissue on which the EDA sensor relies. Consequently, intramuscular recording is incompatible with concurrent EDA measurement. Therefore, surface EMG is the only viable recording modality for this study.
+
+\subsubsection{Surface EMG}
+%Surface EMG
+Surface electromyography (sEMG) involves placing one or more electrodes on the skin over a target muscle, leaving the underlying tissue intact. This method has several significant advantages: it is noninvasive, does not require specialist medical supervision, and allows the electrode site to be used for simultaneous biopotential measurements, such as electrodermal activity (EDA), on the surrounding skin \cite{konrad_abc_2006}. However, sEMG has some limitations. It is primarily effective for superficial muscles that are large enough to accommodate electrode placement on the skin surface. Additionally, the method suffers from a loss of spatial resolution \cite{kamen_essentials_2010}.
+
+The properties of sEMG, such as the spatial averaging and loss of single-unit resolution, are direct consequences of the volume-conducting medium between the muscle and the electrode. These properties shape the signal characteristics and hardware requirements discussed below. 
+
+The raw sEMG signal amplitude recorded at the skin surface ranges roughly from \qty{10}{\micro\volt} - \qty{5000}{\micro\volt}. With active contraction of the muscle, the amplitude is \qty{60} -\qty{300}{\micro\volt}, while the muscle are resting the amplitude is \qty{20} to \qty{30}{\micro\volt} \cite{li_wearable_2021}. The useful frequency content spans approximately \qty{10} - \qty{500}{\hertz}, with the majority of signal power concentrated between  \qty{20} - \qty{150}{\hertz}, as the intervening tissue layers attenuate higher-frequency components relative to intramuscular recordings \cite{konrad_abc_2006, yang_detection_2020, li_wearable_2021}.
+% Why do I focus on sEMG
+
+% In monopolar config, is the ref electrode the same as gnd electrode?
+Electrode configuration for sEMG refers to the number of recording electrode surfaces and their arrangement relative to muscle, tendon, and bony surfaces. The two most common electrode configurations for sEMG are monopolar and bipolar arrangements \cite{kamen_essentials_2010}. These two configurations are pretty similar, with a reference electrode always present. But differ in the number of active electrodes they use. The 
+
+More complicated electrode configurations, such as High-density sEMG (HD-sEMG), can be viewed as a natural extension of the bipolar case.
+
+
+\begin{itemize}
+    \item You need a background to present your results
+    \item Often based on standard textbooks and key articles in your field
+    \item Make sure you present it in your context
+    \item Be aware of plagiarism traps
+    \item Don't go back to year 0
+\end{itemize}

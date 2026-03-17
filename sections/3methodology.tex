@@ -1,0 +1,159 @@
+\section{Filters}
+
+\section{Galvanic Isolation}
+
+\section{Research Protocol}
+\subsection{Aim}
+To validate a custom circuit for simultaneous measurement of surface EMG and EDA from the same muscle area. 
+
+\subsection{Validation questions}
+\begin{enumerate}
+    \item Can EMG activity be recorded without saturating or distorting the EDA signal?
+    \item Can EDA activity be recorded without saturating or distorting the EMG signal?
+    \item Is the EMG signal-to-noise ratio acceptable during EDA responses?
+    \item Does the circuit allow clear detection of known, reproducible EMG and EDA responses?
+\end{enumerate}
+
+\subsection{Participants}
+One healthy adult (the author), right-handed, with no known neuromuscular or dermatological disorders affecting the hands.
+This is a technical self-experiment conducted solely for circuit validation. 
+
+\subsection{Equipment and setup}
+\begin{itemize}
+    \item Custom-made EMG/EDA circuit (see circuit diagram in Figure~X.Y).
+    \item Electrodes: Kendall EMG Snap-On Electrodes
+    \begin{itemize}
+        \item Type: H135SG, Ref: 31.1355.21
+        \item Material: Ag/AgCl
+        \item Size: 43 $\times$ 35 mm
+        \item Disposable, pre-gelled
+    \end{itemize}
+    \item Data acquisition card: NI USB-6356 DAQ
+    \begin{itemize}
+        \item Sampling rate: $f_s = 2000$ Hz on all channels
+        \item Connected to a PC running Python 3.10.4 using the \texttt{nidaqmx} package
+    \end{itemize}
+    \item UNI-T UT131B multimeter
+    \item Force-sensitive resistor: Interlink Electronics FSR402
+    \begin{itemize}
+    \item Resistance range: \SI{200}{\ohm} (maximum pressure) to
+          \SI{100}{\kilo\ohm} (light pressure)
+    \item Connected to a multimeter in resistance mode
+    \end{itemize}
+    \item Environment:
+    \begin{itemize}
+        \item Quiet room, normal indoor lighting
+        \item Room temperature approximately 21--24 $^\circ$C
+        \item All recordings performed between 09:00 and 12:00
+    \end{itemize}
+\end{itemize}
+
+\subsection{Electrode placement and skin preparation}
+
+\subsubsection{Skin preparation}
+The participant washes both hands with soap and water and dries them thoroughly with a paper towel.
+No lotion, cream, or skin products are applied to the hands or wrists on the morning of the recording.
+Jewelry is removed from the left hand and wrist.
+
+\subsubsection{Electrode placement}
+Three electrodes are used for EMG and two for EDA (Figure is coming later).
+
+For EMG, two recording electrodes are placed over the thenar eminence of the left hand in a bipolar configuration.
+The electrodes are aligned approximately along the proximal--distal axis of the thumb musculature, with an inter-electrode distance of 10~mm (edge-to-edge).
+The EMG reference electrode is placed on the dorsal aspect of the left forearm, approximately 5~cm distal to the elbow.
+
+For EDA, two electrodes are placed on the palmar surface over the lumbrical region between the index and middle fingers of the left hand, with a center-to-center distance of approximately 10 mm.
+These electrodes are used in a standard conductance configuration.
+
+%Revised version
+\begin{comment}
+Three electrode configurations are tested across sessions:
+
+\textbf{Configuration A (original):} Two EMG recording electrodes over the
+thenar eminence in bipolar configuration, aligned along the proximal--distal
+axis with 10\,mm edge-to-edge separation. Two EDA electrodes over the
+lumbrical region between the index and middle fingers.
+
+\textbf{Configuration B (supervisor suggestion, left):} One EMG electrode
+placed over the muscle belly (largest thenar mass) and one more distally on
+the proximal thumb phalanx, mimicking a clinical CMAP recording arrangement.
+Two EDA electrodes placed over the hypothenar eminence (a well-established
+EDA measurement site. This configuration maximises expected EMG amplitude
+and spatially separates EMG and EDA electrode fields.
+
+\textbf{Configuration C (supervisor suggestion, right):} EMG electrodes
+positioned within the current path between the two EDA electrodes, to
+stress-test whether cross-interference occurs under the worst-case spatial
+overlap.
+\end{comment}
+
+\subsection{Outcome measures and success criteria}
+
+\begin{itemize}
+    \item Signal quality
+    \item Minimal interference
+    \item Reproducibility
+\end{itemize}
+
+(Discuss with supervisors what requirements to have)
+
+\subsection{Step-by-step procedure}
+
+\subsubsection{Stimulation instructions}
+
+\paragraph{EMG stimulation}
+The participant sits with the left forearm resting on the table, elbow flexed approximately 90$^\circ$, and the palm facing up.
+The fingers are relaxed in a neutral, slightly open position. An FSR is placed between the thumb and little finger before the block begins and remains in position throughout.
+
+% Double-check the resistor value
+At each EMG stimulus cue, the participant performs a thumb--little finger opposition movement by bringing the thumb tip into contact with the tip of the little finger as quickly as possible and then maintaining a moderate contraction for 2 seconds. The participant is instructed to apply sufficient force to bring the FSR resistance to approximately \SI{1}{\kilo\ohm}, which serves as the target contraction level and corresponds to approximately 30\% of perceived maximal effort. The resistance across the FSR is noted at peak contraction. After 2 seconds, the participant relaxes the hand and returns to the neutral position.
+
+\paragraph{EDA stimulation}
+At each EDA stimulus cue, the participant inhales deeply over 2 seconds, starting from normal breathing, then exhales normally and relaxes.
+The timing of the deep breath is guided by a visual or auditory cue generated by the control software.
+
+\subsubsection{Recording procedure}
+Each recording session consists of one test run of three consecutive 10-minute blocks (EDA-only, EMG-only, combined), preceded by a resting period.
+
+\begin{enumerate}
+    \item The participant sits on a chair with both feet flat on the ground and the back supported.
+    \item EMG and EDA electrodes are applied to the left hand and forearm as described above.
+    \item After electrode placement, the participant rests quietly for 30 minutes to allow stabilization of electrode-skin impedance.
+    \item During the final 10~minutes of this period, baseline EMG and EDA signals are recorded while the participant remains still and breathes normally.
+    \item The 30-minute test run then begins, consisting of three 10-minute blocks:
+    \begin{enumerate}
+        \item \textbf{Block 1: EDA-only (10 minutes)}\\
+        The participant remains seated with the left hand resting in the neutral position.
+        Every 60 seconds, a cue prompts the participant to perform one deep-breath EDA stimulus as described above.
+        No voluntary hand or finger movement is performed other than what is minimally required for comfortable breathing.
+        This block yields 10 EDA stimuli.
+        \item \textbf{Block 2: EMG-only (10 minutes)}\\
+        The participant continues to sit in the same position.
+        Every 15~seconds, a cue prompts the participant to perform one EMG stimulus (thumb--little finger opposition) for 2~seconds, followed by relaxation.
+        Normal quiet breathing is maintained, and no deep-breath EDA stimuli are performed.
+        This block yields 40 EMG stimuli.
+        \item \textbf{Block 3: Combined EMG + EDA (10 minutes)}\\
+        The participant performs both types of stimuli according to the same timing as in Blocks 1 and 2.
+        Deep-breath EDA stimuli are performed every 60~seconds, and EMG stimuli are performed every 15~seconds.
+        This block yields 10 EDA stimuli and 40 EMG stimuli.
+    \end{enumerate}
+    \item In total, one test run yields 20 EDA stimuli (10 in EDA-only + 10 in combined) and 80 EMG stimuli (40 in EMG-only + 40 in combined).
+    \item The complete test run is repeated on two additional days under the same conditions, for a total of three sessions on three separate days.
+    \item Before Block 2, the participant performs three maximum-effort thumb--little finger oppositions against the FSR to establish an individual maximum resistance reading. During EMG stimuli, the participant is instructed to target approximately 30\% of maximum effort. The FSR resistance is noted at peak contraction in each trial to verify consistency across stimuli and sessions.
+\end{enumerate}
+
+\begin{itemize}
+    \item Describe the methods you use
+    \item History
+    \item Background
+    \item Advantages
+    \item Limitations
+    \item Applications
+    \item What's new?
+\end{itemize}
+
+\begin{itemize}
+    \item Specifications
+    \item Why I chose DC EDA
+    \item How does it affect the EMG
+\end{itemize}

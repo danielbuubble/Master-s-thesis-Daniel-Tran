@@ -1,0 +1,61 @@
+\documentclass[english]{uio_files/uiomasterthesis}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{comment}
+\usepackage{siunitx}
+\usepackage{csquotes}
+\usepackage[T1]{fontenc, url}   \urlstyle{sf}
+\usepackage{babel, textcomp, uio_files/uiomasterfp}
+\usepackage{subfiles}
+\usepackage[
+url=false,
+style=ieee
+]{biblatex}
+\usepackage[acronym, nomain, nonumberlist]{glossaries}
+\DeclareUnicodeCharacter{0307}{}
+
+
+\makeglossaries
+
+
+\graphicspath{{uio_files/}}
+
+
+\addbibresource{references/references.bib}
+\title{UiO Master's thesis}
+\subtitle{A suitable \LaTeX{} document class}
+\author{Daniel Tran}
+
+\input{sections/abbreviations.tex}
+\begin{document}
+
+\uiomasterfp[kind={Overleaf information}, compact, nosp, colour=green,
+  date=\today]
+  
+\begin{abstract}
+    \input{sections/abstract.tex}
+\end{abstract}
+ 
+\tableofcontents
+\printglossary[type=\acronymtype, title=List of Abbreviations]
+
+\chapter{Introduction}
+\subfile{sections/1introduction}
+
+\chapter{Theory}
+\subfile{sections/2theory}
+
+\chapter{Methodology}
+\subfile{sections/3methodology}
+
+\chapter{Results}
+\subfile{sections/4results}
+
+\chapter{Discussion}
+\subfile{sections/5discussion}
+
+\chapter{Conclusion}
+\subfile{sections/6conclusion}
+
+\printbibliography
+\end{document}
