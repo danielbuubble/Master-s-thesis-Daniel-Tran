@@ -29,6 +29,7 @@ The SNS
 
 
 \subsection{Skeletal Muscle}
+%Mention that muscle tissue is anisotropic - Ørjan sin bok
 \subsubsection{My own writing}
 Skeletal muscle (commonly referred to as muscle) is one of two major muscle types, the other being cardiac muscle \cite{mukund_skeletal_2020}. As mentioned earlier, the nervous system controls muscles; specifically, the somatic nervous system (SNS) is responsible for this function. 
 
@@ -172,10 +173,19 @@ The properties of sEMG, such as the spatial averaging and loss of single-unit re
 The raw sEMG signal amplitude recorded at the skin surface ranges roughly from \qty{10}{\micro\volt} - \qty{5000}{\micro\volt}. With active contraction of the muscle, the amplitude is \qty{60} -\qty{300}{\micro\volt}, while the muscle are resting the amplitude is \qty{20} to \qty{30}{\micro\volt} \cite{li_wearable_2021}. The useful frequency content spans approximately \qty{10} - \qty{500}{\hertz}, with the majority of signal power concentrated between  \qty{20} - \qty{150}{\hertz}, as the intervening tissue layers attenuate higher-frequency components relative to intramuscular recordings \cite{konrad_abc_2006, yang_detection_2020, li_wearable_2021}.
 % Why do I focus on sEMG
 
-% In monopolar config, is the ref electrode the same as gnd electrode?
-Electrode configuration for sEMG refers to the number of recording electrode surfaces and their arrangement relative to muscle, tendon, and bony surfaces. The two most common electrode configurations for sEMG are monopolar and bipolar arrangements \cite{kamen_essentials_2010}. These two configurations are pretty similar, with a reference electrode always present. But differ in the number of active electrodes they use. The 
+% In monopolar config, is the ref electrode the same as the gnd electrode?
+Electrode configuration for sEMG refers to the number of active recording surfaces and their arrangement relative to the muscle. The two most common configurations are monopolar and bipolar \cite{kamen_essentials_2010}. 
 
-More complicated electrode configurations, such as High-density sEMG (HD-sEMG), can be viewed as a natural extension of the bipolar case.
+In a monopolar configuration, a single active electrode is placed over the muscle, and the potential is measured relative to a reference electrode on electrically inactive tissue, such as a bony prominence. In a bipolar configuration, two active electrodes are placed over the muscle, and the amplifier measures the potential difference between them, with a separate ground electrode placed on inactive tissue \cite{kamen_essentials_2010, beck_comparison_2007}.
+
+In both configurations, the reference electrode is positioned on electrically inactive tissue, such as a bony prominence. Its primary purpose is to define the voltage reference for the amplifier; however, it also creates a closed current path through the body. Current flows from the amplifier into the body via the reference electrode and returns through the active electrodes. This means that the reference electrode is not entirely passive. In a combined measurement system, it can introduce interference to other sensors that share the same skin surface \cite{kamen_essentials_2010}.
+%Talk about the reference electrode
+The key difference between these configurations lies in how they handle noise. The monopolar technique captures all information from the muscle signal. However, since only one electrode is placed over the muscle, it is vulnerable to far-field interference, such as electromagnetic noise, that cannot be cancelled out. This makes monopolar recordings very sensitive to such noise \cite{beck_comparison_2007}. The bipolar configuration addresses this through differential amplification: because both active electrodes sit close together over the same muscle, interference signals arrive at both electrodes with nearly equal amplitude and phase. The amplifier subtracts the two inputs with respect to the reference electrode. This effectively cancels this common-mode noise while amplifying the locally generated myoelectric signal, which differs between the two sites. A disadvantage is that common-mode rejection also removes a small portion of the EMG signal itself, meaning the bipolar signal does not contain all possible information from the muscle \cite{beck_comparison_2007}. Despite this limitation, the bipolar configuration is the standard choice for sEMG because the noise rejection it provides is essential, given the signal's small amplitude.
+
+The quality of common-mode noise rejection in a bipolar system is characterized by the common-mode rejection ratio (CMRR), which represents the ratio of differential gain to common-mode gain. A CMRR greater than 95 dB is considered acceptable for clinical and research sEMG recording \cite{konrad_abc_2006}. To avoid loading the signal source and degrading the differential measurement, the amplifier input impedance should be at least ten times the electrode-skin impedance, with a recommended range of \qty{1} - \qty{10}{\mega\ohm} \cite{konrad_abc_2006}.
+
+For bipolar recordings, correct electrode placement is critical. The recommended inter-electrode distance is approximately \qty{20}{\milli\meter} \cite{konrad_abc_2006}. Since muscle tissue is anisotropic—meaning its electrical conductivity is significantly lower in the direction perpendicular to the muscle fibers compared to along them—the two active electrodes must be aligned parallel to the fiber direction. This ensures that the propagating action potential passes beneath both electrodes sequentially, producing a measurable potential difference. If the electrodes were oriented across the fibers, the dipole would reach both electrodes simultaneously, and the differential signal would cancel \cite{kamen_essentials_2010, konrad_abc_2006}. More complex configurations, such as high-density sEMG (HD-sEMG), extend this principle by arranging large arrays of electrodes over the muscle surface \cite{kamen_essentials_2010, cavalcanti_garcia_surface_2010}.
+
 
 
 \begin{itemize}
