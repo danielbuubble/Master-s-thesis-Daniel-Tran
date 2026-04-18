@@ -1,27 +1,100 @@
-In this thesis, we will explore various methods for measuring \gls{emg} and \gls{eda} simultaneously.
- %Dual biosignal acquisition - Passive and Active
+%Dual biosignal acquisition - Passive and Active
 \section{Background and Motivation}
-The motivation for this thesis is based on the research article "\textit{Using heart rate monitoring to discover pain and discomfort in non-verbal persons with severe intellectual disability: Caregivers' experiences}" \cite{boysen_using_2024}. In the research article, the authors conducted a clinical study to determine whether heart rate (HR) monitoring could help caregivers identify pain and discomfort in non-verbal individuals with severe intellectual disabilities. They found that the benefits experienced varied among participants, depending on the specific study circumstances and the individual's level of activity. In collaboration with the Department of Clinical and Biomedical Engineering at Oslo University Hospital (OUS), this thesis was proposed. The objective is to investigate whether electrodermal activity (EDA) and electromyography (EMG) can also serve as biological markers for detecting pain or discomfort. This thesis aims to explore this possibility. 
 
-In recent years, it has been observed that studies utilizing multiple signals simultaneously can potentially enhance the performance of assessment models by increasing their accuracy and specificity \cite{mcnaboe_design_2022}. To my knowledge, measuring electrodermal activity (EDA) and electromyography (EMG) simultaneously on the same muscle has never been attempted. While previous studies have successfully measured EDA and electrocardiogram (ECG) activity concurrently \cite{mohaddes_simultaneous_2021}, there have been earlier studies that measured EMG, EDA, and ECG simultaneously, but not from the same reference points on the body.\cite{mcnaboe_design_2022}. 
+% 1. The broad context: why multimodal physiological monitoring matters, and the complementary origins of EMG and EDA
+No single physiological signal is sufficient to fully characterize a person's physiological state. A single signal can emerge from multiple independent causes, making it challenging to identify the underlying source based solely on that signal. Additionally, different physiological processes operate on varying timescales. For instance, muscle activation occurs within milliseconds of a motor command, while the autonomic nervous system can take seconds to minutes to respond.
 
+Multimodal acquisition addresses these limitations by combining signals from independent physiological pathways. \Gls{emg} captures somatic motor activity through the peripheral nervous system, while \Gls{eda} reflects sympathetic autonomic activity. Since these two signals originate from different pathways, their combination provides more diagnostic information than two signals that share overlapping physiological origins.
+
+This principle has been applied in various contexts. For example, \textcite{ngo_wearable_2022} combined \gls{emg} with electrical impedance myography (EIM) to assess muscle function at a specific site. In stress detection, multimodal approaches that integrate cardiac and electrodermal signals have demonstrated improved classification accuracy compared to single-channel methods \cite{affanni_wireless_2020, mcnaboe_design_2022}.
+
+% 2. Brief introduction to EMG and EDA: what each measures and why each is relevant to the target application
+\gls{emg} records the electrical activity produced by skeletal muscle during contraction. Surface electrodes placed over a muscle pick up the superimposed action potentials of active motor units, and the signal amplitude reflects the degree of muscle activation. \gls{eda} measures changes in the electrical conductance of the skin driven by sweat gland activity. Sweat gland secretion is controlled directly by the sympathetic nervous system, so skin conductance rises with psychological arousal, emotional stress, and cognitive load~\cite{boucsein_electrodermal_2012}. \gls{emg} and \gls{eda} therefore capture the somatic and autonomic dimensions of a stress or pain response independently, which is what makes their combination useful.
+
+% 3. The case for co-location: why measuring both from the same muscle site is valuable
+The palm and fingers are the preferred \gls{eda} measurement sites because eccrine sweat gland density is highest there~\cite{boucsein_electrodermal_2012}. Conventional \gls{eda} measurement at palmar sites is impractical for patients with spastic cerebral palsy, as electrodes on the hand and fingers interfere with daily care and are prone to motion artifacts. The biceps present a clinically relevant alternative: passive stretching of spastic upper-limb muscles has been identified as a common source of distress in this population~\cite{kildal_increased_2021}. Recording both \gls{emg} and \gls{eda} from the same site captures the somatic and autonomic responses to the same physical event simultaneously. A concurrent rise in \gls{emg} and \gls{eda} at the biceps distinguishes a response driven by muscle handling from one driven by emotional arousal alone, which improves the interpretability of each signal.
+
+% 4. The clinical trigger: the Kildal study, the OUS collaboration, and
+%    why EDA and EMG were identified as candidate markers
+\textcite{kildal_increased_2021} monitored heart rate continuously in 14 non-communicating adults with intellectual disability during daily activities. Elevated heart rate indicated pain or distress in 11 of the 14 participants, in situations previously not suspected to be stressful, including passive stretching of spastic limbs. However, heart rate alone required contextual interpretation to be meaningful and is insufficient for detecting prolonged or chronic pain~\cite{kildal_increased_2021}. Building on this work, \textcite{bull_heart_2025} recommended skin conductance and muscle tension as candidate multimodal biomarkers for future studies in this population. This thesis was proposed in collaboration with the Department of Clinical and Biomedical Engineering and the Department of Neurohabilitation at Oslo University Hospital, and the Department of Physics at the University of Oslo. The objective is to design and validate a custom analog front-end for simultaneous \gls{emg} and \gls{dc} \gls{eda} acquisition from the same muscle site, with galvanic isolation between the two circuits, as a step toward implementing these recommended biomarkers in clinical practice.
+
+
+% 5. The gap: no existing solution acquires EMG and EDA from the same
+%    muscle site with galvanic isolation
+Existing multimodal wearable devices that combine \gls{emg} and \gls{eda} place the two sensors at separate body sites, avoiding the electrical interference that arises from co-location~\cite{mcnaboe_design_2022}. No existing device acquires \gls{emg} and \gls{dc} \gls{eda} simultaneously from the same muscle site with galvanic isolation between the two circuits.
+
+% 6. The engineering problem: why co-location is not trivial
+%    (ground loop and DC offset mechanisms)
+Two coupling mechanisms arise when \gls{emg} and \gls{eda} electrodes share a measurement site. The \gls{dc} excitation current injected by the \gls{eda} circuit could theoretically introduce a \gls{dc} offset at the high-gain \gls{emg} input, given the proximity of the electrode pairs. More critically, the \gls{emg} reference electrode provides a low-impedance return path to the \gls{eda} circuit ground, diverting part of the excitation current away from the intended measurement path and corrupting the measured skin conductance. Galvanic isolation eliminates this shared ground path by separating the ground domains of the two circuits, allowing both signals to be acquired without mutual interference.
+
+% 7. Conclusion: a custom analog front-end with galvanic isolation is required
+A custom analog front-end with galvanic isolation is therefore required. This thesis describes the design and validation of a front-end for simultaneous \gls{emg} and \gls{eda} acquisition, aimed at enabling objective monitoring of stress and pain in non-verbal patients.
+
+\section{State of the Art}
+% Justify The Gap paragraph
+To the author's knowledge, no previous study has attempted to measure \gls{eda} and \gls{emg} simultaneously from the same muscle site. Studies have combined \gls{eda} and \gls{ecg} in wearable devices~\cite{affanni_dual_2019,affanni_wireless_2020}, and others have extended this to include \gls{emg}~\cite{mcnaboe_design_2022}, but in each case the \gls{eda} and \gls{emg} electrodes were placed at separate body sites.
+
+% 1. Multimodal wearable devices
+% Both Affani papers: Shared electrode between EDA and ECG is feasible
+% when the EDA modality is endosomatic
+Acquiring multiple biosignals simultaneously improves the accuracy and specificity of stress and pain assessment~\cite{mcnaboe_design_2022}. \textcite{affanni_dual_2019} demonstrated that \gls{eda} and \gls{ecg} can be acquired from shared hand electrodes by adopting an endosomatic measurement approach, in which no external current is injected, and the skin potential is measured passively. Since no excitation current is injected, the \gls{eda} channel introduces no interference into the co-located \gls{ecg} channel. However, endosomatic \gls{eda} measures skin potential rather than skin conductance and does not provide the conductance signal required by the present design. This approach, therefore, does not extend to exosomatic \gls{eda}, in which an external source drives current through the skin to measure conductance. \textcite{mcnaboe_design_2022} presented a wearable device for the simultaneous acquisition of \gls{eda}, \gls{ecg}, and \gls{emg}. In that design, \gls{eda} was measured from the fingers and \gls{emg} from the bicep. Placing the sensors at separate sites avoids electrical interference, but the spatial correlation between muscle activity and electrodermal response is lost.
+
+% 2. Co-located EMG and bioimpedance
+One approach to co-located \gls{emg} and bioimpedance measurement uses frequency-domain separation, with an \gls{ac} carrier injected above the \gls{emg} band~\cite{ngo_wearable_2022}. This does not extend to exosomatic \gls{eda}, in which an external source drives current through the skin to measure conductance. With \gls{dc} excitation, there is no carrier frequency to separate from the \gls{emg} signal, and frequency-domain separation cannot be applied.
+
+% 3. Galvanic isolation for simultaneous bioimpedance measurements
+\textcite{kusche_galvanically_2017} showed that galvanic isolation between current source ground domains eliminates channel coupling in multi-channel bioimpedance measurement. When multiple current sources share a common ground, part of each excitation current returns through unintended electrode paths, corrupting the voltage measurement at each channel. \textcite{kusche_galvanically_2017} assigned each current source a separate ground domain, so that each excitation current returned only through its intended electrode. Channel coupling remained below \SI{-48}{\decibel} across the operating frequency range. The authors applied \gls{ac} excitation in the kilohertz range and isolated channels at separate body sites, not a \gls{dc} \gls{eda} excitation current from a co-located \gls{emg} reference electrode.
+
+% Closing paragraph: Each area has addressed part of the problem, but no
+% existing work combines co-located EMG and EDA acquisition with galvanic
+% isolation as the isolation strategy.
+The three areas reviewed each resolved a different aspect of the interference problem, but none addressed the specific challenge of co-locating \gls{emg} and \gls{dc} \gls{eda} at the same muscle site. Endosomatic \gls{eda} measures skin potential rather than skin conductance and does not provide the \gls{dc} conductance signal required by the present design. Frequency-domain separation supports co-located \gls{ac} bioimpedance and \gls{emg} but cannot be applied when the excitation is \gls{dc}. Galvanic isolation eliminates ground-loop corruption between channels but has not been extended to simultaneous \gls{emg} and \gls{dc} \gls{eda} acquisition at the same site. No existing device acquires \gls{emg} and \gls{dc} \gls{eda} simultaneously from the same muscle site with galvanic isolation between the two circuits.
 
 \section{Objectives}
+% State the research question first. Then list the specific objectives
+% Map into the validation questions
+This thesis investigates whether \gls{emg} and \gls{dc} \gls{eda} can be acquired simultaneously from the same muscle site using a custom analog front-end with galvanic isolation between the two circuits.
+The following objectives were defined:
+
+\begin{enumerate}
+    % 1. Design and implement the front-end
+    \item Design and implement a custom analog front-end for simultaneous \gls{emg} and \gls{eda} acquisition from the same muscle site, with galvanic isolation separating the two signal chains.
+    % 2. Characterize each signal chain individually
+    \item Characterize the \gls{emg} and \gls{eda} front-ends individually in terms of signal quality, frequency response, and the effect of the isolation stage on each signal chain.
+    % 3. Validate simultaneous operation
+    \item Determine whether simultaneous operation of both front-ends introduces mutual interference between the \gls{emg} and \gls{eda} measurements.
+    % 4. Assess reproducibility
+    \item Assess the reproducibility of simultaneous \gls{emg} and \gls{eda} measurements across repeated acquisition sessions.
+\end{enumerate}
+
 
 \section{Thesis Outline}
-This thesis is divided into six sections:
+This thesis is divided into six chapters.
+
 \begin{itemize}
-    \item Chapter 1 serves as an introduction, providing background information on the motivation for the simultaneous measurement of EDA (Electrodermal Activity) and EMG (Electromyography), as well as the objectives of this thesis.
-    \item Chapter 2 discusses the theoretical framework that underpins this research. It will explain the basic physiology of the human body, the relevance of these physiological aspects to EDA and EMG measurement methods, and offer an in-depth exploration of the various measurement techniques.
-    \item Chapter 3 outlines the methods employed in this study.
-    \item Chapter 4 presents the results obtained from the research.
-    \item Chapter 5 contains a comprehensive discussion of the results.
-    \item Chapter 6 summarizes the key findings and suggests directions for future work.
+    \item Chapter 1 introduces the clinical motivation for simultaneous \gls{emg} and \gls{eda} acquisition, reviews existing approaches in the state of the art, and states the objectives of the thesis.
+
+    \item Chapter 2 covers the physiological basis of \gls{emg} and \gls{eda}, the measurement techniques for each signal, and the ground loop problem that arises from co-locating the two measurement circuits.
+
+    \item Chapter 3 describes the hardware design of the analog front-end, including the \gls{emg} and \gls{eda} signal chains, the galvanic isolation stage, and the power supply. It also covers the validation protocol, data acquisition setup, and the signal-processing pipeline used to answer the validation questions.
+
+    \item Chapter 4 presents the results of the validation experiments.
+
+    \item Chapter 5 discusses what the results mean and how they compare to existing work.
+
+    \item Chapter 6 summarizes the main findings and outlines open problems for future work.
 \end{itemize}
+
 \begin{itemize}
     \item Historical background
     \item Identify knowledge gap
     \item Explain why this work is needed (Motivation)
     \item Explain what is coming in the thesis
     \item Start early but finish last
+    \item Structure of intro:
+    \begin{itemize}
+        \item Objective
+        \item Definition
+        \item State of the art
+    \end{itemize}
 \end{itemize}

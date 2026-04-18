@@ -3,7 +3,7 @@
 %% Identification:
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]  % Any version, really!
-\ProvidesClass{uiomasterthesis}
+\ProvidesClass{uio_files/uiomasterthesis}
   [2024/02/16 v1.16 UiO document class for a master's thesis]
 
 %% Required packages:
@@ -39,7 +39,8 @@
 %% Text adjustments:
 \pretolerance = 3000
 \tolerance = 6000   \hbadness = \tolerance
-\setlength{\parskip}{0cm plus 1mm}
+\setlength{\parskip}{0.2cm plus 1mm}
+\linespread{1.2}
 
 %% Select a font
 \uiom@font
