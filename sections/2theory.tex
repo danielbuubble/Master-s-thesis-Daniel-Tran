@@ -1,49 +1,66 @@
-This chapter provides the theoretical foundation necessary for understanding the hardware design and validation discussed in Chapter~\ref{chap:methods}. Section~\ref{sec:human_physiology} introduces the physiological aspects common to both modalities. Sections~\ref{sec:EMG} and~\ref{sec:EDA} delve into EMG and EDA, respectively, focusing on the signal characteristics and measurement constraints that influenced the circuit design.
+This chapter provides the theoretical foundation for the hardware design and validation described in Chapter~\ref{chap:methods}. Section~\ref{sec:human_physiology} covers the physiological systems common to both modalities. Sections~\ref{sec:EMG} and~\ref{sec:EDA} cover EMG and EDA, including the signal characteristics and measurement constraints that shape the circuit design. Section~\ref{sec:ground_loops} covers the ground loop problem that arises from co-locating the two measurement circuits.
 
-\section{Human Physiology} \label{sec:human_physiology}
+\section{Physiological Background} \label{sec:human_physiology}
+
+This section covers the three physiological systems relevant to the thesis: the nervous system, which controls both skeletal muscle activity and sweat gland activity; the skin, which is the measurement interface for both signals; and skeletal muscle, which is the source of the EMG signal.
 
 \subsection{Human Nervous System} \label{sec:human_nervous_system}
 
-The human nervous system is divided into two main parts: the central nervous system (CNS) and the peripheral nervous system (PNS) \cite{bazira_overview_2021}. This thesis concerns the PNS and its subdivisions, illustrated in Figure~\ref{fig:hms}.
+The human nervous system is divided into two main parts: the central nervous system and the peripheral nervous system~\cite{bazira_overview_2021}. This thesis concerns the peripheral nervous system and its subdivisions, illustrated in Figure~\ref{fig:nervous_system_tree}.
 
-The PNS is further divided into the somatic nervous system (SNS) and the autonomic nervous system (ANS) \cite{bazira_overview_2021}. The SNS is responsible for controlling voluntary movements by transmitting motor commands to skeletal muscles \cite{bazira_overview_2021, kamen_essentials_2010}. This is the nervous system branch involved in EMG measurements. The ANS regulates involuntary bodily functions and is further divided into the sympathetic, parasympathetic, and enteric subdivisions \cite{bazira_overview_2021}. The sympathetic nervous system is relevant to this thesis because it controls eccrine sweat gland activity \cite{boucsein_electrodermal_2012, ellaway_sweat_2010}. This sweat gland activity is the basis of electrodermal activity \cite{banganho_electrodermal_2022}.
+The peripheral nervous system is further divided into the somatic nervous system and the autonomic nervous system~\cite{bazira_overview_2021}. The somatic nervous system is responsible for controlling voluntary movements by transmitting motor commands to skeletal muscles~\cite{bazira_overview_2021, kamen_essentials_2010}. This is the nervous system branch involved in \gls{emg} measurements. The autonomic nervous system regulates involuntary bodily functions and is further divided into the sympathetic, parasympathetic, and enteric subdivisions~\cite{bazira_overview_2021}. The \gls{sns} is relevant to this thesis because it controls eccrine sweat gland activity, which is the basis of \gls{eda}~\cite{boucsein_electrodermal_2012, ellaway_sweat_2010, banganho_electrodermal_2022}. Section~\ref{sec:sweat} describes the structure and location of these glands.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{figures/human_nervous_system_tree.png}
-    \caption{Tree diagram of how the human nervous system is structured}
-    \label{fig:hms}
+    \caption{Taxonomy of the human nervous system. Branches relevant to the thesis are bolded.}
+    \label{fig:nervous_system_tree}
 \end{figure}
 
-\subsection{The Skin} 
+\subsection{The Skin} \label{sec:skin}
+EDA and surface EMG are acquired through electrodes placed on the skin surface. The structural and electrical properties of the skin, therefore, directly affect the measured signals.
 
-A sentence describing why it is interesting / necessary to know about the skin 
-
-"EDA and surface EMG are conducted/probed with electrodes placed on the skin surface. Therefore, the structural properties of the skin have a major influence on the measurements."
-
-
-
-\label{sec:skin}
 \subsubsection{Skin Structure} \label{sec:skin_structure}
-The skin is composed of three layers: the epidermis, the dermis, and the hypodermis \cite{lopez-ojeda_anatomy_2025}. The epidermis is the outermost layer. Its surface, the stratum corneum, consists of dead cells with low moisture content \cite{banganho_electrodermal_2022}. The dermis lies beneath the epidermis and makes up most of the skin's thickness. It contains sweat glands and blood vessels \cite{banganho_electrodermal_2022}. The hypodermis is the deepest layer and connects the skin to the underlying muscle tissue.
+The skin is composed of three layers: the epidermis, the dermis, and the hypodermis~\cite{lopez-ojeda_anatomy_2025}. Figure~\ref{fig:skin_layers} illustrates the three layers and the underlying muscle tissue. The epidermis is the outermost layer. Its thickness ranges from \SIrange{50}{200}{\micro\metre} at most body sites but reaches approximately \SI{1}{\milli\metre} at the palms and soles~\cite{boucsein_electrodermal_2012}. The stratum corneum, the surface of the epidermis, consists of dead cells with low moisture content~\cite{banganho_electrodermal_2022}. The dermis lies beneath the epidermis, is much thicker than the epidermis, and contains sweat glands and blood vessels~\cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}. The hypodermis is the deepest layer and connects the skin to the underlying muscle tissue.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/skin_layer.jpg}
+    \caption{Layered structure of the skin, showing the epidermis, dermis, hypodermis (subcutaneous tissue), and underlying muscle. Image from \href{https://www.vecteezy.com/vector-art/445514-layers-of-human-skin-concept}{Vecteezy.com}.}
+    \label{fig:skin_layers}
+\end{figure}
 
 \subsubsection{Sweat Glands \& Sweat Ducts} \label{sec:sweat}
-There are two types of sweat glands: apocrine and eccrine \cite{berntson_handbook_2007}. The apocrine glands are found mainly in the axillae and genitals and contribute little to overall sweating \cite{boucsein_electrodermal_2012}. The eccrine glands are distributed across most of the body. Each gland sits in the dermis and connects to the skin surface through a narrow duct that passes through the epidermis \cite{boucsein_electrodermal_2012}. When the gland activates, sweat fills the duct. Because sweat contains ions, the filled duct acts as a low-resistance pathway through the stratum corneum \cite{tronstad_current_2022}. The palmar and plantar regions have higher densities of eccrine glands and are more responsive to emotional stimuli than the trunk and limbs \cite{tronstad_current_2022}.
+The eccrine sweat glands introduced in Section~\ref{sec:human_nervous_system} are one of two types of sweat glands. The other type is apocrine~\cite{cacioppo_handbook_2007}. The apocrine glands are found mainly in the axillae and genitals and contribute little to overall sweating~\cite{boucsein_electrodermal_2012}. The eccrine glands are distributed across most of the body. Each gland sits in the hypodermis or dermis and connects to the skin surface through a narrow duct that passes through the dermis and the epidermis~\cite{boucsein_electrodermal_2012}, as shown in Figure~\ref{fig:sweat_glands}. When the gland activates, sweat fills the duct. Because sweat contains ions, the filled duct acts as a low-resistance pathway through the stratum corneum~\cite{tronstad_current_2022}. The palmar and plantar regions have higher densities of eccrine glands and are more responsive to emotional stimuli than the trunk and limbs~\cite{tronstad_current_2022}. These sweating dynamics determine the electrical behavior of the skin at the measurement site.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/sweat_glands.pdf}
+    \caption{Cross-section of skin showing an apocrine sweat gland, an eccrine sweat gland, and their ducts opening at the skin surface. A hair follicle is shown for anatomical context. Adapted from Glafoululle des Alpes (2022), \textit{Skin Glandes}, \href{https://commons.wikimedia.org/wiki/File:Skin_Glandes_-_FR.svg}{Wikimedia Commons}, CC BY-SA 4.0.}
+    \label{fig:sweat_glands}
+\end{figure}
 
 \subsubsection{Electrical Properties} \label{sec:human_el_properties}
-The stratum corneum has high electrical impedance because of its low moisture content and dense structure \cite{tronstad_current_2022}. Continued sweating also hydrates the stratum corneum itself, further raising conductance \cite{boucsein_electrodermal_2012}.
+The stratum corneum has high electrical impedance because of its low moisture content and dense structure \cite{tronstad_current_2022}. Continued sweating hydrates the stratum corneum and raises its conductance \cite{boucsein_electrodermal_2012}.
 
-The impedance at the electrode-skin interface affects both EDA and EMG recordings. For EMG, high electrode-skin impedance reduces the signal amplitude at the amplifier input and can worsen common-mode rejection \cite{kamen_essentials_2010}. For EDA, it adds to the total impedance in the measurement path.
+The impedance at the electrode-skin interface affects both EDA and EMG recordings. For EMG, high electrode-skin impedance reduces the signal amplitude at the amplifier input and can worsen \gls{cmrr}~\cite{kamen_essentials_2010}. For EDA, it increases the total impedance along the measurement path and reduces sensitivity to conductance changes caused by sweat activity.
 
 \subsubsection{Skin Preparation} \label{sec:skin_prep}
-For EMG recording, the skin is typically cleaned with alcohol and lightly abraded to remove dead cells from the stratum corneum, reducing electrode-skin impedance \cite{kamen_essentials_2010, konrad_abc_2006}. For exosomatic EDA recording, abrasion is not recommended \cite{boucsein_electrodermal_2012}. The stratum corneum is the high-impedance layer through which sweat ducts produce the conductance changes measured by EDA. Removing it lowers the baseline impedance and reduces the relative contribution of sweat duct activity to the signal.
+EMG and EDA have opposing skin preparation requirements. EMG recording benefits from low electrode-skin impedance, so the skin is typically cleaned with alcohol and lightly abraded to remove dead cells from the stratum corneum~\cite{kamen_essentials_2010, konrad_abc_2006}. Exosomatic EDA recording relies on the stratum corneum itself as the high-impedance layer through which sweat ducts produce the conductance changes of interest. Abrasion is therefore not recommended for EDA, as it lowers baseline impedance and reduces the relative contribution of sweat duct activity to the signal~\cite{boucsein_electrodermal_2012}.
 
 
 \subsection{Skeletal Muscle}\label{sec:muscle}
 %Mention that muscle tissue is anisotropic - Ørjan sin bok
-Skeletal muscle consists of bundles of muscle fibers \cite{mukund_skeletal_2020}. Each fiber is a long, cylindrical cell with an excitable membrane capable of generating electrical signals \cite{kamen_essentials_2010}. Motoneurons innervate these muscle fibers. A single motoneuron and all of the fibers it innervates together form a motor unit \cite{whittaker_fundamentals_2012, konrad_abc_2006}. The motor unit represents the smallest unit of muscle activation; when the motoneuron fires, all of its associated fibers contract simultaneously. The electrical and functional properties of motor units are discussed in detail in Section \ref{sec:EMG_signal}.
+Skeletal muscle consists of bundles of muscle fibers~\cite{mukund_skeletal_2020}. Each fiber is a long, cylindrical cell with an excitable membrane that generates electrical signals~\cite{kamen_essentials_2010}. Motoneurons innervate these muscle fibers. A single motoneuron and all of the fibers it innervates together form a motor unit~\cite{whittaker_fundamentals_2012, konrad_abc_2006}, illustrated in Figure~\ref{fig:motor_unit}. The motor unit is the smallest unit of muscle activation; when the motoneuron fires, all of its fibers contract simultaneously. The electrical and functional properties of motor units are discussed in Section~\ref{sec:EMG_signal}.
 
-Muscle tissue is anisotropic, meaning it has higher electrical conductivity along the muscle fibers than it does across them \cite{kamen_essentials_2010, grimnes_bioimpedance_2015}. The tissue layers situated between the muscle and the skin surface act as a volume conductor with low-pass filtering properties. This filtering attenuates higher-frequency components of the electrical signal before they reach the skin surface \cite{kamen_essentials_2010, konrad_abc_2006}. Both of these characteristics directly impact electrode placement and the signal characteristics in surface electromyography (EMG), as explored further in Section \ref{sec:EMG_measurement}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures/Motor_Unit.pdf}
+    \caption{Schematic of a motor unit: one motoneuron innervating a bundle of skeletal muscle fibers. Adapted from ScholarJay (2022), \textit{Motor Unit}, \href{https://commons.wikimedia.org/wiki/File:Motor_Unit.png}{Wikimedia Commons}, CC BY-SA 4.0.}
+    \label{fig:motor_unit}
+\end{figure}
+
+Muscle tissue is anisotropic, with higher electrical conductivity along the fibers than across them~\cite{kamen_essentials_2010, grimnes_bioimpedance_2015}. The tissue layers between the muscle and the skin surface act as a volume conductor with low-pass filtering properties. This filtering attenuates higher-frequency components of the electrical signal before they reach the skin surface~\cite{kamen_essentials_2010, konrad_abc_2006}. Both characteristics affect electrode placement and the signal characteristics in surface \gls{emg}, as discussed in Section~\ref{sec:EMG_measurement}.
 
 \section{Electromyography} \label{sec:EMG}
 
@@ -94,7 +111,7 @@ In this study, an additional constraint arises from the need to record EDA simul
 %Surface EMG
 Surface electromyography (sEMG) involves placing one or more electrodes on the skin over a target muscle, leaving the underlying tissue intact. This method has several significant advantages: it is noninvasive, does not require specialist medical supervision, and allows the electrode site to be used for simultaneous biopotential measurements, such as electrodermal activity (EDA), on the surrounding skin \cite{konrad_abc_2006}. However, sEMG has some limitations. It is primarily effective for superficial muscles that are large enough to accommodate electrode placement on the skin surface. Additionally, the method suffers from a loss of spatial resolution \cite{kamen_essentials_2010}.
 
-\paragraph{sEMG Signal Structure} \label{sec:sEMG_signal}
+\paragraph{sEMG Signal Structure} \label{sec:sEMG_signal} %Add figure
 The raw sEMG signal amplitude recorded at the skin surface ranges roughly from \qty{10}{\micro\volt} - \qty{5000}{\micro\volt}. With active contraction of the muscle, the amplitude is \qtyrange{60}{300}{\micro\volt}, while the muscles are resting the amplitude is \qtyrange{20}{30}{\micro\volt} \cite{li_wearable_2021}. The useful frequency content spans approximately \qtyrange{10}{500}{\hertz} \cite{yang_detection_2020, kamen_essentials_2010}, with the majority of signal power concentrated between \qtyrange{20}{150}{\hertz} \cite{konrad_abc_2006}, as the intervening tissue layers attenuate higher-frequency components relative to intramuscular recordings \cite{konrad_abc_2006, kamen_essentials_2010}.
 % Why do I focus on sEMG
 
@@ -127,7 +144,7 @@ Crosstalk refers to the contamination of the recorded signal by myoelectric acti
 
 \section{Electrodermal Activity} \label{sec:EDA}
 
-Electrodermal activity (EDA) refers to the variations in the electrical properties of the skin that arise from the sweat glands' activity \cite{bari_disturbances_2024}. Increased sweating enhances the skin's electrical conductance, because while sweat contains minerals, lactic acid, and urea, it is primarily composed of water \cite{posada-quintero_innovations_2020}. Sweat secretion not only alters \gls{sc} but also affects other electrical properties, such as \gls{sp} and capacitance \cite{tronstad_current_2022}. Although the primary function of sweat glands is thermoregulation, they have also been shown to respond to psychologically significant stimuli~\cite{berntson_handbook_2007}. One primary application of EDA is in clinical psychophysiology, where it serves as a quantitative measure of sudomotor activity, providing an objective assessment of arousal \cite{ellaway_sweat_2010, benedek_continuous_2010}. Given that EDA has been identified as a valuable indicator in emotion and stress research, its measurement is particularly important in the assessment and treatment evaluation of anxiety-related psychopathologies \cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}. 
+Electrodermal activity (EDA) refers to the variations in the electrical properties of the skin that arise from the sweat glands' activity \cite{bari_disturbances_2024}. Increased sweating enhances the skin's electrical conductance, because while sweat contains minerals, lactic acid, and urea, it is primarily composed of water \cite{posada-quintero_innovations_2020}. Sweat secretion not only alters \gls{sc} but also affects other electrical properties, such as \gls{sp} and capacitance \cite{tronstad_current_2022}. Although the primary function of sweat glands is thermoregulation, they have also been shown to respond to psychologically significant stimuli~\cite{cacioppo_handbook_2007}. One primary application of EDA is in clinical psychophysiology, where it serves as a quantitative measure of sudomotor activity, providing an objective assessment of arousal \cite{ellaway_sweat_2010, benedek_continuous_2010}. Given that EDA has been identified as a valuable indicator in emotion and stress research, its measurement is particularly important in the assessment and treatment evaluation of anxiety-related psychopathologies \cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}. 
 
 \subsection{EDA Signal Structure}\label{sec:EDA_signal}
 %Tonic SCL and Phasic SCR
