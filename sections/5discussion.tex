@@ -1,8 +1,238 @@
-%Limitations
-%Collect the FSR measurement data too for better validation
-%Inconsistent FSR measurement
-%If the combined EMG EDA noise in EDA comes from EMG measurement or motion artifact
+%The unsmoothed signal at that index carries a broadband noise excursion from the isolation stage (Section~\ref{sec:galvanic_isolation}) on top of the physiological SCR and would bias the amplitude. EDA
 
+% =============================================================================
+% CHAPTER 5 — DISCUSSION
+% =============================================================================
+%
+% Purpose of this chapter (UiO Discussion pattern, seven points):
+%   1. What do the results show?
+%   2. How do the results fit with other researchers' findings?
+%   3. What could the results mean?
+%   4. What are the problems and limitations?
+%   5. Go back to the big picture from the introduction
+%   6. What are the perspectives for future research?
+%   7. What are the implications of your findings?
+%
+% Content policy:
+%   Discussion is where interpretation lives. Noise models, mechanism
+%   hypotheses, literature comparison, cross-question synthesis, limitations,
+%   and implications all belong here, not in Chapter 4.
+%
+% Structural choice: the seven UiO points map onto seven sections. Sections
+% 5.1–5.3 build the interpretive case (results → literature → meaning);
+% sections 5.4–5.7 frame what is and isn't known, where it's going, and why
+% it matters. The three result threads (isolation, cross-contamination,
+% reproducibility/QC) are woven through sections 5.1–5.3 rather than given
+% separate subsections, because the interpretive synthesis across threads
+% is itself the central contribution.
+% =============================================================================
+
+\chapter{Discussion}
+\label{ch:discussion}
+
+% -----------------------------------------------------------------------------
+% Chapter opening (~half page, before any \section)
+% -----------------------------------------------------------------------------
+%
+% Purpose: establish the interpretive frame. Answers:
+%   - What is the central finding in one sentence?
+%   - Which threads will be developed, and in which order?
+%   - What is the scope of interpretation (bench validation, not clinical)?
+%
+% Recommended content, two or three paragraphs:
+%
+% (1) One-sentence headline result. The isolation architecture preserves
+%     both signals' morphology and permits simultaneous acquisition without
+%     detectable cross-contamination on phasic metrics; a low-frequency EDA
+%     coupling is present but does not compromise SCR detection.
+%
+% (2) Organization preview. Section 5.1 synthesizes what the results show
+%     across the three threads; 5.2 places the findings in the literature;
+%     5.3 develops the interpretive claims and mechanism hypotheses; 5.4
+%     states limitations; 5.5 returns to the gap identified in Chapter 1;
+%     5.6 proposes future work; 5.7 states the implications for the
+%     biomedical engineering, physiological monitoring, and clinical
+%     audiences.
+%
+% (3) Scope note. Interpretation is bounded by the bench-validation context:
+%     five sessions at the palm site with a single subject. Clinical
+%     validation at the biceps target site, with a patient cohort, is
+%     future work (see 5.6). Statements about reproducibility, mechanism,
+%     and implications are made within these limits.
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+% 5.1 What the results show
+% -----------------------------------------------------------------------------
+%
+% This is where the cross-Q synthesis lives. The three-observable ISO224
+% convergence belongs here, not in Results. Similarly the Q5/Q6 null
+% interpretation and the PSD diagnostic as block-level-not-session-level
+% classification.
+%
+% Three paragraphs recommended:
+%   (1) ISO224 characterization — three observables converge on σ_iso ≈ 21 µV
+%       RMS (EMG) and low-frequency-concentrated 0.19–0.29 µS (EDA).
+%   (2) Cross-contamination — null on primary phasic metrics; block-level
+%       EDA coupling at 0.3–1 Hz characterized but does not impair detection.
+%   (3) Reproducibility — within-session circuit metrics stable; between-
+%       session variability dominated by Session 4. Contamination filter
+%       calibration demonstrated at 0.3% exclusion rate.
+% -----------------------------------------------------------------------------
+
+\section{What the results show}
+\label{sec:disc-synthesis}
+
+
+% -----------------------------------------------------------------------------
+% 5.2 Fit with existing literature
+% -----------------------------------------------------------------------------
+%
+% Requires literature work not yet done. Suggested anchors:
+%   - ISO224 datasheet noise specs and any published EMG/EDA front-end noise
+%     characterizations using linear isolators.
+%   - Prior isolated EMG front-ends (amplitude preservation comparisons).
+%   - Multimodal EMG+EDA acquisition systems (if any) and their cross-talk
+%     characterizations.
+%   - 1/f noise literature for linear isolators (supports the low-frequency
+%     spectral shape hypothesis).
+%   - EMG contamination-filter conventions (2× within-block median thresholds,
+%     or equivalent approaches in the sEMG processing literature).
+%
+% Approach: do NOT force-fit literature onto every finding. If a finding has
+% no direct precedent (e.g., simultaneous EMG+DC-EDA isolation is novel by
+% design), state that and cite the closest adjacent work.
+% -----------------------------------------------------------------------------
+
+\section{Fit with existing literature}
+\label{sec:disc-literature}
+
+
+% -----------------------------------------------------------------------------
+% 5.3 What the results could mean
+% -----------------------------------------------------------------------------
+%
+% Interpretive claims grounded in the data + literature. Candidate content:
+%   - ISO224 noise spectrum is low-frequency-concentrated (inferred from EDA
+%     amplitude quadrature exceeding σ_local). Physically plausible given 1/f
+%     behavior in linear isolators. Discussion-level claim, not proven here.
+%   - 0.3–1 Hz EDA coupling: four candidate mechanisms (mechanical coupling
+%     through electrode-skin interface, shared power-rail dynamics, cue-
+%     triggered physiological arousal, cable-movement artifact). Mechanism
+%     cannot be distinguished from current data.
+%   - Session 4 asymmetric signature: EMG shows session-wide elevated NF;
+%     EDA shows low SCL with strong SCRs. Different physical origins possible
+%     (electrode contact on EMG side, subject state on EDA side). Acknowledge
+%     limits of retrospective diagnosis.
+%   - +0.4 µS SCL shift Combined > EDA-only: either genuine EMG-circuit tonic
+%     offset (contamination) or block-order time-on-task effect (confound).
+%     Cannot separate at n=3 with fixed block order.
+% -----------------------------------------------------------------------------
+
+\section{What the results could mean}
+\label{sec:disc-meaning}
+
+
+% -----------------------------------------------------------------------------
+% 5.4 Problems and limitations
+% -----------------------------------------------------------------------------
+%
+% Direct acknowledgment of constraints. Recommended list:
+%   - n = 3 for reproducibility (Sessions 3-5). Formal hypothesis testing
+%     precluded; between-session SDs are descriptive only.
+%   - Block order fixed (EDA-only → EMG-only → Combined). Time-on-task
+%     effects inseparable from block effects at n = 3. Directly limits the
+%     +0.4 µS SCL shift interpretation.
+%   - σ_baseline,session label "circuit noise floor" in methods §3.5.4
+%     captures spontaneous EDA activity + slow drift, not pure electronic
+%     noise. σ_local is the cleaner circuit-noise metric. σ_session also
+%     varies across sessions (S2 = 0.55 vs S3-5 mean ~0.34 µS), limiting
+%     cross-session SNR-circuit comparisons; within-session comparisons
+%     remain clean.
+%   - Ambu wet-gel electrode shelf-life (~1 month after opening); validation
+%     data span this window, so electrode quality is not perfectly controlled
+%     across sessions.
+%   - Palm validation site, not biceps. Clinical motivation is biceps;
+%     translation to the target site remains untested.
+%   - SCR 100% detection rate is a design outcome (parameters were chosen
+%     to achieve it), not an independent metric.
+%   - 100/150 Hz "mains harmonic power" values in Q2/Q4 are broadband content
+%     in those bands rather than true mains harmonics (filter has no effect
+%     on them); reported for completeness, not as interpretable harmonic
+%     measurements.
+%   - Low-frequency EDA coupling mechanism not identified.
+% -----------------------------------------------------------------------------
+
+\section{Problems and limitations}
+\label{sec:disc-limitations}
+
+
+% -----------------------------------------------------------------------------
+% 5.5 Back to the introduction: the big picture
+% -----------------------------------------------------------------------------
+%
+% Connect findings to the introduction's gap statement and clinical motivation.
+% Key anchors to reference:
+%   - Introduction's identified gap: no prior device simultaneously measures
+%     EMG and DC EDA from the same muscle site with galvanic isolation.
+%   - Clinical motivation: stress/pain monitoring in non-verbal spastic CP
+%     patients during passive stretching by physiotherapists.
+%   - Collaboration: Dept. of Clinical and Biomedical Engineering (OUS),
+%     Dept. of Neurohabilitation (OUS), Dept. of Physics (UiO).
+%
+% Frame: the gap is now closed at the bench-validation level. Clinical
+% validation at the biceps target site remains the next step.
+% -----------------------------------------------------------------------------
+
+\section{Back to the big picture}
+\label{sec:disc-bigpicture}
+
+
+% -----------------------------------------------------------------------------
+% 5.6 Future research
+% -----------------------------------------------------------------------------
+%
+% Candidate directions ordered by proximity to the thesis contribution:
+%   - Clinical validation at biceps with physiotherapy cohort.
+%   - Mechanism identification for 0.3–1 Hz EDA coupling: dummy-load tests
+%     (distinguish electrical from subject-dependent mechanisms), rail noise
+%     measurement (rule in/out NXE2S), cable-routing experiments.
+%   - Extended ISO224 spectral characterization (direct measurement to
+%     confirm low-frequency concentration hypothesis).
+%   - Larger reproducibility cohort (n > 3) with randomized block order to
+%     enable formal statistical testing and decouple block effects from
+%     time-on-task.
+%   - Alternative electrode technologies (dry electrodes, extended-shelf-
+%     life wet gel) for longer-duration clinical deployments.
+%   - Co-located accelerometry for motion-artifact rejection if mechanical
+%     coupling is confirmed as the 0.3–1 Hz mechanism.
+% -----------------------------------------------------------------------------
+
+\section{Perspectives for future research}
+\label{sec:disc-future}
+
+
+% -----------------------------------------------------------------------------
+% 5.7 Implications
+% -----------------------------------------------------------------------------
+%
+% Three audiences:
+%   - Biomedical front-end designers: ISO224 is a viable component for
+%     simultaneous physiological signal acquisition, with quantified noise
+%     cost (~21 µV RMS EMG, ~0.2 µS RMS EDA low-frequency-concentrated).
+%   - Stress/pain monitoring in non-verbal patients: combined EMG+EDA from
+%     the same muscle site provides two independent arousal signals without
+%     mutual interference on phasic metrics — meeting the key methodological
+%     requirement stated in the introduction.
+%   - OUS Neurohabilitation clinical team: the device is bench-validated
+%     and ready for subject testing at the biceps target site.
+% -----------------------------------------------------------------------------
+
+\section{Implications}
+\label{sec:disc-implications}
+
+\begin{comment}
+    
 \begin{itemize}
     \item What do the results show?
     \item How do the results fit in with other researchers findings?
@@ -12,3 +242,4 @@
     \item What are the perspectives for future research?
     \item What are the implications of your findings?
 \end{itemize}
+\end{comment}

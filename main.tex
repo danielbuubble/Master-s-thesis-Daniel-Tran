@@ -23,6 +23,12 @@ style=ieee
 ]{biblatex}
 \usepackage[acronym, nomain, nonumberlist]{glossaries}
 \usepackage{array}
+
+\usepackage{makecell}
+
+
+\sisetup{per-mode=symbol}
+
 \usepackage{booktabs}
 \usepackage{hyperref}
 \hypersetup{
@@ -34,8 +40,13 @@ style=ieee
 }
 
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+% Compact list marker for multi-item table cells
 \newcommand{\tabitem}{\textbullet~~}
-
+% Compact itemize for auto-wrapping multi-item table cells
+\newenvironment{tabitemize}
+  {\begin{itemize}[leftmargin=1.2em, topsep=0pt, parsep=0pt, itemsep=2pt, label=\textbullet]}
+  {\end{itemize}}
+  
 \DeclareUnicodeCharacter{0307}{}
 
 
@@ -82,10 +93,10 @@ style=ieee
 \chapter{Methodology}
 \subfile{sections/3methodology}
 
-\chapter{Results}
+%\chapter{Results}
 \subfile{sections/4results}
 
-\chapter{Discussion}
+%\chapter{Discussion}
 \subfile{sections/5discussion}
 
 \chapter{Conclusion}
