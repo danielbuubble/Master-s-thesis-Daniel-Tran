@@ -14,6 +14,11 @@
 \usepackage{nicefrac}
 \usepackage{enumitem}
 \usepackage{titlesec}
+\usepackage{multirow}
+\usepackage{placeins}
+
+
+
 \titleformat{\paragraph}[block]{\normalfont\normalsize\bfseries}{}{0em}{}
 \titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
@@ -30,6 +35,7 @@ style=ieee
 \sisetup{per-mode=symbol}
 
 \usepackage{booktabs}
+\usepackage{xcolor}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -38,6 +44,19 @@ style=ieee
     urlcolor=cyan,
     citecolor=black,
 }
+
+% --- autoref styling ---
+\AtBeginDocument{%
+  \renewcommand{\sectionautorefname}{\textcolor{black}{Section}}%
+  \renewcommand{\subsectionautorefname}{\textcolor{black}{Section}}%
+  \renewcommand{\subsubsectionautorefname}{\textcolor{black}{Section}}%
+  \renewcommand{\paragraphautorefname}{\textcolor{black}{Section}}%
+  \renewcommand{\figureautorefname}{\textcolor{black}{Figure}}%
+  \renewcommand{\tableautorefname}{\textcolor{black}{Table}}%
+  \renewcommand{\equationautorefname}{\textcolor{black}{Equation}}%
+}
+
+\sisetup{range-phrase = \text{ to }}
 
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 % Compact list marker for multi-item table cells
@@ -48,7 +67,7 @@ style=ieee
   {\end{itemize}}
   
 \DeclareUnicodeCharacter{0307}{}
-
+%I acknowledge that parts of this thesis have been rephrased using artificially generated text by GPT UiO. Additionally, GitHub Copilot was used to assist with debugging and coding. No additional content or information has been added by AI beyond what I personally developed and decided to include.
 
 \makeglossaries
 
@@ -63,15 +82,34 @@ style=ieee
 
 \input{sections/abbreviations.tex}
 \begin{document}
+
 \frontmatter
 
 %image={figures/PCB.jpg},
 \uiomasterfp[kind={Master's Thesis}, 
     program={Electronics, Informatics and Technology: Microelectronics and Sensor Technology},
-    compact, colour=green]
-  
+    compact, 
+    colour=green, 
+    supervisor = {Ørjan Grøttem Martinsen \& Christian Tronstad}
+    ]
+    
+\begin{titlepage}
+  \centering
+  \vspace{2cm}
+  {\Large \textbf{Daniel Tran}\par}
+  \vspace*{3cm}
+  {\Large Simultaneous Acquisition of Electromyography and Electrodermal Activity from the Same Muscle Site\par}
+  \vspace{0.5cm}
+  {\normalsize A Galvanically Isolated Analog Front-End for Potential Stress Monitoring in Non-Verbal Patients\par}
+  \vfill
+  {\large Supervisors: \par Ørjan Grøttem Martinsen, University of Oslo \& Oslo University Hospital \par Christian Tronstad, Oslo University Hospital \par}
+  \vspace{0.3cm}
+\end{titlepage} 
 
-\input{sections/abstract.tex}
+\input{frontmatter/abstract}
+\input{frontmatter/acknowledgments}
+\input{frontmatter/ai_declaration}
+
 
  
 \tableofcontents
@@ -93,10 +131,10 @@ style=ieee
 \chapter{Methodology}
 \subfile{sections/3methodology}
 
-%\chapter{Results}
+\chapter{Results}
 \subfile{sections/4results}
 
-%\chapter{Discussion}
+\chapter{Discussion}
 \subfile{sections/5discussion}
 
 \chapter{Conclusion}

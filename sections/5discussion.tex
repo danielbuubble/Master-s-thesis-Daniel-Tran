@@ -3,239 +3,510 @@
 % =============================================================================
 % CHAPTER 5 — DISCUSSION
 % =============================================================================
-%
-% Purpose of this chapter (UiO Discussion pattern, seven points):
-%   1. What do the results show?
-%   2. How do the results fit with other researchers' findings?
-%   3. What could the results mean?
-%   4. What are the problems and limitations?
-%   5. Go back to the big picture from the introduction
-%   6. What are the perspectives for future research?
-%   7. What are the implications of your findings?
-%
-% Content policy:
-%   Discussion is where interpretation lives. Noise models, mechanism
-%   hypotheses, literature comparison, cross-question synthesis, limitations,
-%   and implications all belong here, not in Chapter 4.
-%
-% Structural choice: the seven UiO points map onto seven sections. Sections
-% 5.1–5.3 build the interpretive case (results → literature → meaning);
-% sections 5.4–5.7 frame what is and isn't known, where it's going, and why
-% it matters. The three result threads (isolation, cross-contamination,
-% reproducibility/QC) are woven through sections 5.1–5.3 rather than given
-% separate subsections, because the interpretive synthesis across threads
-% is itself the central contribution.
-% =============================================================================
 
-\chapter{Discussion}
+%\chapter{Discussion}
 \label{ch:discussion}
 
-% -----------------------------------------------------------------------------
-% Chapter opening (~half page, before any \section)
-% -----------------------------------------------------------------------------
-%
-% Purpose: establish the interpretive frame. Answers:
-%   - What is the central finding in one sentence?
-%   - Which threads will be developed, and in which order?
-%   - What is the scope of interpretation (bench validation, not clinical)?
-%
-% Recommended content, two or three paragraphs:
-%
-% (1) One-sentence headline result. The isolation architecture preserves
-%     both signals' morphology and permits simultaneous acquisition without
-%     detectable cross-contamination on phasic metrics; a low-frequency EDA
-%     coupling is present but does not compromise SCR detection.
-%
-% (2) Organization preview. Section 5.1 synthesizes what the results show
-%     across the three threads; 5.2 places the findings in the literature;
-%     5.3 develops the interpretive claims and mechanism hypotheses; 5.4
-%     states limitations; 5.5 returns to the gap identified in Chapter 1;
-%     5.6 proposes future work; 5.7 states the implications for the
-%     biomedical engineering, physiological monitoring, and clinical
-%     audiences.
-%
-% (3) Scope note. Interpretation is bounded by the bench-validation context:
-%     five sessions at the palm site with a single subject. Clinical
-%     validation at the biceps target site, with a patient cohort, is
-%     future work (see 5.6). Statements about reproducibility, mechanism,
-%     and implications are made within these limits.
-% -----------------------------------------------------------------------------
-
-% -----------------------------------------------------------------------------
-% 5.1 What the results show
-% -----------------------------------------------------------------------------
-%
-% This is where the cross-Q synthesis lives. The three-observable ISO224
-% convergence belongs here, not in Results. Similarly the Q5/Q6 null
-% interpretation and the PSD diagnostic as block-level-not-session-level
-% classification.
-%
-% Three paragraphs recommended:
-%   (1) ISO224 characterization — three observables converge on σ_iso ≈ 21 µV
-%       RMS (EMG) and low-frequency-concentrated 0.19–0.29 µS (EDA).
-%   (2) Cross-contamination — null on primary phasic metrics; block-level
-%       EDA coupling at 0.3–1 Hz characterized but does not impair detection.
-%   (3) Reproducibility — within-session circuit metrics stable; between-
-%       session variability dominated by Session 4. Contamination filter
-%       calibration demonstrated at 0.3% exclusion rate.
-% -----------------------------------------------------------------------------
-
-\section{What the results show}
-\label{sec:disc-synthesis}
+% Chapter opening (~½ page, 3 paragraphs) — deferred until §5.1–§5.4 prose
+% drafted.
 
 
-% -----------------------------------------------------------------------------
-% 5.2 Fit with existing literature
-% -----------------------------------------------------------------------------
+
+% =============================================================================
+% §5.1 — FRONT-END BEHAVIOUR
+% =============================================================================
 %
-% Requires literature work not yet done. Suggested anchors:
-%   - ISO224 datasheet noise specs and any published EMG/EDA front-end noise
-%     characterizations using linear isolators.
-%   - Prior isolated EMG front-ends (amplitude preservation comparisons).
-%   - Multimodal EMG+EDA acquisition systems (if any) and their cross-talk
-%     characterizations.
-%   - 1/f noise literature for linear isolators (supports the low-frequency
-%     spectral shape hypothesis).
-%   - EMG contamination-filter conventions (2× within-block median thresholds,
-%     or equivalent approaches in the sEMG processing literature).
+% Purpose: establish that each front-end meets design specifications in
+% isolation, providing preconditions for the cross-contamination question
+% in §5.3. Three paragraphs, modality-ordered (EMG → EDA → synthesis).
 %
-% Approach: do NOT force-fit literature onto every finding. If a finding has
-% no direct precedent (e.g., simultaneous EMG+DC-EDA isolation is novel by
-% design), state that and cite the closest adjacent work.
-% -----------------------------------------------------------------------------
-
-\section{Fit with existing literature}
-\label{sec:disc-literature}
-
-
-% -----------------------------------------------------------------------------
-% 5.3 What the results could mean
-% -----------------------------------------------------------------------------
+% Site-out: no palm/biceps mentions; findings are properties of the
+% electronics.
 %
-% Interpretive claims grounded in the data + literature. Candidate content:
-%   - ISO224 noise spectrum is low-frequency-concentrated (inferred from EDA
-%     amplitude quadrature exceeding σ_local). Physically plausible given 1/f
-%     behavior in linear isolators. Discussion-level claim, not proven here.
-%   - 0.3–1 Hz EDA coupling: four candidate mechanisms (mechanical coupling
-%     through electrode-skin interface, shared power-rail dynamics, cue-
-%     triggered physiological arousal, cable-movement artifact). Mechanism
-%     cannot be distinguished from current data.
-%   - Session 4 asymmetric signature: EMG shows session-wide elevated NF;
-%     EDA shows low SCL with strong SCRs. Different physical origins possible
-%     (electrode contact on EMG side, subject state on EDA side). Acknowledge
-%     limits of retrospective diagnosis.
-%   - +0.4 µS SCL shift Combined > EDA-only: either genuine EMG-circuit tonic
-%     offset (contamination) or block-order time-on-task effect (confound).
-%     Cannot separate at n=3 with fixed block order.
-% -----------------------------------------------------------------------------
+% Forward refs:
+%   ¶1 close → §5.2 (noise-floor mechanism)
+%   ¶2 close → §5.2 (SNR-gap interpretation)
+%   ¶3 close → §5.2 (isolation-stage limitations)
+% =============================================================================
 
-\section{What the results could mean}
-\label{sec:disc-meaning}
+\section{Front-End Behaviour}
+\label{sec:disc-front-end}
+
+% ¶1 — EMG front-end (Q1).
+% Topic: the EMG front-end resolves voluntary contraction against noise
+% post-isolation. Reports NF, contraction RMS, SNR. Active-window PSD
+% (per §3.6.3) confirms contraction power within the 20-500 Hz design
+% band. Closes with forward-ref to §5.2 — the 21.70 µV post-isolation
+% noise floor is a downstream consequence of the isolation stage, not
+% a Q1 front-end property.
+% Sources: Q1 numbers, Table 4.1.
+\subsection{Q1 - EMG Front-End}
+\label{sec:disc-q1}
+
+% ¶1a — EMG front-end: scope, navigation, headline metrics
+The \gls{emg} front-end resolved voluntary contraction against the post-isolation noise floor (Section~\ref{sec:results-q1}). Figure~\ref{fig:q1-emg-representative} shows both the pre- and post-isolation channels for orientation, and the pre-versus-post comparison is addressed in Section~\ref{sec:disc-isolation}. The metrics reported here characterize the post-isolation channel alone and are computed per epoch, as defined in Section~\ref{sec:emg_processing}. Per-epoch noise floor, contraction \gls{rms}, and \gls{snr} are reported in \autoref{tab:q1-emg-metrics}.
 
 
-% -----------------------------------------------------------------------------
-% 5.4 Problems and limitations
-% -----------------------------------------------------------------------------
-%
-% Direct acknowledgment of constraints. Recommended list:
-%   - n = 3 for reproducibility (Sessions 3-5). Formal hypothesis testing
-%     precluded; between-session SDs are descriptive only.
-%   - Block order fixed (EDA-only → EMG-only → Combined). Time-on-task
-%     effects inseparable from block effects at n = 3. Directly limits the
-%     +0.4 µS SCL shift interpretation.
-%   - σ_baseline,session label "circuit noise floor" in methods §3.5.4
-%     captures spontaneous EDA activity + slow drift, not pure electronic
-%     noise. σ_local is the cleaner circuit-noise metric. σ_session also
-%     varies across sessions (S2 = 0.55 vs S3-5 mean ~0.34 µS), limiting
-%     cross-session SNR-circuit comparisons; within-session comparisons
-%     remain clean.
-%   - Ambu wet-gel electrode shelf-life (~1 month after opening); validation
-%     data span this window, so electrode quality is not perfectly controlled
-%     across sessions.
-%   - Palm validation site, not biceps. Clinical motivation is biceps;
-%     translation to the target site remains untested.
-%   - SCR 100% detection rate is a design outcome (parameters were chosen
-%     to achieve it), not an independent metric.
-%   - 100/150 Hz "mains harmonic power" values in Q2/Q4 are broadband content
-%     in those bands rather than true mains harmonics (filter has no effect
-%     on them); reported for completeness, not as interpretable harmonic
-%     measurements.
-%   - Low-frequency EDA coupling mechanism not identified.
-% -----------------------------------------------------------------------------
+% ¶1b — SD asymmetry interpretation, anchored to overlay figure, with contamination-filter corroboration
+The \gls{snr} is modest, and the contraction \gls{rms} sits only marginally above the noise floor, but the contraction is resolvable as a clear envelope above baseline (Figure~\ref{fig:q1-emg-representative}). The across-epoch envelope mean, and $\pm 1$ SD band in Figure~\ref{fig:q1-emg-overlay} confirm that the contraction is consistently above the noise floor across the cleaned epoch set. The noise-floor SD of \SI{0.99}{\micro\volt} indicates a stable circuit baseline. The contamination filter retained 119 of 120 epochs (Section~\ref{sec:results-q7-emg}). The single rejection reflects an isolated baseline artifact rather than a session-wide pattern. The contraction-\gls{rms} SD of \SI{4.98}{\micro\volt}, roughly five times larger, therefore reflects contraction-to-contraction variability rather than circuit instability.
 
-\section{Problems and limitations}
+% ¶1c — frequency response and forward-ref to §5.2
+The active-window \gls{psd} (Figure~\ref{fig:q1-emg-psd}) confirms contraction power within the \gls{semg} signal band defined in Section~\ref{sec:sEMG}, with a pronounced dip at \SI{50}{\hertz} confirming the analog notch is effective. Smaller residual peaks at \SI{100}{\hertz} and \SI{150}{\hertz} remain in the signal spectrum. The chain-noise spectrum sits below the signal spectrum across the same band. The absolute level of the post-isolation noise floor and the residual harmonic peaks are properties of the isolation stage and are interpreted in Section~\ref{sec:disc-isolation}.
+
+
+
+
+
+% ¶2 — EDA front-end (Q2).
+% Topic: the EDA front-end resolves phasic SCRs cleanly, with two SNR
+% definitions reported. Reports SCL, SCR amplitude, rise time, SNR_local,
+% SCR detection rate. Closes by flagging the SNR_circuit / SNR_local gap
+% as reflecting σ_session capturing spontaneous activity over the 10-min
+% baseline, with full discussion forward-referenced to §5.2.
+% Sources: Q2 numbers, Table 4.2.
+\subsection{Q2 - EDA Front-End}
+\label{sec:disc-q2}
+
+% ¶2a — EDA front-end: scope, navigation, headline metrics
+The \gls{eda} front-end resolved phasic \glspl{scr} cleanly (Section~\ref{sec:results-q2}). Figure~\ref{fig:q2-eda-representative} shows both the pre- and post-isolation channels for orientation, and the pre-versus-post comparison is addressed in Section~\ref{sec:disc-isolation}. The metrics reported here characterize the post-isolation channel alone and are computed as defined in Section~\ref{sec:eda_processing}. The tonic \gls{scl} of $\num{7.714} \pm \num{0.398}$\,\si{\micro\siemens} sat within the typical resting range for palmar recordings established in Section~\ref{sec:EDA_signal}. The phasic \gls{scr} amplitude of $\num{0.588} \pm \num{0.158}$\,\si{\micro\siemens} sat an order of magnitude above the \SI{0.05}{\micro\siemens} detection threshold from~\textcite{zangroniz_electrodermal_2017}, and every breath-inhalation cue produced a detectable response (detection rate \SI{100}{\percent}).
+
+% ¶2b — interpretation: rise time, SD asymmetry, anchored to overlay figure
+The observed rise time at $\num{3.751} \pm \num{0.776}$\,\si{\second} is well above the \SI{0.67}{\second} minimum imposed by the \SI{1.5}{\hertz} analog \gls{lpf}, so the filter is not bandwidth-limiting the \gls{scr} morphology. The phasic \gls{scr} is resolvable as a clear deflection above baseline within the \SIrange{1}{6}{\second} detection window (Figure~\ref{fig:q2-eda-representative}). The across-epoch \gls{scr} mean, and $\pm 1$ SD band in Figure~\ref{fig:q2-eda-overlay} confirm that the \gls{scr} is consistently resolvable across all 30 epochs. The $\sigma_{\text{local}}$ SD of \SI{0.021}{\micro\siemens} indicates a stable noise floor across epochs. The \gls{scr} amplitude SD of \SI{0.158}{\micro\siemens}, roughly seven times larger, therefore reflects response-to-response variability rather than baseline instability.
+
+% ¶2c — SNR gap and forward-ref to §5.2
+\gls{snr}$_{\text{circuit}}$ of \SI{0.60}{\decibel} and \gls{snr}$_{\text{local}}$ of \SI{9.66}{\decibel} differ by approximately \SI{9}{\decibel}. This gap reflects a difference between the two noise floors against which the \gls{scr} amplitude is compared, and is interpreted in Section~\ref{sec:disc-isolation}.
+
+
+% ¶2d — frequency response and forward-ref to §5.2
+The active-window \gls{psd} (Figure~\ref{fig:q2-eda-psd}) confirms \gls{scr} power below the \SI{1.5}{\hertz} cutoff of the analog \gls{lpf}, consistent with the \gls{scr} band defined in Section~\ref{sec:EDA_signal}. The chain-noise spectrum sits below the signal spectrum across the same band. The shape and absolute level of the post-isolation chain noise are properties of the isolation stage and are interpreted in Section~\ref{sec:disc-isolation}.
+
+
+
+
+% ¶3 — Cross-thread synthesis closing.
+% Topic: both front-ends individually meet design specifications,
+% providing clean preconditions for the cross-contamination question.
+% Closes by forward-referencing §5.2 — the isolation-stage limitations
+% characterized there are what bound the realized front-end performance.
+Both front-ends individually meet their design specifications. The \gls{emg} front-end resolves voluntary contraction against the post-isolation noise floor, and the \gls{eda} front-end resolves phasic \glspl{scr} at the standard detection threshold. Their realized performance is bounded by the noise contributions of the isolation stage, characterized in Section~\ref{sec:disc-isolation}. With both front-ends individually validated, the cross-modality contamination question can now be addressed, in Section~\ref{sec:disc-cross-contamination}.
+
+
+
+% =============================================================================
+% §5.2 — SIGNAL CHAIN ACROSS THE ISOLATION STAGE
+% =============================================================================
+
+\section{Signal Chain Across the Isolation Stage}
+\label{sec:disc-isolation}
+
+The galvanic isolation stage preserves the morphology of \gls{emg} and \gls{eda} signals across the isolation barrier. The isolation stage contributes additive noise to each signal chain. On the \gls{emg} side, the contribution is broadband and falls within the signal passband. Digital filtering applied after the isolation stage cannot remove the contribution without attenuating the contraction signal. The noise contribution therefore bounds the realized front-end performance reported in \autoref{sec:disc-front-end}.
+
+\autoref{sec:galvanic_isolation} frames galvanic isolation as the design measure that removes the shared conductive return path between subject and instrument. The framing addresses the ground-loop motivation for adopting the isolation stage but does not predict the noise contributions introduced by the stage itself. The findings reported below empirically characterize that contribution.
+
+\autoref{sec:disc-iso-emg} examines the isolation stage's effect on the \gls{emg} signal chain. \autoref{sec:disc-iso-eda} extends the analysis to the \gls{eda} chain. \autoref{sec:disc-iso-digital-filter} tests whether the digital filter chain on the \gls{emg} side can compensate for the additive noise contribution. \autoref{sec:disc-iso-synthesis} synthesizes the cross-modality findings and identifies what remains unresolved.
+
+\subsection{Q3 - EMG}
+\label{sec:disc-iso-emg}
+
+\autoref{sec:q3_isolation_stage} reports the Q3 comparison of \gls{emg} amplitude, frequency content, and waveform morphology across the isolation barrier. The comparison uses pre-isolation and gain-corrected post-isolation channels recorded simultaneously on Session~1. Of 120 cued epochs, 119 passed the contamination filter. The Methods chapter defines the metrics and the contamination procedure (\autoref{sec:signal_processing}).
+
+\autoref{fig:q3-emg-preservation} shows a clear elevation of the post-isolation noise floor relative to the pre-isolation channel in both the time-domain envelope mean and the chain-noise spectra. The noise floor was $\num{6.84} \pm \num{1.82}$\,\si{\micro\volt} RMS on the pre-isolation channel and $\num{21.70} \pm \num{0.99}$\,\si{\micro\volt} RMS on the post-isolation channel (\autoref{tab:q1-emg-metrics}).
+
+The Q3 design tests waveform shape independently of amplitude and noise using the per-epoch Pearson \(r\) between the gain-corrected pre-isolation and post-isolation channels (\autoref{sec:signal_processing}). Pearson \(r\) is invariant to gain and \gls{dc} offset, so it is sensitive to phase shifts, frequency-dependent attenuation, and harmonic distortion but not to additive uncorrelated noise. The per-epoch Pearson \(r\) was $\num{0.542} \pm \num{0.079}$ (\autoref{tab:q3-isolation-state}). The value is bounded above by the additive isolation-stage noise. The noise is uncorrelated with the contraction signal and pulls \(r\) down even when the underlying waveform shape is preserved. The post-isolation contraction, therefore, tracks the pre-isolation waveform shape across the isolation barrier, and the noise contribution adds to a preserved signal rather than distorting its shape. The reading limits on Pearson \(r\) for \gls{emg} are taken up in \autoref{sec:disc-limitations}.
+
+The pre- and post-chains share the same INA828 instrumentation amplifier, electrode pair, and body-side conditions. The isolation circuitry is therefore the dominant contributor to the rise in noise floor across the isolation barrier. The mechanism behind the contribution remains unidentified at the session-recording level and is addressed in \autoref{sec:disc-iso-synthesis}.
+
+The same Session~1 data yields amplitude preservation of \SI{+2.56}{\decibel} when computed from the ratio of post-isolation to pre-isolation contraction RMS (\autoref{tab:q3-isolation-change}). The ratio includes both the contraction signal and the additive noise contribution from the isolation stage in the post-isolation term. The inclusion biases the metric upward, estimating what the isolation stage does to the contraction signal alone. A quantitative signal-only correction would require assumptions that the validation does not establish: that the noise is additive and uncorrelated with the contraction, and that the post-isolation noise floor at rest equals the noise contribution during contraction. The \SI{+2.56}{\decibel} headline is therefore directional only and does not reflect physical amplification across the isolation stage.
+
+The noise floor rise propagates through to the SNR metric. SNR was $\num{10.80} \pm \num{2.63}$\,\si{\decibel} on the pre-isolation channel and $\num{3.32} \pm \num{1.34}$\,\si{\decibel} on the post-isolation channel, a change of \SI{-7.48}{\decibel} (\autoref{tab:q3-isolation-change}). The post-isolation noise floor approaches the post-isolation contraction RMS of $\num{32.17} \pm \num{4.98}$\,\si{\micro\volt} reported in \autoref{tab:q1-emg-metrics}, and the contraction signal is only marginally resolvable above the noise floor. The modest post-isolation SNR observed in \autoref{sec:disc-front-end} is therefore a direct quantitative consequence of the isolation-stage noise contribution, not a limitation of the front-end design itself. The asymmetry of this consequence between \gls{emg} and \gls{eda} is taken up in \autoref{sec:disc-iso-synthesis}.
+
+
+\subsection{Q3 - EDA}
+\label{sec:disc-iso-eda}
+
+\subsubsection{Two Noise Estimates, Two Interpretations}
+\label{sec:disc-iso-eda-noise}
+
+\autoref{fig:q3-eda-preservation} shows the post-isolation \gls{eda} chain-noise spectrum sitting visibly above the pre-isolation spectrum across the entire \gls{eda} band. The mean conductance traces and the per-epoch \gls{scr} morphologies remain aligned. \gls{scr} detection rate held at 100\% pre and post, and the per-epoch Pearson \(r\) was $\num{0.713} \pm \num{0.162}$ (\autoref{tab:q3-isolation-change}). The reading limits on Pearson \(r\) for \gls{eda} are taken up in \autoref{sec:disc-limitations}.
+
+The Methods chapter defines two estimators of post-isolation noise that integrate over different time windows (\autoref{sec:eda_processing}). The local estimator $\sigma_{\mathrm{local}}$ measures within-epoch baseline variability over the \SI{2}{\second} pre-cue window and was $\num{0.193} \pm \num{0.021}$\,\si{\micro\siemens}. The session estimator $\sigma_{\mathrm{session}}$ measures variability across the \SI{10}{\minute} stabilization recording and was $\num{0.549}$\,\si{\micro\siemens}.
+
+The two estimators capture different aspects of the post-isolation \gls{eda} signal because they integrate over different timescales. $\sigma_{\mathrm{session}}$ integrates over a window long enough that spontaneous \gls{eda} activity and slow drift can contribute alongside the isolation-stage contribution. $\sigma_{\mathrm{local}}$ integrates over a window short enough that spontaneous activity and drift are bounded and the isolation-stage contribution is not diluted. The asymmetry shows up directly in the \gls{snr} comparison reported in \autoref{tab:q3-isolation-state}. \(\mathrm{SNR}_{\mathrm{circuit}}\), which uses $\sigma_{\mathrm{session}}$ as denominator, changes by \SI{+0.32}{\decibel} across the isolation barrier. \(\mathrm{SNR}_{\mathrm{local}}\), which uses $\sigma_{\mathrm{local}}$, drops by \SI{-22.97}{\decibel} across the same barrier. The same \gls{scr} amplitude divided by two different denominators produces two different stories about how the isolation stage affects detection: $\sigma_{\mathrm{session}}$ contains spontaneous activity and slow drift alongside the isolation contribution, so \(\mathrm{SNR}_{\mathrm{circuit}}\) is insensitive to the isolation contribution and is more useful as a session-level diagnostic. \(\mathrm{SNR}_{\mathrm{local}}\) is the relevant metric for \gls{scr} detection quality. The labeling of $\sigma_{\mathrm{session}}$ as a circuit noise floor in the Methods chapter is taken up in \autoref{sec:disc-limitations}. The mechanism behind the noise contribution remains unidentified at the session-recording level and is addressed in \autoref{sec:disc-iso-synthesis}.
+
+\subsubsection{Pearson \texorpdfstring{\(r\)}{r} Distributional Caveat}
+\label{sec:disc-iso-eda-pearson}
+
+\autoref{fig:q3-pearson-r} shows that the scalar mean of $\num{0.713} \pm \num{0.162}$ understates typical morphology preservation. Twenty-one of thirty epochs cluster between \(r = \num{0.65}\) and \(r = \num{0.90}\), four sit in the transition band \([\num{0.50}, \num{0.65})\), and one sits above \(r = \num{0.90}\). The remaining four sit below \(r = \num{0.50}\) (\autoref{tab:q3-isolation-change}). The median of the distribution was \num{0.759}, sitting \num{0.046} above the mean. The mean-median gap reflects the four low-\(r\) outliers, which pull the mean down without affecting the median. The \gls{eda} epoch set has no equivalent of the contamination filter applied to \gls{emg} epochs (\autoref{sec:emg_processing}), so the four low-\(r\) values are not flagged as outliers in the analysis, and the scalar mean carries them. The distributional reading is a reporting limit on the summary statistic, not a contradiction of the amplitude-preservation claim. The amplitude-preservation claim uses a different metric and is addressed in the next subsubsection. The reporting limit is taken up in \autoref{sec:disc-limitations}.
+
+
+\subsubsection{Amplitude Preservation Depends on Extraction Method}
+\label{sec:disc-iso-eda-extraction}
+
+The three extraction methods compared in this subsubsection differ in two binary choices: which signal the peak and onset indices are taken from, and which signal the conductance values at those indices are read from. The Primary method, which is the default in the Methods chapter (\autoref{sec:eda_processing}), uses the smoothed signal for both. Version A retains the smoothed peak and onset indices but reads the conductance values from the unsmoothed signal, thereby isolating the effect of noise on the smoothed detection indices. Version B uses the unsmoothed signal for both. This adds peak-location drift on top of the noise-read effect.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{discussion_figures/fig_disc_scr_peak_extraction}
+    \caption{Three \gls{scr} extraction methods compared on Session~2 \gls{eda} epochs. Top row: mean conductance trace pre and post-isolation, averaged across all 30 epochs. Bottom row: representative single epoch ($i = 18$), with the unsmoothed trace at reduced opacity and the \SI{250}{\milli\second} smoothed trace overlaid. Vertical dashed line marks cue onset. Light grey shading marks the \gls{scr} detection window from \SI{1}{\second} to \SI{6}{\second}. Marker style per method: Primary uses circles for peaks and downward triangles for onsets, both read from the smoothed signal. Version A uses squares for peaks and upward triangles for onsets at the same Primary indices but with conductance values read from the unsmoothed signal. Version B uses stars for peaks and diamonds for onsets, computed entirely from the unsmoothed signal.}
+    \label{fig:disc-scr-peak-extraction}
+\end{figure}
+
+\autoref{fig:disc-scr-peak-extraction} compares the three methods on the Session~2 \gls{eda} pre and post-isolation channels. The pre-isolation panels and the post-isolation mean panel show all three methods placing peak and onset markers at essentially the same locations, with mean amplitudes of \num{0.51}, \num{0.53}, and \num{0.55}\,\si{\micro\siemens} for Primary, Version~A, and Version~B, respectively. The post-isolation single-epoch panel ($i = \num{18}$) shows the divergence: Version~A peak and onset markers sit close to the Primary positions in time, but the unsmoothed conductance values at those indices have walked away from the smoothed values. Version~B peak and onset markers have walked off the smoothed positions entirely and landed on noise extrema in the unsmoothed signal.
+
+Version~A fails detection on \num{4} of \num{30} post-isolation epochs, dropping the detection rate to $\num{86.7}$\,\si{\percent}, while Primary and Version~B both retain $\num{100}$\,\si{\percent}. On the representative epoch ($i = \num{18}$), the unsmoothed conductance is \num{0.20}\,\si{\micro\siemens} below the smoothed value at the peak index and \num{0.33}\,\si{\micro\siemens} above the smoothed value at the onset index. The two excursions act in opposite directions and compress the amplitude difference from \num{0.56}\,\si{\micro\siemens} to \num{0.03}\,\si{\micro\siemens}, below the \num{0.05}\,\si{\micro\siemens} detection threshold. Version~B walks in the opposite sense. The peak migrates \SI{0.34}{\second} earlier in time and lands \num{0.76}\,\si{\micro\siemens} higher than the Primary peak on a positive noise excursion above the \gls{scr} ridge. The onset migrates \SI{1.51}{\second} earlier and lands \num{0.56}\,\si{\micro\siemens} lower on a negative noise excursion below baseline. Both directions of drift inflate the amplitude difference, and Version~B remains above the detection threshold on every epoch.
+
+The amplitude-preservation metric reflects these differences directly. Primary returns \SI{+1.23}{\decibel}, Version~A returns \SI{+0.88}{\decibel}, and Version~B returns \SI{+10.83}{\decibel}. The pre-isolation amplitudes across the three methods agree because the noise floor on the pre-isolation channel is well below the \gls{scr} amplitude. The post-isolation amplitudes diverge because the post-isolation noise floor is comparable to the \gls{scr} amplitude, so where each method reads conductance values then matters. The Primary smoothed method is the only one of the three that maintains a detection rate of $\num{100}$\,\si{\percent} across both conditions and keeps the post-isolation amplitude estimate close to the pre-isolation reference. The \SI{+1.23}{\decibel} headline reported in \autoref{sec:q3_isolation_stage} therefore rests on the smoothing step, and without that step, the apparent \SI{+10.83}{\decibel} amplification across the isolation stage is an analysis artifact rather than a property of the circuit.
+
+\subsection{Q4 - Digital Filtering Effect on EMG}
+\label{sec:disc-iso-digital-filter}
+
+\autoref{sec:q4_digital_filtering} reports the Q4 comparison across four conditions: pre-isolation raw, pre-isolation digitally filtered, post-isolation raw, and post-isolation digitally filtered. The four conditions cover the same 119 Session~1 epochs used in \autoref{sec:disc-iso-emg}. The digital filter chain is defined in the Methods chapter. It consists of a second-order Butterworth high-pass at \SI{20}{\hertz}, an infinite impulse response notch at \SI{50}{\hertz} with quality factor \(Q = \num{30}\), and a fourth-order Butterworth low-pass at \SI{500}{\hertz}, all applied zero-phase via \texttt{filtfilt} (\autoref{sec:emg_processing}). Q4 is \gls{emg}-only by design (\autoref{sec:validation}).
+
+\autoref{fig:q4-emg-psd-four} shows that the post-isolation filtered \gls{emg} spectrum sits visibly above the pre-isolation filtered spectrum across the entire passband from \SI{20}{\hertz} to \SI{500}{\hertz}. The same visual pattern appears in \autoref{fig:q4-emg-means} for the time-domain envelope mean. The notch removed the \SI{50}{\hertz} fundamental on both chains (\autoref{tab:q4-emg-metrics}). The integrated notch depth was \SI{26.18}{\decibel} pre and \SI{20.40}{\decibel} post. The \SI{5.78}{\decibel} difference reflects one spectral signature of the post-isolation contribution. The same notch geometry achieves less attenuation on the post-isolation chain because the broadband baseline against which the notch operates is higher.
+
+The \SI{100}{\hertz} and \SI{150}{\hertz} harmonics expose the same elevation differently. \autoref{tab:q4-emg-metrics} shows harmonic powers slightly higher post than pre at both frequencies, with raw and filtered values essentially identical on each chain. Filtering does not change these values because the digital notch is narrowband at \SI{50}{\hertz} only, and the analog twin-T notch in the front-end targets the same fundamental. The post-versus-pre elevation is consistent with the broadband-baseline elevation interpretation. \autoref{sec:emg_noise} treats the \SI{50}{\hertz} fundamental and its odd-order harmonics as the canonical mains noise signature. The \SI{100}{\hertz} and \SI{150}{\hertz} harmonic peaks visible in \autoref{sec:disc-front-end} are therefore the expected consequence of a narrowband \SI{50}{\hertz} notch operating on a signal that contains broadband mains-related content. The harmonic-power metric's separation limit is taken up in \autoref{sec:disc-limitations}.
+
+The post-filtered noise floor was $\num{14.12} \pm \num{2.82}$\,\si{\micro\volt} (\autoref{tab:q4-emg-metrics}). This sits well above the pre-raw noise floor of $\num{6.84} \pm \num{1.82}$\,\si{\micro\volt} reported in \autoref{sec:disc-iso-emg}, even though the post-filtered chain has had three stages of digital filtering applied while the pre-raw chain has had none. The same digital filter chain applied to the pre-isolation channel reduces the pre-raw noise floor to $\num{4.48} \pm \num{1.16}$\,\si{\micro\volt}, well below the post-filtered residual. Filtering cannot remove broadband content within the \SI{20}{\hertz} to \SI{500}{\hertz} passband without attenuating the \gls{emg} signal itself. Hence, the residual \SI{14}{\micro\volt} reflects the in-band component of the post-isolation contribution that downstream digital filtering cannot recover.
+
+A designer faced with the residual has three structural responses: replace the post-isolation signal path with a lower-noise alternative, increase the pre-isolation gain so that the post-isolation contribution becomes a smaller fraction of the signal, or reduce the signal bandwidth so that less of the broadband contribution falls in the passband. The current design takes the second response by setting the INA828 pre-isolation gain to 40 (\autoref{sec:EMG_frontend}). Q4 establishes empirically why that choice matters. Once the noise contribution is broadband and falls within the signal's passband, post-isolation filtering is no longer an option, and the design must keep the contribution small relative to the amplified signal at the point of crossing the isolation barrier. The cross-modality consequences of this in-band contribution are taken up in \autoref{sec:disc-iso-synthesis}. 
+
+\subsection{Closing Synthesis}
+\label{sec:disc-iso-synthesis}
+
+\subsubsection{Cross-Modality recap}
+\label{sec:disc-iso-synthesis-recap}
+
+Three findings together characterize the isolation stage. First, signal morphology is preserved across the isolation barrier on both modalities, with \gls{scr} detection rate at 100\% on both pre-isolation and post-isolation channels (\autoref{sec:disc-iso-emg}, \autoref{sec:disc-iso-eda}). Second, the noise floor rises across the isolation barrier on both modalities (\autoref{sec:disc-iso-emg}, \autoref{sec:disc-iso-eda-noise}). The pre-isolation and post-isolation chains share the same instrumentation amplifier, electrode pair, and body-side conditions, so the rise across the barrier is attributable to the isolation circuitry rather than to upstream contributions.
+
+Third, the noise contribution is broadband and falls within the signal passband on the \gls{emg} side (\autoref{sec:disc-iso-digital-filter}). The post-filtered noise floor remains well above the pre-raw noise floor, even after the high-pass, notch, and low-pass stages. The integrated notch depth is shallower post than pre, and the \SI{100}{\hertz} and \SI{150}{\hertz} harmonic powers are slightly higher post than pre. The in-band finding rests on \gls{emg}-side evidence only because the digital filter chain in \autoref{sec:disc-iso-digital-filter} was not applied to the \gls{eda} signal. The equivalent question is less relevant for \gls{scr} detection because \gls{eda} mean-based metrics average additive noise out across the integration window, as reported in \autoref{sec:disc-iso-eda}.
+
+\subsubsection{Metric Sensitivity Explains the Modality Asymmetry}
+\label{sec:disc-iso-synthesis-asymmetry}
+
+The isolation stage adds noise to both modalities, but the metric consequences differ in sign and magnitude. \gls{emg} contraction \gls{rms} is amplitude-based: the metric integrates squared sample values across the contraction window, so additive noise contributes in quadrature with the contraction signal and raises the post-isolation contraction \gls{rms}. The result reported in \autoref{sec:disc-iso-emg} is a \gls{snr} drop of \SI{-7.48}{\decibel} pre to post, large enough that the contraction is only marginally resolvable above the noise floor. \gls{eda} tonic and phasic metrics are mean-based: the skin conductance level is a per-epoch baseline mean over the pre-cue window, and the \gls{scr} amplitude is the difference between two means on the \SI{250}{\milli\second} smoothed signal at peak and onset (\autoref{sec:eda_processing}). Additive noise averages out within the window in both cases, so amplitude preservation holds at \SI{+1.23}{\decibel} and \gls{scr} detection holds at 100\% as reported in \autoref{sec:disc-iso-eda}.
+
+The asymmetry is a property of the analysis pipeline interacting with the noise statistics, not a property of the isolation stage treating the two modalities differently. The \gls{eda} robustness conditional on the smoothing step in the \gls{scr} extraction is reported in \autoref{sec:disc-iso-eda-extraction}: without the \SI{250}{\milli\second} smoothing window, the same additive noise produces an artifact rather than averaging out. The metric sensitivity, therefore, explains why the noise contribution that bounds \gls{emg} performance leaves \gls{scr} detection essentially intact and identifies the specific analysis choice on which \gls{eda} robustness rests.
+
+\subsubsection{Mechanism Unidentified, Bench Characterization Deferred}
+\label{sec:disc-iso-synthesis-mechanism}
+
+The isolation stage uses the ISO224 reinforced-isolated amplifier with a fixed gain of \(1/3\)~\cite{noauthor_iso224_nodate}, the MAX44241AUK+T unity-gain differential amplifier with a chopper-stabilized input voltage noise of $\SI{9}{\nano\volt\per\sqrt{\hertz}}$~\cite{noauthor_max44241_nodate}, and the NXE2S0505MC-R7 isolated DC-DC converter~\cite{noauthor_nxe2s0505mcisolated_nodate} (\autoref{sec:galvanic_isolation}). A datasheet-driven noise budget that integrates the input-referred voltage-noise spectrum of each component across the \gls{emg} and \gls{eda} bands was not performed, and is required to localize the dominant mechanism based solely on datasheet specifications. The session recordings cannot localize the contribution further because the front-end analog filters attenuate the signal band before the full filter transition can be measured, and the body-side contributions cannot be isolated from the circuit-side contributions in this measurement configuration. A bench-level characterization that replaces the electrode pair with a resistor input and supplies the isolation barrier from controlled bench supplies on both sides would empirically localize the dominant mechanism. The datasheet-driven noise budget and bench-level characterization are part of the future work plan in \autoref{sec:disc-future}.
+
+% =============================================================================
+% §5.3 — CROSS-MODALITY CONTAMINATION
+% =============================================================================
+
+\section{Cross-Modality Contamination}
+\label{sec:disc-cross-contamination}
+% Section opener: forecasts the directional asymmetry as the §5.3 headline; pays §5.1's cross-modality contamination forward-ref.
+The cross-modality contamination question raised at the close of \autoref{sec:disc-front-end} is addressed in this section. The Q5 family reports observations on the \gls{eda} signal during simultaneous \gls{emg} operation in \autoref{sec:disc-q5} and \autoref{sec:disc-q5b}, and the Q6 family reports observations on the \gls{emg} signal during simultaneous \gls{eda} operation in \autoref{sec:disc-q6} and \autoref{sec:disc-q6b}. The observations are directionally asymmetric. The \gls{emg} to \gls{eda} direction shows reproducible coupling at the pooled level across tonic, phasic, time-locked, and spectral domains, and the \gls{eda} to \gls{emg} direction shows nulls at the amplitude-metric and cue-locked level alongside one band-localized spectral observation. The synthesis in \autoref{sec:disc-cross-synthesis} states the asymmetry as the section finding, and the per-session reproducibility and mechanism candidates are taken up in \autoref{sec:disc-reproducibility} and \autoref{sec:disc-limitations}.
+
+\subsection{Q5 - EMG Effect on EDA}
+\label{sec:disc-q5}
+
+% SCL cluster: pooled tonic shift in Combined; system-level interpretation grounded in directional consistency + magnitude > SD.
+\autoref{fig:q5-eda-bars} shows the \gls{scl} bars across the three conditions. The pooled \gls{scl} shift Combined minus \gls{eda}-only paired by session was $+\num{0.412} \pm \num{0.234}$\,\si{\micro\siemens} (\autoref{tab:q5-eda-metrics}). The shift is positive in every session, and its magnitude exceeds the across-session SD. Together, direction and magnitude support the offset as a system-level feature of simultaneous \gls{emg} and \gls{eda} acquisition rather than a single-session artifact. The per-session reproducibility is taken up in \autoref{sec:disc-reproducibility}, and mechanism candidates for the offset are addressed in \autoref{sec:disc-limitations}.
+
+% SCR amplitude cluster: pooled reduction Combined vs EDA-only; SD-overlap rules out strong contamination evidence.
+\autoref{fig:q5-eda-bars} also shows the \gls{scr} amplitude bars. The Combined block sits 14\% below \gls{eda}-only at the pooled level, with a reduction of $\num{0.112}$\,\si{\micro\siemens} between pooled means of $\num{0.688} \pm \num{0.180}$\,\si{\micro\siemens} and $\num{0.800} \pm \num{0.211}$\,\si{\micro\siemens} (\autoref{tab:q5-eda-metrics}). The reduction is smaller than the SD of either pooled block, so the pooled difference is not strong evidence of \gls{emg}-driven contamination of the \gls{scr}. \gls{scr} detection rate held at \SI{100}{\percent} across all conditions. The per-session direction and the \gls{scr} amplitude reproducibility issue are taken up in \autoref{sec:disc-reproducibility}.
+
+% PSD cluster: band-localized elevation in chain noise; coincides with SCR band; rules out broadband lift.
+\autoref{fig:q5-eda-psd} shows the \gls{eda} \gls{psd} for the three conditions. The chain-noise panel shows the Combined trace sitting above \gls{eda}-only across the \SIrange{0.3}{1.3}{\hertz} band, with the gap widening to nearly an order of magnitude near \SI{0.5}{\hertz}, and converging back to the chain-noise floor above approximately \SI{1.5}{\hertz}. The elevation, therefore, sits inside the lower part of the \gls{eda} bandwidth and does not extend across the spectrum, which rules out a generic broadband lift in the \gls{eda} chain noise during simultaneous \gls{emg} operation. The band where the elevation sits coincides with the \gls{scr} band defined in \autoref{sec:EDA_signal}, so the spectral signature of the cross-modality activity overlaps the response band of the \gls{eda} front-end itself. The cross-paper comparability of \gls{psd} on \gls{eda} is addressed in \autoref{sec:disc-limitations}.
+
+\subsubsection{Q5b - EDA at EMG Cues}
+\label{sec:disc-q5b}
+
+% Q5b cluster: pooled cue-locked dip; cross-figure visibility in fig:q5-eda-means; downstream of contraction, mechanism deferred.
+\autoref{fig:q5b-eda-by-session} shows the \gls{eda} signal time-locked to \gls{emg} cues in the \gls{emg}-only block. A downward dip follows each \gls{emg} cue with a pooled deviation amplitude of $+\num{0.146} \pm \num{0.118}$\,\si{\micro\siemens} at a latency of $\num{1.411} \pm \num{0.303}$\,\si{\second} (\autoref{tab:q5b-metrics}). The Q5b sign convention defined in \autoref{sec:q5b_eda_at_emg_cues} reports positive amplitude as a downward deflection from baseline, so the pooled finding is a downward dip whose magnitude exceeds the across-epoch SD. The same feature appears at $+\SI{5}{\second}$ in the Combined trace of \autoref{fig:q5-eda-means}, time-locked to the first \gls{emg} cue inside the Combined block. The dip therefore tracks \gls{emg} cues across two independent epoch-extraction frames, in a block where no \gls{eda} stimulus is delivered and in a block where the \gls{eda} cue precedes the \gls{emg} cue by \SI{5}{\second}. The cue-locked timing places the dip downstream of each \gls{emg} contraction event, although the validation does not isolate which step in the cue, contraction, and \gls{eda}-reading chain produces it. The per-session direction is taken up in \autoref{sec:disc-reproducibility}, and mechanism candidates are addressed in \autoref{sec:disc-limitations}.
+
+
+\subsection{Q6 - EDA Effect on EMG}
+\label{sec:disc-q6}
+% Q6 orientation: fig:q6-emg-means home; Theory §2.4 tie-back; pre-frames the three-way scalar comparison below.
+\autoref{fig:q6-emg-means} shows the across-epoch \gls{emg} envelope per condition. Clear contraction events appear in the Session~1 reference, the \gls{emg}-only block, and the Combined block, each peaking inside the \SIrange{0}{1}{\second} contraction window. The contraction peak amplitudes and pre-cue baselines differ across conditions, and the amplitude differences are quantified by the scalar metrics reported below. The \gls{semg} contamination concern raised in \autoref{sec:ground_loops} is addressed at the amplitude-metric level by the three-way comparison.
+
+% Q6 amplitude cluster: three-way comparison Combined vs S1 ref; SD-overlap rules out EDA-driven elevation in NF/RMS/SNR.
+\autoref{fig:q6-emg-bars} shows the scalar \gls{emg} metrics across the three conditions. The Combined block sits 0.21\,\si{\micro\volt} below the Session~1 reference noise floor of $\num{21.70} \pm \num{0.99}$\,\si{\micro\volt}, 4.32\,\si{\micro\volt} below the reference contraction \gls{rms} of $\num{32.17} \pm \num{4.98}$\,\si{\micro\volt}, and 0.97\,\si{\decibel} below the reference \gls{snr} of $\num{3.32} \pm \num{1.34}$\,\si{\decibel} (\autoref{tab:q6-emg-metrics}). Each difference sits within the SD of the Session~1 reference. None of the three amplitude metrics shows evidence of \gls{eda}-driven elevation in the Combined block. The per-session noise floor and contraction \gls{rms} are taken up in \autoref{sec:disc-reproducibility}.
+
+% Q6 PSD cluster: 9.1% exceedance below 1.5 Hz; band-localized in EDA bandwidth; reveals what amplitude metrics do not detect.
+\autoref{fig:q6-emg-psd} shows the \gls{emg} \gls{psd} per condition, with the chain-noise panel restricted to the \SIrange{0}{10}{\hertz} band to expose any low-frequency \gls{eda} bystander effects. The Combined trace exceeds the Session~1 reference plus \SI{3}{\decibel} threshold in \SI{9.1}{\percent} of the bins below \SI{10}{\hertz}, while the \gls{emg}-only trace exceeds the threshold in \SI{0.0}{\percent} of bins (\autoref{tab:q6-emg-metrics}). The exceedance is concentrated below approximately \SI{1.5}{\hertz} as reported in \autoref{sec:results-q6}, which places it inside the \gls{eda} bandwidth. The pooled spectral observation therefore reveals a low-frequency feature in the \gls{emg} chain noise during simultaneous \gls{eda} operation that the amplitude metrics in the previous paragraph do not detect. Mechanism candidates are addressed in \autoref{sec:disc-limitations}.
+
+
+\subsubsection{Q6b - EMG at EDA Cues}
+\label{sec:disc-q6b}
+
+% Q6b cluster: pooled cue-locked null; SD-overlap on deviation; matched-window RMS equivalent; sign convention inverse to Q5b.
+\autoref{fig:q6b-emg-by-session} shows the \gls{emg} envelope time-locked to \gls{eda} cues in the \gls{eda}-only block. The pooled deviation amplitude was $-\num{2.99} \pm \num{7.12}$\,\si{\micro\volt} (\autoref{tab:q6b-metrics}). The Q6b sign convention defined in \autoref{sec:q6b_emg_at_eda_cues} reports positive amplitude as an upward rise above baseline, inverse to the Q5b convention used in \autoref{sec:disc-q5b}. The pooled magnitude of \SI{2.99}{\micro\volt} sits well below the across-epoch SD of \SI{7.12}{\micro\volt}, so the pooled deflection is not resolvable as a cue-locked feature. Pre-cue and post-cue \gls{rms} measured over matched 2-second windows were $\num{25.14} \pm \num{13.50}$\,\si{\micro\volt} and $\num{24.98} \pm \num{13.58}$\,\si{\micro\volt} respectively (\autoref{tab:q6b-metrics}). The matched-window difference of \SI{0.16}{\micro\volt} sits more than an order of magnitude below either window's SD, and the envelope amplitude is equivalent across the cue boundary. The per-session direction is taken up in \autoref{sec:disc-reproducibility}, and the consequences of the inflated pooled SD for the pooled finding are addressed in \autoref{sec:disc-limitations}.
+
+\subsection{Synthesis}
+\label{sec:disc-cross-synthesis}
+
+% Synthesis recap 1a: EMG → EDA direction; four observations, one per upstream cluster.
+The Q5 family in \autoref{sec:disc-q5} and \autoref{sec:disc-q5b} reports four observations on the \gls{eda} signal during simultaneous \gls{emg} operation. The pooled tonic \gls{scl} in the Combined block sits above the \gls{eda}-only block, with the shift positive in every session and exceeding the across-session SD. The pooled \gls{scr} amplitude in the Combined block sits below the \gls{eda}-only block, with the difference within the SD of either pooled block and not strong evidence of contamination at the pooled level. The pooled \gls{eda} \gls{psd} in the Combined block sits above the \gls{eda}-only spectrum across the lower part of the \gls{eda} bandwidth and rules out a generic broadband lift. A downward dip in the \gls{eda} signal follows each \gls{emg} cue in the \gls{emg}-only block, with the same feature appearing at $+\SI{5}{\second}$ relative to the \gls{eda} cue in the Combined block, where the first \gls{emg} cue falls.
+
+% Synthesis recap 1b: EDA → EMG direction; two nulls + one band-localized spectral observation.
+The Q6 family in \autoref{sec:disc-q6} and \autoref{sec:disc-q6b} reports two nulls and one band-localized spectral observation on the \gls{emg} signal during simultaneous \gls{eda} operation. The pooled \gls{emg} amplitude metrics in the Combined block sit within the SD of the Session~1 reference, with no detectable elevation in noise floor, contraction \gls{rms}, or \gls{snr}. No cue-locked \gls{emg} response to \gls{eda} cues is resolvable at the pooled level, with the matched-window \gls{rms} equivalent across the cue boundary. A chain-noise exceedance in the Combined block places one spectral feature inside the lower \gls{eda} bandwidth.
+
+% Synthesis: directional asymmetry as section finding; design-level consequence; direction-specific answer to §5.1; §5.5 hand-off.
+The cross-modality observations are directionally asymmetric. In the isolated configuration tested, no \gls{eda}-driven contamination of the \gls{emg} amplitude metrics is observed, but \gls{emg} operation leaves a measurable coupling on the \gls{eda} signal across tonic, phasic, time-locked, and spectral domains. The cross-modality contamination question raised at the close of \autoref{sec:disc-front-end} therefore has a one-sided answer: simultaneous acquisition is supported in the \gls{eda} to \gls{emg} direction at the amplitude and cue-locked level, and the \gls{emg} to \gls{eda} direction shows coupling that the validation observes but cannot attribute to a specific mechanism. The cue-locked timing of the dip in \autoref{sec:disc-q5b} places it downstream of each \gls{emg} contraction event, although the validation does not isolate which step in the cue, contraction, and \gls{eda}-reading chain produces it.
+
+% Synthesis hand-off: §5.4 reproducibility + 5 consolidated §5.5 items.
+The per-session reproducibility of the directional asymmetry is taken up in \autoref{sec:disc-reproducibility}. The mechanism candidates for the \gls{emg} to \gls{eda} coupling and the consequences of the inflated pooled SD in \autoref{sec:disc-q6b} are taken up in \autoref{sec:disc-limitations}.
+% =============================================================================
+% §5.4 — REPRODUCIBILITY AND QUALITY CONTROL
+% =============================================================================
+
+\section{Reproducibility and Quality Control}
+\label{sec:disc-reproducibility}
+
+This section addresses the reproducibility of simultaneous \gls{emg} and \gls{eda} acquisition across Sessions 3 to 5. It closes the per-session forward references to \autoref{sec:disc-cross-contamination} and to Objective~4 stated in the Introduction. \autoref{sec:disc-q7-emg} reports per-session \gls{emg} metrics and the contamination filter behavior. \autoref{sec:disc-q7-eda} reports per-session \gls{eda} metrics and the interpretation of the two \gls{snr} definitions across sessions. \autoref{sec:disc-rep-synthesis} synthesizes the per-modality findings, describes the Session~4 cross-modality anomaly, and states the Objective~4 closure. The system reproduces across the three sessions for the load-bearing cross-modality findings, with one session-level outlier (Session~4) that does not threaten system-level operation and one cross-modality finding (\gls{scr} amplitude direction in \autoref{sec:disc-q5}) that does not reproduce at the per-session level. Mechanism candidates for the Session~4 anomaly, the sample-size limit, and the fixed block-order confound are taken up in \autoref{sec:disc-limitations}.
+
+
+\subsection{Q7 - EMG}
+\label{sec:disc-q7-emg}
+
+\subsubsection{Contamination Filter and Per-Session Metrics}
+\label{sec:disc-q7-emg-metrics}
+
+The contamination filter excluded zero of 240 epochs across Sessions 3 to 5 despite a per-block threshold range varying more than threefold across sessions (\autoref{tab:q7-qc-filter}). Zero exclusions in the noisiest block (Session~4 EMG-only, threshold \SI{87.73}{\micro\volt}) confirm that the filter distinguishes uniformly noisy sessions from per-epoch contamination. The distinction rests on a precondition: session-block noise floor must remain separable from contraction amplitude, with contraction amplitude in this validation falling inside the typical \gls{semg} range from \autoref{sec:sEMG_signal}. Session~4 sits closest to this limit, with an EMG-only \gls{snr} of \SI{1.15}{\decibel} and a noise-to-contraction margin of \SI{6.32}{\micro\volt}. The filter still applies its threshold rule regardless of how tight the margin becomes, but downstream metrics retain interpretive value only as long as the margin holds. Mechanism candidates for the Session~4 elevation and the conditions where the precondition continues to hold are taken up in \autoref{sec:disc-limitations}.
+
+Session~4 is the EMG-side outlier across all amplitude metrics (\autoref{tab:q7-emg-metrics}). Its noise floor sits more than 2$\times$ above the Sessions 3 and 5 cluster. Its cross-block trajectory is the only one of the three that differs across blocks. The Session~4 noise floor drops by \SI{15.28}{\micro\volt} from the EMG-only block to the Combined block (\autoref{fig:q7-emg-by-block}), while Sessions 3 and 5 change by less than \SI{4}{\micro\volt} between blocks.
+
+The pooled Q6 noise floor of $\num{21.49} \pm \num{5.93}$\,\si{\micro\volt} sits within the Session~1 reference SD of $\num{21.70} \pm \num{0.99}$\,\si{\micro\volt} (\autoref{sec:disc-q6}). The per-session breakdown shows that the pooled mean is balanced, with Sessions 3 and 5 below the reference and Session~4 above. The Q6 amplitude null holds at the pooled-mean level on the strength of Sessions 3 and 5, not on uniform per-session reproducibility.
+
+\subsubsection{Cue-Locked Envelope at \gls{eda} Cues}
+\label{sec:disc-q7-emg-cuelocked}
+
+Despite the elevated baseline in Session~4, the contraction envelope morphology is comparable across all three sessions in \autoref{fig:q7-per-session-traces}. The rise from baseline to peak and the return to baseline align in shape and duration. The Session~4 contraction \gls{rms} reported in \autoref{tab:q7-emg-metrics} overstates the contraction-only amplitude because the metric integrates over a window that contains both the contraction and the elevated session noise. Sessions 3 and 5 show the same effect at a smaller magnitude. Their contraction \gls{rms} values approximate contraction amplitude more closely than Session~4's but remain noise-floor sensitive. The reading limit on contraction \gls{rms} is taken up in \autoref{sec:disc-limitations}.
+
+Sessions 3 and 5 produce clean Q6b nulls (\autoref{tab:q6b-metrics}). Their deviation amplitudes of $+\num{0.69}$\,\si{\micro\volt} and $+\num{1.14}$\,\si{\micro\volt} sit within their across-epoch SDs, and matched pre-cue and post-cue \gls{rms} agree within \SI{0.6}{\micro\volt} on both sessions. The Session~4 apparent downward deflection of \SI{-10.81}{\micro\volt} is drift rather than a cue-locked feature. Matched pre-cue and post-cue \gls{rms} of \SI{43.11}{\micro\volt} and \SI{43.14}{\micro\volt} differ by \SI{0.03}{\micro\volt}, while a cue-locked transient at the \SI{-10.81}{\micro\volt} magnitude would not preserve matched \gls{rms} at this resolution. The tight latency SD of \SI{0.147}{\second} on $n = \num{10}$ epochs reflects slow drift across the noisy session, where the same drift would appear at any extraction point in the EDA-only block. The Q6b pooled null reported in \autoref{sec:disc-q6b} reproduces in Sessions 3 and 5, while Session~4 inflates the pooled SD without contributing a cue-locked feature.
+
+\subsection{Q7 - EDA}
+\label{sec:disc-q7-eda}
+
+\subsubsection{Per-Session \gls{scl} and \gls{scr} Amplitude}
+\label{sec:disc-q7-eda-scl-scr}
+
+Session~4 is the EDA-side outlier in the opposite direction to its EMG-side anomaly. \autoref{tab:q7-eda-signal} shows \gls{scl} clustering at \SIrange{6.7}{7.3}{\micro\siemens} for Sessions 3 and 5 across both blocks, with Session~4 sitting at approximately \SI{4.5}{\micro\siemens}, roughly \SI{2.5}{\micro\siemens} below the cluster.
+
+The Combined-minus-EDA-only \gls{scl} shift is positive in all three sessions and is the strongest reproducible cross-modality finding from Sessions 3 to 5. The pooled mean from \autoref{sec:disc-q5} of $+\num{0.412} \pm \num{0.234}$\,\si{\micro\siemens} therefore reflects a uniform per-session direction rather than a two-of-three majority.
+
+The pooled Q5 \gls{scr} amplitude reduction reported in \autoref{sec:disc-q5} does not reproduce uniformly. Sessions 3 and 5 show Combined \gls{scr} amplitude below the EDA-only block, but Session~4 reverses the direction. With $n = 3$ and one reversal, the per-session support is too weak for a system-level contamination claim, and the pooled finding remains descriptive only.
+
+Despite the depressed \gls{scl} in Session~4, the \gls{scr} rise from local baseline to peak is comparable across all three sessions in \autoref{fig:q7-per-session-traces}. \gls{scr} amplitudes for Session~4 of \SI{0.701}{\micro\siemens} and \SI{0.802}{\micro\siemens} (\autoref{tab:q7-eda-signal}) sit within the range produced by Sessions 3 and 5 of \SIrange{0.589}{0.870}{\micro\siemens}. The front-end captures phasic conductance cleanly even when baseline conductance is depressed.
+
+\subsubsection{Noise Estimators and Cue-Locked Deviation}
+\label{sec:disc-q7-eda-noise-cuelocked}
+
+$\sigma_\text{session}$ spans a threefold range across Sessions 3 to 5, from \SI{0.176}{\micro\siemens} (Session~4) to \SI{0.599}{\micro\siemens} (Session~5) (\autoref{tab:q7-eda-noise-snr}). The metric is therefore session-dependent rather than a stable circuit-level property at this sample size.
+
+$\text{SNR}_\text{circuit}$ inherits the $\sigma_\text{session}$ spread directly. Across the six session-blocks the metric ranges from \SI{1.03}{\decibel} (Session~5 Combined) to \SI{13.18}{\decibel} (Session~4 Combined), an order of magnitude. The variation tracks the denominator rather than the numerator, with within-session Combined-vs-EDA-only differences smaller than the cross-session spread. The metric is therefore informative as a within-session diagnostic but not as a cross-session reproducibility comparator. The labeling of $\sigma_\text{session}$ as a circuit noise floor in \autoref{sec:eda_processing} is taken up in \autoref{sec:disc-limitations}.
+
+$\text{SNR}_\text{local}$ ranges from \SI{15.83}{\decibel} to \SI{30.46}{\decibel} across the same six session-blocks. The within-epoch denominator makes $\text{SNR}_\text{local}$ the more informative cross-session detection metric. Its denominator integrates over the \SI{2}{\second} pre-cue window, where neither spontaneous activity nor slow drift has time to accumulate.
+
+The Q5b cue-locked deviation reproduces uniformly across all three sessions. Per-session deviation amplitudes are positive in every session, with a magnitude range of \SIrange{0.099}{0.182}{\micro\siemens} and within-session latency SDs of \SIrange{0.164}{0.362}{\second} clustered at approximately \SI{1.4}{\second} post-cue (\autoref{tab:q5b-metrics}). The downward dip is therefore a stable feature of simultaneous operation, not a single-session artifact. The Q5b pooled finding from \autoref{sec:disc-q5b} closes at the per-session level.
+
+\subsection{Synthesis}
+\label{sec:disc-rep-synthesis}
+
+\subsubsection{Session 4 Cross-Modality Anomaly}
+\label{sec:disc-rep-synthesis-s4}
+
+Session~4 is an outlier in both modalities, but in opposite directions. On the EMG side, the noise floor sits more than 2$\times$ above the Sessions 3 and 5 cluster, and the contraction \gls{rms} inflates with it (\autoref{sec:disc-q7-emg-metrics}). On the EDA side the \gls{scl} sits approximately \SI{2.5}{\micro\siemens} below the Sessions 3 and 5 cluster, while $\text{SNR}_\text{circuit}$ is the cleanest of the three sessions (\autoref{sec:disc-q7-eda-scl-scr}, \autoref{sec:disc-q7-eda-noise-cuelocked}). The opposite-direction signature within the same session indicates a session-level baseline anomaly affecting both channels independently, rather than a system-level failure mode.
+
+Despite the baseline anomaly, signal morphology is preserved on both modalities. The contraction envelope morphology is comparable across all three sessions on the EMG side (\autoref{sec:disc-q7-emg-cuelocked}), and the \gls{scr} rise from local baseline to peak is comparable across all three sessions on the EDA side (\autoref{sec:disc-q7-eda-scl-scr}). The front-end captures contraction and \gls{scr} cleanly under both elevated EMG noise and depressed EDA \gls{scl}.
+
+Session~4 contributes legitimate data. The contamination filter retained all 40 EMG epochs at the highest threshold of the Sessions 3 to 5 set (\autoref{sec:disc-q7-emg-metrics}), and Q5b/Q6b cue-locked analyses on the same session do not require the per-session metrics to interpret the cross-modality coupling and null. The session inflates the across-session SDs without invalidating the per-session findings. Mechanism candidates and the limit on retrospective diagnosis at $n = 3$ are taken up in \autoref{sec:disc-limitations}.
+
+\subsubsection{Reproducibility Scorecard and Objective 4 Closure}
+\label{sec:disc-rep-synthesis-scorecard}
+
+The directional asymmetry reported in \autoref{sec:disc-cross-synthesis} reproduces unevenly across the four \gls{emg}-to-\gls{eda} and \gls{eda}-to-\gls{emg} findings. Two findings reproduce uniformly across all three sessions: the \gls{scl} shift in the Combined block is positive in every session (\autoref{sec:disc-q7-eda-scl-scr}), and the Q5b cue-locked dip is positive in every session with tight latency clustering (\autoref{sec:disc-q7-eda-noise-cuelocked}). Two findings reproduce in two of three sessions only: the Q6 amplitude null holds in Sessions 3 and 5 with Session~4 inflating the pooled SD (\autoref{sec:disc-q7-emg-metrics}), and the Q6b null holds in Sessions 3 and 5 with Session~4 contributing drift inflation (\autoref{sec:disc-q7-emg-cuelocked}).
+
+One finding does not reproduce. The Q5 \gls{scr} amplitude reduction in the Combined block holds in Sessions 3 and 5 but reverses in Session~4 (\autoref{sec:disc-q7-eda-scl-scr}). The split is qualitatively different from the Q6 and Q6b nulls: the Q5 \gls{scr} direction itself reverses, while Q6 and Q6b inflate without changing the per-session conclusion on the clean sessions. Inferential claims about Combined depressing \gls{scr} amplitude are not supportable at the validation's sample size.
+
+Objective~4 from the Introduction asks whether simultaneous \gls{emg} and \gls{eda} acquisition reproduces across repeated sessions. The validation answers the objective as a qualified positive. The system reproduces across Sessions 3 to 5 for the directional asymmetry headline, with morphology preserved on both modalities even under the Session~4 baseline anomaly. Two named caveats accompany the closure: Session~4 inflates between-session variability without threatening system-level operation, and the \gls{scr} amplitude direction is irreproducible at $n = 3$. The implications of the qualified positive for clinical deployment are taken up in \autoref{sec:disc-implications}.
+
+% =============================================================================
+% §5.5 — PROBLEMS AND LIMITATIONS
+% =============================================================================
+
+\section{Problems and Limitations}
 \label{sec:disc-limitations}
 
-
-% -----------------------------------------------------------------------------
-% 5.5 Back to the introduction: the big picture
-% -----------------------------------------------------------------------------
-%
-% Connect findings to the introduction's gap statement and clinical motivation.
-% Key anchors to reference:
-%   - Introduction's identified gap: no prior device simultaneously measures
-%     EMG and DC EDA from the same muscle site with galvanic isolation.
-%   - Clinical motivation: stress/pain monitoring in non-verbal spastic CP
-%     patients during passive stretching by physiotherapists.
-%   - Collaboration: Dept. of Clinical and Biomedical Engineering (OUS),
-%     Dept. of Neurohabilitation (OUS), Dept. of Physics (UiO).
-%
-% Frame: the gap is now closed at the bench-validation level. Clinical
-% validation at the biceps target site remains the next step.
-% -----------------------------------------------------------------------------
-
-\section{Back to the big picture}
-\label{sec:disc-bigpicture}
+This chapter names the limitations that qualify the findings reported in \autoref{sec:disc-front-end} through \autoref{sec:disc-reproducibility}, including the qualified-positive Objective~4 closure stated in \autoref{sec:disc-rep-synthesis-scorecard}. \autoref{sec:disc-lim-reporting} covers reporting and metric-label limits, with separate treatment of what the metrics capture compared to what their names imply, and how the metrics are reported and compared. \autoref{sec:disc-lim-design} covers validation-design limits, with each subsubsection bounding a different aspect of what the protocol can establish at the present sample size and configuration. \autoref{sec:disc-lim-scope} covers findings bounded by validation scope, where mechanism attribution and outlier diagnosis are limited by what the validation observes. The implications for clinical deployment are addressed in \autoref{sec:disc-implications}, and remediation hooks for these limitations are taken up in \autoref{sec:disc-future}.
 
 
-% -----------------------------------------------------------------------------
-% 5.6 Future research
-% -----------------------------------------------------------------------------
-%
-% Candidate directions ordered by proximity to the thesis contribution:
-%   - Clinical validation at biceps with physiotherapy cohort.
-%   - Mechanism identification for 0.3–1 Hz EDA coupling: dummy-load tests
-%     (distinguish electrical from subject-dependent mechanisms), rail noise
-%     measurement (rule in/out NXE2S), cable-routing experiments.
-%   - Extended ISO224 spectral characterization (direct measurement to
-%     confirm low-frequency concentration hypothesis).
-%   - Larger reproducibility cohort (n > 3) with randomized block order to
-%     enable formal statistical testing and decouple block effects from
-%     time-on-task.
-%   - Alternative electrode technologies (dry electrodes, extended-shelf-
-%     life wet gel) for longer-duration clinical deployments.
-%   - Co-located accelerometry for motion-artifact rejection if mechanical
-%     coupling is confirmed as the 0.3–1 Hz mechanism.
-% -----------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+% §5.5.1 Reporting and metric-label limits
+%------------------------------------------------------------------------------
 
-\section{Perspectives for future research}
+\subsection{Reporting and Metric-Label Limits} 
+\label{sec:disc-lim-reporting}
+
+\subsubsection{Mismatches Between Metric and Label}      
+\label{sec:disc-lim-mismatch}
+
+\paragraph{$\sigma_\text{session}$ as a "Circuit Noise Floor"}  
+\label{sec:disc-lim-sigma-session}
+
+Methods \autoref{sec:eda_processing} labels $\sigma_\text{session}$ as the circuit noise floor of the \gls{eda} front-end. The metric integrates over the \SI{10}{\minute} pre-test stabilization recording, a window long enough that spontaneous \gls{eda} activity and slow drift contribute to the residual alongside circuit noise. The label commits to less than the metric measures.
+
+The mismatch shows up directly in the relationship between $\sigma_\text{session}$ and $\sigma_\text{local}$. $\sigma_\text{local}$ integrates over the \SI{2}{\second} pre-cue window of each epoch, a window short enough to bound spontaneous activity and drift contributions. Across the seven session-blocks, $\sigma_\text{session}$ was \num{2.85} to \num{23.04} times larger than $\sigma_\text{local}$, with the smallest factor at Session~2 and the largest at Session~5 \gls{eda}-only. The mean factor across the seven blocks was approximately \num{9}. The size of this gap measures how much more $\sigma_\text{session}$ captures than $\sigma_\text{local}$. The additional content is spontaneous activity and slow drift over the \SI{10}{\minute} window. $\sigma_\text{session}$ itself spanned a threefold range across Sessions~3 to~5, from \SI{0.176}{\micro\siemens} to \SI{0.599}{\micro\siemens}. The cross-session variation tracks habituation and slow drift more than circuit-level changes.
+
+\gls{snr}$_{\text{circuit}}$ inherits the labeling problem because it uses $\sigma_\text{session}$ as denominator. The metric's order-of-magnitude cross-session range reported in \autoref{sec:disc-q7-eda-noise-cuelocked} (from \SI{1.03}{\decibel} to \SI{13.18}{\decibel}) reflects the $\sigma_\text{session}$ spread, not a difference in detection quality. $\sigma_\text{local}$ is the more informative cross-session detection comparator. Bench-level isolation-stage characterization in \autoref{sec:disc-future} would directly localize the circuit-only contribution.
+
+\paragraph{Mains Harmonic Power Conflates Two Sources}
+\label{sec:disc-lim-harmonic}
+
+Methods \autoref{sec:emg_processing} reports harmonic-power integrated within narrow bands centered at \SI{50}{\hertz}, \SI{100}{\hertz}, and \SI{150}{\hertz}. The integration sums spectral power within each band regardless of the physical source. Mains harmonic content and \gls{emg} signal content within those bands both contribute to the integrated power. Theory \autoref{sec:EMG} establishes that surface \gls{emg} signal energy is dominated by the \SIrange{50}{150}{\hertz} band~\cite{kamen_essentials_2010}, so signal-band overlap with the harmonic-power integration at \SI{100}{\hertz} and \SI{150}{\hertz} is structural, not incidental.
+
+The reading in \autoref{sec:disc-iso-digital-filter} attributes the post-versus-pre elevation of the \SI{100}{\hertz} and \SI{150}{\hertz} harmonic powers to the broadband-baseline elevation interpretation. The harmonic-power metric alone cannot separate that contribution from a comparable elevation in in-band \gls{emg} signal content. The broadband elevation visible across the entire \SIrange{20}{500}{\hertz} passband in \autoref{fig:q4-emg-psd-four} supports the broadband-baseline reading, but the metric on a single-band basis does not establish it.
+
+\paragraph{Contraction RMS Inflates With the Noise Floor}
+\label{sec:disc-lim-rms-inflation}
+
+Methods \autoref{sec:emg_processing} reports contraction \gls{rms} integrated across the contraction window. The metric integrates both the contraction signal and any noise present in the window. When the noise floor approaches the contraction magnitude, the metric reads progressively more like a noise-plus-signal sum than a clean contraction amplitude.
+
+\autoref{tab:q7-emg-metrics} shows the cross-session contraction \gls{rms} comparison across Sessions 3 to 5. \autoref{sec:disc-reproducibility} reads the Session~4 contraction \gls{rms} as inflated because the noise floor on that session approaches the contraction magnitude. Sessions 3 and 5 exhibit the same effect at a smaller magnitude. Contraction \gls{rms} remains the standard sEMG amplitude metric~\cite{kamen_essentials_2010}. Reading the cross-session comparison as a directional indicator remains supported. Reading it as an absolute amplitude measure is qualified.
+
+
+\paragraph{Pearson $r$ at Zero Lag Assumes Negligible Delay}
+\label{sec:disc-lim-zero-lag}
+
+Pearson \(r\) at zero lag (Methods \autoref{sec:emg_processing}, footnote) assumes negligible relative delay between the two channels. The \gls{daq} samples both channels simultaneously, but the isolation chain (ISO224 amplifier and MAX44241 buffer) introduces a propagation delay on the post-isolation channel that the digital alignment does not correct. The validation does not measure this delay, so the Pearson \(r\) reading rests on an unverified assumption that the delay is negligible. Bench-level characterization in \autoref{sec:disc-future} would directly measure the delay.
+
+
+\subsubsection{Reporting Form and Cross-Paper Comparability}
+\label{sec:disc-lim-comparability}
+
+\paragraph{Pearson $r$ Scalar Mean Understates Typical Preservation}
+\label{sec:disc-lim-pearson-mean}
+
+Q3 \gls{eda} Pearson \(r\) was reported as $\num{0.713} \pm \num{0.162}$ across $n = \num{30}$ epochs (\autoref{tab:q3-isolation-change}). The per-epoch distribution in \autoref{sec:disc-iso-eda-pearson} shows that most epochs lie above the mean. The mean, therefore, understates how well the isolation chain preserves \gls{eda} morphology for typical epochs. The median may be a more representative metric for the typical case.
+
+\paragraph{Pearson $r$ and PSD on EDA Reduce Cross-Paper Comparability}
+\label{sec:disc-lim-eda-convention}
+
+The \gls{eda} validation reports SCR-based metrics and SCL-related traces alongside Pearson \(r\) and \gls{psd}. The SCR-based and SCL-related metrics follow \gls{eda}-literature conventions~\cite{boucsein_electrodermal_2012}. Pearson \(r\) and \gls{psd} were used in \gls{eda} to assess cross-modality consistency with the \gls{emg} validation pipeline, but these metrics do not have direct counterparts in the \gls{eda} literature. The SCR-based and SCL-related readings remain comparable to \gls{eda}-literature studies. The Pearson \(r\) and \gls{psd} readings have reduced comparability, supporting cross-modality consistency at that cost.
+
+
+%------------------------------------------------------------------------------
+% §5.5.2 Validation-design limits
+%------------------------------------------------------------------------------
+
+\subsection{Validation-Design Limits}
+\label{sec:disc-lim-design}
+
+\subsubsection{Sample Size, Block Order, FSR Tracking, and Controlled Environment}
+\label{sec:disc-lim-n3}
+
+\autoref{sec:disc-reproducibility} reports reproducibility findings pooled across Sessions~3 to~5. $n = \num{3}$ is a small sample size for cross-session generalization. The block order was fixed (EDA-only, EMG-only, Combined). Fatigue and attention drift across the session are therefore not separable from block effects. FSR-tracked voluntary contraction force was inconsistent, and the readings were not recorded per stimulation cue. Force consistency across cues and across sessions, therefore, cannot be verified directly. The validation was conducted in a controlled environment, with noise and other outside factors reduced as much as possible, so performance under deployment conditions with less environmental control cannot be established. These four dimensions together bound the extent to which the \autoref{sec:disc-reproducibility} verdict generalizes beyond validation. Future validation with larger $n$, randomized block order, and per-cue FSR logging in \autoref{sec:disc-future} would address the cross-session limits. Clinical-deployment implications of the controlled-environment limit are taken up in \autoref{sec:disc-implications}.
+
+
+\subsubsection{Contamination-Filter Precondition Envelope}
+\label{sec:disc-lim-filter-envelope}
+
+The contamination filter described in Methods \autoref{sec:emg_processing} rejects \gls{emg} epochs where the pre-cue \gls{rms} exceeds $2 \times$ the block-median pre-cue \gls{rms}. The rule rests on a precondition that contamination events are rare relative to clean epochs, so the median represents the typical pre-cue noise floor. When the session noise floor is elevated overall (as in Session~4), the median itself shifts up with it, making the threshold less aggressive at flagging individual high-\gls{rms} epochs. The filter's effectiveness, therefore, depends on the precondition envelope, which the validation does not characterize across different envelopes.
+
+\subsubsection{Digital Filtering Asymmetry and Missing EDA Sensitivity Check}
+\label{sec:disc-lim-eda-filter-sensitivity}
+% Section pipeline: design-choice + rationale → sanity-check evidence → limit + forward-ref.
+% Chapter role: supplies §5.7 with the pipeline-wide filter-sensitivity gap as a protocol-refinement target.
+
+The validation pipeline applies digital filtering to \gls{emg} (Methods \autoref{sec:emg_processing}) but no equivalent stage to \gls{eda} (Methods \autoref{sec:eda_processing}). The original design rationale was twofold. The \gls{eda} front-end includes a \SI{1.5}{\hertz} analog low-pass filter on the body side, judged sufficient at design time to band-limit the signal. The \gls{scr} detection scheme reads peak amplitude from the unsmoothed signal at the smoothed-signal peak index, so \gls{scr} amplitude is structurally insensitive to broadband noise above the analog cutoff. The post-isolation broadband content introduced by the isolation chain was not anticipated when the pipeline was designed.
+
+\autoref{fig:disc-eda-digital-filter} shows Session~2's \SI{10}{\minute} stabilization recording before and after a post-acquisition 4th-order Butterworth zero-phase low-pass filter at \SI{1.5}{\hertz}. The pre-isolation channel is unchanged under the filter, with $\sigma_\text{session}$ holding at \SI{0.4944}{\micro\siemens} raw and filtered. The post-isolation channel changes visibly: the broadband content above the analog cutoff disappears while the tonic level and slow drift remain. Quantitatively, $\sigma_\text{session}$ drops from \SI{0.5487}{\micro\siemens} to \SI{0.5323}{\micro\siemens}, a \SI{3.0}{\percent} reduction. Over the \SI{10}{\minute} window, the metric primarily reflects slow content below the analog cutoff. $\sigma_\text{local}$ on the cued epochs ($n = \num{30}$) drops from \SI{0.1934}{\micro\siemens} to \SI{0.0106}{\micro\siemens}, a \SI{94.5}{\percent} reduction that captures the broadband content directly. The pre/post asymmetry localizes the content to the isolation stage.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{discussion_figures/fig_disc_eda_digital_filter}
+    \caption{Session~2 \SI{10}{\minute} stabilization recording before and after a post-acquisition 4th-order Butterworth zero-phase low-pass filter at \SI{1.5}{\hertz}. Top row: pre-isolation \gls{eda}, raw (left) and filtered (right). Bottom row: post-isolation \gls{eda}, raw (left) and filtered (right). The pre-isolation channel is unchanged under the filter. The post-isolation channel loses its broadband content above the analog cutoff while preserving tonic level and slow drift.}
+    \label{fig:disc-eda-digital-filter}
+\end{figure}
+
+The validation should have included this visualization and a sensitivity check testing whether the Q3 \gls{eda} Pearson $r$ (\autoref{sec:disc-iso-eda-pearson}), the Q5 \gls{scl} shift between \gls{eda}-only and Combined (\autoref{sec:disc-q5}), and the Q5b deviation amplitude at \gls{emg} cues (\autoref{sec:disc-q5b}) are filter-independent. Q6b is excluded because \gls{eda} digital filtering does not apply to the \gls{emg} channel. Pipeline-wide characterization is taken up in \autoref{sec:disc-future}.
+
+%------------------------------------------------------------------------------
+% §5.5.3 Findings bounded by validation scope
+%------------------------------------------------------------------------------
+
+\subsection{Findings With Unidentified Mechanisms}
+\label{sec:disc-lim-scope}
+
+\subsubsection{EMG-on-EDA Mechanism Unidentified at Palm}
+\label{sec:disc-lim-mechanism}
+
+Two cross-modality \gls{emg}-on-\gls{eda} features were observed in the validation. The pooled \gls{scl} shift Combined minus \gls{eda}-only was positive at the system level (\autoref{sec:disc-q5}). The cue-locked downward dip in \gls{eda} at \gls{emg} cues appeared in the \gls{emg}-only block (\autoref{sec:disc-q5b}) and in the Combined block. Mechanism candidates for both span electronics-level (mechanical or electrical coupling) and biological causes at the skin interface. The validation does not isolate which mechanism produces these features. Validation was at the palm (thenar \gls{emg}, hypothenar \gls{eda}), so the findings are specific to this site. Bench tests in \autoref{sec:disc-future} could isolate candidate mechanisms. Clinical-site implications are taken up in \autoref{sec:disc-implications}.
+
+
+
+\subsubsection{Session~4 Outlier and Downstream Consequences}
+\label{sec:disc-lim-s4}
+
+\autoref{sec:disc-reproducibility} identifies Session~4 as an outlier in the validation set, with deviations in both EMG and EDA metrics. Session~4's EMG noise floor was \SI{44.14}{\micro\volt}, well above the \SI{12.50}{\micro\volt} and \SI{19.81}{\micro\volt} on Sessions 3 and 5 (\autoref{tab:q7-emg-metrics}). The EMG contraction \gls{rms} was correspondingly inflated, and the EDA \gls{scl} was substantially lower than on Sessions 3 and 5 (\autoref{tab:q7-eda-signal}). Several per-session factors could contribute and were not characterized. At the electrode-skin interface, the Ambu BlueSensor Q (EMG) electrodes have a shelf life of approximately one month after opening. In contrast, the Kendall H135SG (EDA) electrodes lack a documented open-package specification. At the session level, electrode placement was hand-positioned without an anatomical fixture, and the subject's physiological state can vary across recording days. Specific Session~4 consequences for contraction \gls{rms} readings and contamination-filter behavior are addressed in \autoref{sec:disc-lim-rms-inflation} and \autoref{sec:disc-lim-filter-envelope}. These deviations inflated the pooled SDs across multiple metrics, narrowing the interpretive reach of the pooled findings. Per-session electrode characterization and larger $n$ in \autoref{sec:disc-future} would address these limits. Clinical-deployment implications of electrode handling and setup are taken up in \autoref{sec:disc-implications}.
+
+
+%------------------------------------------------------------------------------
+% Closer
+%------------------------------------------------------------------------------
+
+% — Section closer (structural placement TBD)
+\autoref{sec:disc-lim-reporting} through \autoref{sec:disc-lim-scope} qualify the validation conclusions in three ways. \autoref{sec:disc-lim-reporting} covers how specific metrics should be read against their labels and conventions. \autoref{sec:disc-lim-design} covers what the protocol can establish at the present sample size and configuration. \autoref{sec:disc-lim-scope} covers findings where the validation observes effects but cannot isolate the underlying mechanism, leaving only candidate causes. \autoref{sec:disc-implications} addresses how these limits affect deployment at the clinical biceps site, where conditions differ from the validation setup. \autoref{sec:disc-future} specifies bench characterization, larger validation, and protocol refinements that would address the technical limits.
+
+% =============================================================================
+% §5.6 — IMPLICATIONS
+% =============================================================================
+
+\section{Implications for Clinical Deployment}
+\label{sec:disc-implications}
+
+The validation was at the palm under controlled conditions, while the clinical target is the biceps during physiotherapy. The front-end and isolation-stage behavior described in \autoref{sec:disc-front-end} and \autoref{sec:disc-isolation} is a property of the circuit, not of the validation site. The \gls{emg} to \gls{eda} coupling characterized in \autoref{sec:disc-cross-contamination} was observed at the palm and is undetermined at the biceps. The mechanism question from \autoref{sec:disc-lim-mechanism} carries to \autoref{sec:disc-future}.
+
+The reproducibility result in \autoref{sec:disc-rep-synthesis-scorecard} was conditional on the validation's controlled environment (\autoref{sec:disc-lim-n3}) and electrode handling (\autoref{sec:disc-lim-s4}). The validation kept these conditions stable with a single operator and a fixed setup. At deployment, a protocol must specify them explicitly so different operators can implement them consistently.
+
+The \gls{eda} to \gls{emg} null reported in \autoref{sec:disc-cross-contamination} is the technical precondition for combined acquisition, and the device delivers a step toward the combined skin conductance and muscle tension monitoring recommended by \textcite{bull_heart_2025}. Clinical efficacy, patient tolerance, and session duration are for the clinical follow-on study. So is the question of whether \gls{emg} adds useful information for stress detection beyond \gls{eda} alone. Bench characterization, protocol refinement, and biceps validation follow in \autoref{sec:disc-future}.
+
+% =============================================================================
+% §5.7 — FUTURE WORK
+% =============================================================================
+\section{Future Work}
 \label{sec:disc-future}
 
+The thesis presents a circuit that simultaneously acquires \gls{emg} and \gls{eda} from a single site with galvanic isolation, and validates it on the palm under controlled conditions. The limits in \autoref{sec:disc-limitations} and the deployment conditions in \autoref{sec:disc-implications} define what remains. \autoref{sec:disc-future-bench} specifies bench setups that would localize the mechanisms behind the post-isolation noise floor and the \gls{emg} to \gls{eda} coupling. \autoref{sec:disc-future-protocol} specifies validation-protocol refinements and validation at the biceps deployment site. \autoref{sec:disc-future-generalization} extends the design space organized in the introduction.
 
-% -----------------------------------------------------------------------------
-% 5.7 Implications
-% -----------------------------------------------------------------------------
-%
-% Three audiences:
-%   - Biomedical front-end designers: ISO224 is a viable component for
-%     simultaneous physiological signal acquisition, with quantified noise
-%     cost (~21 µV RMS EMG, ~0.2 µS RMS EDA low-frequency-concentrated).
-%   - Stress/pain monitoring in non-verbal patients: combined EMG+EDA from
-%     the same muscle site provides two independent arousal signals without
-%     mutual interference on phasic metrics — meeting the key methodological
-%     requirement stated in the introduction.
-%   - OUS Neurohabilitation clinical team: the device is bench-validated
-%     and ready for subject testing at the biceps target site.
-% -----------------------------------------------------------------------------
+\subsection{Bench Characterization}
+\label{sec:disc-future-bench}
 
-\section{Implications}
-\label{sec:disc-implications}
+A datasheet-driven noise budget would localize the circuit-side contribution to the noise floor based on component specifications (\autoref{sec:disc-iso-synthesis-mechanism}). Bench-level characterization of the same stage would empirically localize that contribution and also measure the circuit-only $\sigma_\text{session}$ (\autoref{sec:disc-lim-sigma-session}) and the propagation delay between pre- and post-isolation channels (\autoref{sec:disc-lim-zero-lag}). The validation cannot separate these from body-side contributions while the electrodes are on the subject.
+
+The \gls{emg} to \gls{eda} coupling observed at the palm in \autoref{sec:disc-cross-contamination} has mechanical or electrical candidate mechanisms at the electronics level (\autoref{sec:disc-lim-mechanism}) that the validation could not separate. Bench tests would isolate the dominant contribution. Biological causes at the skin interface are not bench-testable and would require biceps validation in \autoref{sec:disc-future-protocol}.
+
+\subsection{Protocol Refinements and Biceps Validation}
+\label{sec:disc-future-protocol}
+
+Sessions~3 to~5 used a fixed block order of \gls{eda}-only, \gls{emg}-only, and Combined. Future validation with larger $n$ and randomized block order would separate fatigue and attention drift from block-specific effects, which the fixed-order protocol cannot isolate (\autoref{sec:disc-lim-n3}). \gls{fsr} readings logged at each \gls{emg} cue would verify contraction-force consistency across cues and sessions, which the validation protocol does not record (\autoref{sec:disc-lim-n3}).
+
+Per-session electrode characterization would constrain the electrode-skin variability that the Session~4 anomaly exposes (\autoref{sec:disc-lim-s4}). The characterization covers placement geometry relative to an anatomical fixture, open-package shelf-life tracking for both \gls{emg} and \gls{eda} electrode types, and contact-integrity checks before each session. The same refinement would also reduce the across-session spread in baseline noise floor that the contamination filter relies on for its precondition envelope (\autoref{sec:disc-lim-filter-envelope}).
+
+A pipeline-wide filter-sensitivity analysis would test whether the \gls{eda} findings reported on the unfiltered post-isolation channel hold under post-acquisition digital filtering matched to the analog cutoff (\autoref{sec:disc-lim-eda-filter-sensitivity}). The analysis would recompute the Q3 \gls{eda} Pearson \(r\), the Q5 \gls{scl} shift between \gls{eda}-only and Combined, and the Q5b deviation amplitude at \gls{emg} cues with a fourth-order Butterworth zero-phase low-pass at \SI{1.5}{\hertz} applied to the \gls{eda} channel. The analysis would re-run three established metrics on the existing Sessions~2 to~5 data with one filter change, rather than introduce a new measurement campaign.
+
+Validation at the biceps would extend the technical findings reported here to the deployment site (\autoref{sec:disc-implications}). The recordings would measure noise floor and isolation behavior at the biceps electrode-skin source impedance and characterize the \gls{emg} to \gls{eda} coupling under that geometry, which the palm validation leaves undetermined (\autoref{sec:disc-lim-mechanism}).
+
+\subsection{Broader Research Directions}
+\label{sec:disc-future-generalization}
+
+The introduction organizes prior work on simultaneous acquisition of biopotentials and bioimpedance along three dimensions: modality combinations, excitation regimes, and anatomical sites. Multimodal wearables~\cite{affanni_dual_2019, affanni_wireless_2020, mcnaboe_design_2022}, frequency-domain multiplexing for co-located \gls{emg} and bioimpedance~\cite{ngo_wearable_2022}, and galvanic isolation for simultaneous bioimpedance at separate sites~\cite{kusche_galvanically_2017} occupy distinct points in this space. The design reported here adds a new point: galvanic isolation for co-located \gls{emg} and \gls{dc} \gls{eda} at the same anatomical site.
+
+Future work along each dimension extends the design-space mapping. Modality combinations beyond \gls{emg} and \gls{eda} test whether the isolation strategy generalizes across other biopotentials paired with bioimpedance. Excitation regimes beyond \gls{dc} \gls{eda}, including \gls{ac} \gls{eda} and endosomatic \gls{eda}, test whether the isolation requirement weakens or strengthens under different injection-current characteristics. Anatomical sites beyond the palm and biceps test the front-end's noise and isolation behavior against electrode-skin source impedances spanning clinically relevant skin properties.
+
+Each extension occupies a different point in the same three-dimensional space, and together they probe the limits of galvanic isolation as a general strategy for simultaneous acquisition of biopotentials and bioimpedance. Generalization across the design space remains future work.
 
 \begin{comment}
     
 \begin{itemize}
     \item What do the results show?
-    \item How do the results fit in with other researchers findings?
+    \item How do the results fit in with other researchers' findings?
     \item What could the results mean?
     \item What are the problems and limitations
     \item Go back to the big picture from the introduction

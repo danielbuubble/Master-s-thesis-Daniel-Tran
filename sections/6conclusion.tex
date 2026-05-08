@@ -1,3 +1,13 @@
+\label{ch:conclusion}
+
+This thesis investigates simultaneous \gls{emg} and \gls{dc} \gls{eda} acquisition from the same muscle site. Co-locating these modalities introduces a ground loop between the two measurement circuits. The custom front-end places the \gls{emg} and \gls{eda} chains in separate ground domains, with reinforced galvanic isolation between each chain and a common data acquisition unit. The system was validated on a single participant at the palm across five recording sessions. The biceps clinical site is not directly validated.
+
+Each front-end individually resolves its target signal against the post-isolation noise floor. Cross-modality observations are directionally asymmetric. \gls{eda} operation produces no detectable elevation in the \gls{emg} amplitude metrics, and combined acquisition is technically supported in the \gls{eda} to \gls{emg} direction. The \gls{emg} operation leaves a measurable signature on the \gls{eda} signal, but the mechanism by which this occurs is not isolated by the validation. The directional asymmetry reproduces across sessions, with one session inflating between-session variability.
+
+No prior work co-locates \gls{emg} and \gls{dc} \gls{eda} at the same muscle site with galvanic isolation. The thesis adds one point to the design space organized along three dimensions: modality combinations, excitation regimes, and anatomical sites. The \gls{dc} excitation current returns through the \gls{emg} reference electrode when both chains share a ground domain, and galvanic isolation breaks the shared-ground paths. The validation confirms the technical precondition for combined acquisition. The design provides a step toward multimodal stress and pain monitoring in non-verbal patient populations.
+
+Named limits qualify the headline. The \gls{emg} to \gls{eda} coupling mechanism is unidentified, validation is at the palm only, and the cross-session sample size is $n = \num{3}$. The future work outlined in \autoref{sec:disc-future} covers bench characterization of the isolation stage and cross-modality coupling, validation refinements through a biceps recording campaign, and generalization across the prior work design space. Galvanic isolation supports co-located \gls{emg} and \gls{dc} \gls{eda} acquisition at the same muscle site. Future work extends this foundation along clinical and design-space dimensions.
+
 \begin{comment}
     
 \begin{itemize}
