@@ -4,6 +4,8 @@ This chapter provides the theoretical foundation for the hardware design and val
 
 This section covers the three physiological systems relevant to the thesis: the nervous system, which controls both skeletal muscle activity and sweat gland activity - EDA signal; the skin, which is the measurement interface for both signals; and skeletal muscle, which is the source of the EMG signal.
 
+This section covers the three physiological systems relevant to the thesis. The nervous system controls both skeletal muscle activity and sweat gland activity (EDA signal). The skin is the measurement interface for both signals. Skeletal muscle is the source of the EMG signal.
+
 \subsection{Human Nervous System} \label{sec:human_nervous_system}
 
 The human nervous system is divided into two main parts: the central nervous system and the peripheral nervous system~\cite{bazira_overview_2021}. This thesis concerns the peripheral nervous system and its subdivisions, illustrated in Figure~\ref{fig:nervous_system_tree}.
@@ -51,7 +53,7 @@ EMG and EDA have opposing skin preparation requirements. EMG recordings benefit 
 
 \subsection{Skeletal Muscle}\label{sec:muscle}
 %Mention that muscle tissue is anisotropic - Ørjan sin bok
-Skeletal muscle consists of bundles of muscle fibers~\cite{mukund_skeletal_2020}. Each fiber is a long, cylindrical cell with an excitable membrane that generates electrical signals~\cite{kamen_essentials_2010}. Motoneurons innervate these muscle fibers. A single motoneuron and all of the fibers it innervates together form a motor unit~\cite{whittaker_fundamentals_2012, konrad_abc_2006}, illustrated in Figure~\ref{fig:motor_unit}. The motor unit is the smallest unit of muscle activation; when the motoneuron fires, all of its fibers contract simultaneously. The electrical and functional properties of motor units are discussed in Section~\ref{sec:EMG_signal}.
+Skeletal muscle consists of bundles of muscle fibers~\cite{mukund_skeletal_2020}. Each fiber is a long, cylindrical cell with an excitable membrane that generates electrical signals~\cite{kamen_essentials_2010}. Motoneurons innervate these muscle fibers. A single motoneuron and all of the fibers it innervates together form a motor unit~\cite{whittaker_fundamentals_2012, konrad_abc_2006}, illustrated in Figure~\ref{fig:motor_unit}. The motor unit is the smallest unit of muscle activation. When the motoneuron fires, all of its fibers contract simultaneously. The electrical and functional properties of motor units are discussed in Section~\ref{sec:EMG_signal}.
 
 \begin{figure}[H]
     \centering
@@ -139,7 +141,7 @@ The raw \gls{semg} signal amplitude at the skin surface spans \SIrange{10}{5000}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/raw_semg_illustration.pdf}
-     \caption{Illustrative composite of three voluntary contraction bursts recorded from the thumb muscles in this thesis. Each burst is followed by a rest period at baseline. The inter-burst intervals are shortened for display; the original recording used a \qty{15}{\second} inter-stimulus interval.}
+     \caption{Illustrative composite of three voluntary contraction bursts recorded from the thumb muscles in this thesis. Each burst is followed by a rest period at baseline. The inter-burst intervals are shortened for display. The original recording used a \qty{15}{\second} inter-stimulus interval.}
     \label{fig:raw_semg}
 \end{figure}
 

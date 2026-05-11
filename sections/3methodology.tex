@@ -443,7 +443,7 @@ Each session consisted of a 30-minute stabilization period during which the fina
 \begin{enumerate}
     \item \gls{emg} and \gls{eda} electrodes were applied as described above.
     \item The participant rested quietly for 30 minutes to allow the electrode-skin impedance to stabilize.
-    \item During the final 10~minutes of this period, baseline \gls{emg} and \gls{eda} signals were recorded while the participant remained still and breathed normally. The post-isolation \gls{eda} baseline served as the session-level \gls{eda} noise floor in the analysis described in Section~\ref{sec:eda_processing}. The \gls{emg} baseline was recorded as a sanity check and was not used as a noise floor; \gls{emg} noise is estimated per epoch as described in Section~\ref{sec:emg_processing}.
+    \item During the final 10~minutes of this period, baseline \gls{emg} and \gls{eda} signals were recorded while the participant remained still and breathed normally. The post-isolation \gls{eda} baseline served as the session-level \gls{eda} noise floor in the analysis described in Section~\ref{sec:eda_processing}. The \gls{emg} baseline was recorded as a sanity check and was not used as a noise floor. \gls{emg} noise is estimated per epoch as described in Section~\ref{sec:emg_processing}.
     \item The 30-minute test run consisted of three 10-minute blocks:
     \begin{enumerate}
         \item \textbf{Block 1: EDA-only (10 minutes)}\\ The participant remained seated with the left hand resting in the neutral position. Every 60 seconds, a cue prompted one deep-breath \gls{eda} stimulus. No voluntary hand or finger movement was performed. This block yielded 10 \gls{eda} stimuli.
@@ -569,7 +569,7 @@ To address Q4, a three-stage digital filter chain was applied offline to the con
 This was narrower than the analog twin-T notch bandwidth of \SI{10.5}{\hertz} ($Q \approx 5$, Equation~\ref{eq:notch_q}). All subsequent processing steps were applied identically to both paths.
 
 %Contamination filter - empirical threshold, no citation
-A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically; no standard criterion exists in the EMG literature for this type of rejection. Epochs above the threshold were assumed to contain baseline interference that would corrupt both the noise-floor and contraction-RMS estimates.
+A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically. No standard criterion exists in the EMG literature for this type of rejection. Epochs above the threshold were assumed to contain baseline interference that would corrupt both the noise-floor and contraction-RMS estimates.
 %Epochs above the threshold likely contained motion artifacts or other baseline interference that would corrupt both the noise floor and contraction RMS estimates.
 
 %Noise floor - mean pre-cue RMS across clean epochs, why per-epoch
@@ -905,7 +905,7 @@ Q7 evaluated the consistency of simultaneous \gls{emg} and \gls{eda} measurement
 
 For \gls{emg}, the noise floor, contraction RMS, and SNR were reported separately for the EMG-only and Combined blocks. Between-session standard deviations were used to assess front-end stability during repeated simultaneous operation in the presence of known sources of variability, such as electrode placement and skin preparation.
 
-For EDA, the SCL, SCR amplitude, detection rate, circuit SNR, and local SNR were reported separately for the EDA-only and Combined blocks. SCL is known to vary with repeated stimulus exposure due to habituation~\cite{boucsein_electrodermal_2012}; between-session SCL variability is therefore expected and is not interpreted as circuit instability. Phasic metrics (SCR amplitude, detection rate, SNR) carry the front-end stability signal.
+For EDA, the SCL, SCR amplitude, detection rate, circuit SNR, and local SNR were reported separately for the EDA-only and Combined blocks. SCL is known to vary with repeated stimulus exposure due to habituation~\cite{boucsein_electrodermal_2012}. Between-session SCL variability is therefore expected and is not interpreted as circuit instability. Phasic metrics (SCR amplitude, detection rate, SNR) carry the front-end stability signal.
 
 \begin{comment}
     
