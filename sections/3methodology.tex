@@ -286,7 +286,7 @@ VS Code / Jupyter & ---      & Development environment \\
 \addlinespace
 \texttt{daq\_gui\_multi\_validation.py} & --- & Custom real-time acquisition GUI \\
 \texttt{analysis\_utils.py}             & --- & Custom offline analysis library \\
-\texttt{validation\_analysis.ipynb}     & --- & Analysis notebook for Q1–Q7 \\
+\texttt{validation\_analysis.ipynb}     & --- & Analysis notebook for the validation protocol \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -300,8 +300,8 @@ This section describes the system designed to measure \gls{emg} simultaneously a
 
 \subsection{Validation Questions}
 \label{sec:validation_Q}
-The validation was organized around seven questions that structure the analysis described in Section~\ref{sec:signal_processing}:
-\begin{enumerate}
+The validation was organized around seven questions, denoted Q1 to Q7, that structure the analysis described in Section~\ref{sec:signal_processing}:
+\begin{enumerate}[label=Q\arabic*]
     \item What are the signal characteristics of the \gls{emg} front-end during isolated muscle contraction, and what are its limitations?
     \item What are the signal characteristics of the \gls{eda} front-end during isolated measurement, and what are its limitations?
     \item How does the galvanic isolation stage affect signal amplitude, frequency content, waveform morphology, and added noise?
@@ -657,7 +657,7 @@ Section~\ref{sec:comparative_analysis} describes how these metrics were combined
 
 \subsection{Comparative Analysis}
 \label{sec:comparative_analysis}
-The validation protocol addressed seven questions, Q1 to Q7, each corresponding to a distinct aspect of circuit performance. Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately, while Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} summarize the sessions, conditions, and metrics for each question. The seven questions together provide a comprehensive characterization of the front-end, from individual signal quality to cross-circuit interference to session-to-session consistency.
+Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately, while Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} summarize the sessions, conditions, and metrics for each question. The seven questions together provide a comprehensive characterization of the front-end, from individual signal quality to cross-circuit interference to session-to-session consistency.
 
 Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and sample standard deviation were computed across the combined arrays. Q7 reported per-session values and the mean and sample standard deviation across the three sessions ($n = 3$). The circuit and local \gls{snr} values reported in Q5 followed the Q7 pattern because they were computed as session-level scalars rather than per-epoch arrays.
 
