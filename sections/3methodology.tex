@@ -24,7 +24,7 @@ Galvanic isolation         & Required between \gls{emg} and \gls{eda} front-ends
 \end{tabularx}
 \end{table}
 
-
+\FloatBarrier
 \section{System Architecture}
 \label{sec:system_architecture}
 %Here is the problem and our top-level solution
@@ -40,6 +40,8 @@ The power architecture operated on the same principle. A single \SI{5}{\volt} su
     \caption{System architecture of the simultaneous EMG and EDA acquisition system.}
     \label{fig:system_architecture}
 \end{figure}
+
+\FloatBarrier
 
 \section{Hardware Development}
 %Describe how I implemented it
@@ -286,12 +288,14 @@ VS Code / Jupyter & ---      & Development environment \\
 \addlinespace
 \texttt{daq\_gui\_multi\_validation.py} & --- & Custom real-time acquisition GUI \\
 \texttt{analysis\_utils.py}             & --- & Custom offline analysis library \\
-\texttt{validation\_analysis.ipynb}     & --- & Analysis notebook for the validation protocol \\
+\texttt{validation\_analysis\_v2.ipynb}     & --- & Analysis notebook for the validation protocol \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 The validation protocol that used this equipment is described in the following section.
+
+\FloatBarrier
 
 \section{Validation Protocol}
 \label{sec:validation}
@@ -358,6 +362,7 @@ Environment & Quiet room, \SIrange{21}{24}{\celsius} & Recordings 09:00--12:00 \
 \end{tabularx}
 \end{table}
 
+\FloatBarrier
 \subsection{Acquisition Software}
 \label{sec:acquisition_software}
 A custom Python script, \texttt{daq\_gui\_multi\_validation.py}, handled data acquisition throughout all sessions. It interfaced with the NI USB-6356 via the \texttt{nidaqmx} library and sampled all active channels simultaneously at \SI{2}{\kilo\hertz}. Raw data were written to disk in TDMS format throughout each session. A real-time digital filter chain ran in parallel for visual monitoring and was excluded from the offline analysis. Stimulus cues were delivered through the graphical interface, and their onset timestamps were saved as event markers in the TDMS file for epoch extraction during post-processing.
@@ -459,7 +464,7 @@ Each session consisted of a 30-minute stabilization period during which the fina
 \section{Signal Processing and Data Analysis} \label{sec:signal_processing}
 %Full validation chain is: isolation works (Q3) → each signal is clean in isolation (Q1/Q2) → simultaneous operation doesn't degrade either signal (Q5/Q6).
 %In short, RMS is appropriate when the mean is zero. std is appropriate when the mean carries information you want to preserve.
-EMG and EDA signals were processed through separate pipelines, each matched to the physical nature of the signal. Both pipelines operated on raw TDMS recordings and produced the metrics used to answer Q1 to Q7, as illustrated in Figure~\ref{fig:data_analysis_pipeline}. Gain compensation is described in Section~\ref{sec:gain_compensation}, core analysis methods in Section~\ref{sec:core_analysis}, and signal-specific processing in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}. The comparative analysis is covered in Section~\ref{sec:comparative_analysis}.
+EMG and EDA signals were processed through separate pipelines, each matched to the physical nature of the signal. Both pipelines operated on raw TDMS recordings and produced the metrics used to answer Q1 to Q7, as illustrated in Figure~\ref{fig:data_analysis_pipeline}. The pipelines were implemented in the Python stack listed in Table~\ref{tab:software_tools}. Gain compensation is described in Section~\ref{sec:gain_compensation}, core analysis methods in Section~\ref{sec:core_analysis}, and signal-specific processing in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}. The comparative analysis is covered in Section~\ref{sec:comparative_analysis}.
 
 \begin{figure}[H]
     \centering
@@ -490,6 +495,7 @@ EDA & Post & $\times 3$, then Equation~\ref{eq:EDA_skin_resistance}, inverted & 
 \end{tabularx}
 \end{table}
 
+\FloatBarrier
 
 \subsection{Core Analysis Methods}
 \label{sec:core_analysis}
@@ -538,7 +544,7 @@ where $\bar{x}$ and $\bar{y}$ are the sample means. The coefficient $r$ ranges f
 
 % PSD: spectral analysis via Welch's method with per-segment detrending + section handoff
 %PSD - Welch's method, per-segment detrending, pointers to signal-specific params
-\gls{psd} described the distribution of signal power across frequency. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Each segment was mean-subtracted before the Fourier transform (the default behavior of \texttt{scipy.signal.welch}), which removed the DC contribution of the voltage lifting circuit (Section~\ref{sec:EMG_frontend}) from the \gls{emg} spectrum. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
+\gls{psd} described the distribution of signal power across frequency. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Each segment was mean-subtracted before the Fourier transform, which removed the DC contribution of the voltage lifting circuit (Section~\ref{sec:EMG_frontend}) from the \gls{emg} spectrum. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 
 Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. The following two sections describe how each method was applied to the \gls{emg} and \gls{eda} signals, respectively.
 %A session-wide RMS would collapse the entire recording to a single power estimate and lose temporal resolution. Moving the window sample by sample yielded one RMS value per sample, preserving the time course of muscle activity.
@@ -560,7 +566,7 @@ After extraction, the DC offset was removed from each epoch individually. The me
 Two scalar RMS values were computed per epoch using Equation~\ref{eq:rms}. The pre-cue RMS was calculated across all samples within the pre-cue window and served as the per-epoch noise-floor estimate. The contraction RMS was calculated over all samples in the contraction window and served as the signal amplitude estimate.
 
 %Q4 parallel path - filter chain after mean subtraction, zero-phase, notch BW
-To address Q4, a three-stage digital filter chain was applied offline to the continuous signal before epoch extraction, creating a parallel path alongside the unfiltered signal. Per-epoch mean subtraction was applied to both paths after extraction. The chain consisted of a second-order Butterworth HPF at \SI{20}{\hertz}, an IIR notch at \SI{50}{\hertz} with $Q = 30$, and a fourth-order Butterworth LPF at \SI{500}{\hertz}. All stages used zero-phase filtering via \texttt{filtfilt}, which applied each filter in the forward and backward directions to eliminate phase distortion. Zero-phase filtering was not available in the real-time analog chain because it requires access to future samples. The digital notch bandwidth was
+To address Q4, a three-stage digital filter chain was applied offline to the continuous signal before epoch extraction, creating a parallel path alongside the unfiltered signal. Per-epoch mean subtraction was applied to both paths after extraction. The chain consisted of a second-order Butterworth HPF at \SI{20}{\hertz}, an IIR notch at \SI{50}{\hertz} with $Q = 30$, and a fourth-order Butterworth LPF at \SI{500}{\hertz}. All stages used zero-phase filtering, applying each filter in the forward and backward directions to eliminate phase distortion. Zero-phase filtering was not available in the real-time analog chain because it requires access to future samples. The digital notch bandwidth was
 \begin{equation}
     \Delta f = \frac{f_0}{Q} = \frac{\SI{50}{\hertz}}{30} \approx \SI{1.67}{\hertz}
     \label{eq:digital_notch_bw}
@@ -809,6 +815,7 @@ Q7 & Reproducibility &
 }
 \end{table}
 
+\FloatBarrier
 %Compares baseline vs contraction
 %EMG Epoch: -0.5s -> cue -> +3.5s (4s total)
 \subsubsection{Q1 - EMG Front-End Characterization}

@@ -40,6 +40,8 @@ The eccrine sweat glands introduced in Section~\ref{sec:human_nervous_system} ar
     \label{fig:sweat_glands}
 \end{figure}
 
+\FloatBarrier
+
 \subsubsection{Electrical Properties} \label{sec:human_el_properties}
 The stratum corneum has high electrical impedance because of its low moisture content and dense structure~\cite{tronstad_current_2022}. Continued sweating hydrates the stratum corneum and raises its conductance~\cite{boucsein_electrodermal_2012}.
 
@@ -61,6 +63,8 @@ Skeletal muscle consists of bundles of muscle fibers~\cite{mukund_skeletal_2020}
 \end{figure}
 
 Muscle tissue is anisotropic, with higher electrical conductivity along the fibers than across them~\cite{kamen_essentials_2010, grimnes_bioimpedance_2015}. The tissue layers between the muscle and the skin surface act as a volume conductor with low-pass filtering properties. This filtering reduces the amplitude of higher-frequency components before they reach the skin surface~\cite{kamen_essentials_2010, konrad_abc_2006}. Both characteristics affect electrode placement and the signal characteristics in surface \gls{emg}, as discussed in Section~\ref{sec:EMG_measurement}.
+
+\FloatBarrier
 
 \section{Electromyography} \label{sec:EMG}
 
@@ -97,6 +101,8 @@ The frequency content of the \gls{emg} signal carries physiological information 
 
 % Statistical character + section hand-off
 The active motor units and their firing times continuously change, so the \gls{semg} signal recorded at the skin is stochastic and its exact waveform cannot be predicted or reproduced~\cite{konrad_abc_2006}. The signal is biphasic, with approximately symmetric positive and negative amplitudes and a mean near zero. At low contraction levels, individual \glspl{muap} may still be distinguishable, but as intensity increases, they merge into a dense waveform known as an interference pattern~\cite{konrad_abc_2006, cavalcanti_garcia_surface_2010}. The \gls{semg} therefore provides a global measure of muscle activation but cannot resolve the activity of individual motor units~\cite{cavalcanti_garcia_surface_2010}. The stochastic, zero-mean character of the signal shapes the amplitude and spectral measures used later in this thesis, and it sets the starting point for the recording techniques described in Section~\ref{sec:EMG_measurement}.
+
+\FloatBarrier
 
 \subsection{Measurement Techniques} \label{sec:EMG_measurement}
 % Two measurement techniques
@@ -143,6 +149,7 @@ The raw \gls{semg} signal amplitude at the skin surface spans \SIrange{10}{5000}
     \label{fig:raw_semg}
 \end{figure}
 
+\FloatBarrier
 % In monopolar config, is the ref electrode the same as the gnd electrode?
 \paragraph{sEMG Electrode Configuration} \label{sec:sEMG_electrodes}
 
@@ -216,6 +223,7 @@ The recorded \gls{sc} signal is the sum of a slowly varying \gls{scl} and superi
     \label{fig:eda_signal_decomp}
 \end{figure}
 
+\FloatBarrier
 \subsection{Measurement Techniques} \label{sec:EDA_measurement}
 % Endosomatic recording
 

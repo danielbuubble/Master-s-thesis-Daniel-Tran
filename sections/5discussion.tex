@@ -157,10 +157,12 @@ Version A fails detection on \num{4} of \num{30} post-isolation epochs, dropping
 
 The amplitude-preservation metric reflects these differences directly. Primary returns \SI{+1.23}{\decibel}, Version~A returns \SI{+0.88}{\decibel}, and Version~B returns \SI{+10.83}{\decibel}. The pre-isolation amplitudes across the three methods agree because the noise floor on the pre-isolation channel is well below the \gls{scr} amplitude. The post-isolation amplitudes diverge because the post-isolation noise floor is comparable to the \gls{scr} amplitude, so where each method reads conductance values then matters. The Primary smoothed method is the only one of the three that maintains a detection rate of $\num{100}$\,\si{\percent} across both conditions and keeps the post-isolation amplitude estimate close to the pre-isolation reference. The \SI{+1.23}{\decibel} headline reported in \autoref{sec:q3_isolation_stage} therefore rests on the smoothing step, and without that step, the apparent \SI{+10.83}{\decibel} amplification across the isolation stage is an analysis artifact rather than a property of the circuit.
 
+\FloatBarrier
+
 \subsection{Q4 - Digital Filtering Effect on EMG}
 \label{sec:disc-iso-digital-filter}
 
-\autoref{sec:q4_digital_filtering} reports the Q4 comparison across four conditions: pre-isolation raw, pre-isolation digitally filtered, post-isolation raw, and post-isolation digitally filtered. The four conditions cover the same 119 Session~1 epochs used in \autoref{sec:disc-iso-emg}. The digital filter chain is defined in the Methods chapter. It consists of a second-order Butterworth high-pass at \SI{20}{\hertz}, an infinite impulse response notch at \SI{50}{\hertz} with quality factor \(Q = \num{30}\), and a fourth-order Butterworth low-pass at \SI{500}{\hertz}, all applied zero-phase via \texttt{filtfilt} (\autoref{sec:emg_processing}). Q4 is \gls{emg}-only by design (\autoref{sec:validation}).
+\autoref{sec:q4_digital_filtering} reports the Q4 comparison across four conditions: pre-isolation raw, pre-isolation digitally filtered, post-isolation raw, and post-isolation digitally filtered. The four conditions cover the same 119 Session~1 epochs used in \autoref{sec:disc-iso-emg}. The digital filter chain is defined in the Methods chapter. It consists of a second-order Butterworth high-pass at \SI{20}{\hertz}, an infinite impulse response notch at \SI{50}{\hertz} with quality factor \(Q = \num{30}\), and a fourth-order Butterworth low-pass at \SI{500}{\hertz}, all applied zero-phase (\autoref{sec:emg_processing}). Q4 is \gls{emg}-only by design (\autoref{sec:validation}).
 
 \autoref{fig:q4-emg-psd-four} shows that the post-isolation filtered \gls{emg} spectrum sits visibly above the pre-isolation filtered spectrum across the entire passband from \SI{20}{\hertz} to \SI{500}{\hertz}. The same visual pattern appears in \autoref{fig:q4-emg-means} for the time-domain envelope mean. The notch removed the \SI{50}{\hertz} fundamental on both chains (\autoref{tab:q4-emg-metrics}). The integrated notch depth was \SI{26.18}{\decibel} pre and \SI{20.40}{\decibel} post. The \SI{5.78}{\decibel} difference reflects one spectral signature of the post-isolation contribution. The same notch geometry produces a shallower notch depth on the post-isolation chain because the broadband baseline against which the notch operates is higher.
 
@@ -428,6 +430,7 @@ The validation pipeline applies digital filtering to \gls{emg} (Methods \autoref
 
 The validation should have included this visualization and a sensitivity check testing whether the Q3 \gls{eda} Pearson $r$ (\autoref{sec:disc-iso-eda-pearson}), the Q5 \gls{scl} shift between \gls{eda}-only and Combined (\autoref{sec:disc-q5}), and the Q5b deviation amplitude at \gls{emg} cues (\autoref{sec:disc-q5b}) are filter-independent. Q6b is excluded because \gls{eda} digital filtering does not apply to the \gls{emg} channel. Pipeline-wide characterization is taken up in \autoref{sec:disc-future}.
 
+\FloatBarrier
 %------------------------------------------------------------------------------
 % §5.5.3 Findings bounded by validation scope
 %------------------------------------------------------------------------------
