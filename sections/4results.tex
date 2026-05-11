@@ -198,7 +198,7 @@ Figure~\ref{fig:q2-eda-representative} shows a representative single epoch from 
   \label{fig:q2-eda-representative}
 \end{figure}
 
-The post-isolation \gls{scl} measured across the \num{30} epochs of Session~2 was $\num{7.714} \pm \num{0.398}$\,\si{\micro\siemens}. Mean \gls{scr} amplitude was $\num{0.588} \pm \num{0.158}$\,\si{\micro\siemens}, and rise time was $\num{3.751} \pm \num{0.776}$\,\si{\second}. Detection rate was \SI{100}{\percent} (\num{30}/\num{30} epochs). $\sigma_{\text{local}}$ describes within-epoch baseline variability (Section~\ref{sec:eda_processing}). For Session~2, $\sigma_{\text{local}}$ was $\num{0.193} \pm \num{0.021}$\,\si{\micro\siemens}. Figure~\ref{fig:q2-eda-overlay} shows the signal across these epochs.
+The post-isolation \gls{scl} measured across the \num{30} epochs of Session~2 was $\num{7.714} \pm \num{0.398}$\,\si{\micro\siemens}. Mean \gls{scr} amplitude was $\num{0.588} \pm \num{0.158}$\,\si{\micro\siemens}, and rise time was $\num{3.751} \pm \num{0.776}$\,\si{\second}. Detection rate was \SI{100}{\percent} (\num{30}/\num{30} epochs). $\sigma_{\text{local}}$ describes within-epoch noise variability over the pre-cue window (Section~\ref{sec:eda_processing}). For Session~2, $\sigma_{\text{local}}$ was $\num{0.193} \pm \num{0.021}$\,\si{\micro\siemens}. Figure~\ref{fig:q2-eda-overlay} shows the signal across these epochs.
 
 \begin{figure}[!htbp]
   \centering
@@ -207,7 +207,7 @@ The post-isolation \gls{scl} measured across the \num{30} epochs of Session~2 wa
   \label{fig:q2-eda-overlay}
 \end{figure}
 
-$\sigma_{\text{session}}$ describes long-timescale baseline drift (Section~\ref{sec:eda_processing}). For Session~2, $\sigma_{\text{session}}$ was \SI{0.549}{\micro\siemens}. \gls{snr}$_{\text{circuit}}$ was \SI{0.60}{\decibel} (using $\sigma_{\text{session}}$), and \gls{snr}$_{\text{local}}$ was \SI{9.66}{\decibel} (using $\sigma_{\text{local}}$). Figure~\ref{fig:q2-eda-psd} shows the post-isolation \gls{psd}. Table~\ref{tab:q2-eda-metrics} summarizes the per-epoch metrics.
+$\sigma_{\text{session}}$ describes long-timescale variability across the stabilization recording (Section~\ref{sec:eda_processing}). For Session~2, $\sigma_{\text{session}}$ was \SI{0.549}{\micro\siemens}. \gls{snr}$_{\text{circuit}}$ was \SI{0.60}{\decibel} (using $\sigma_{\text{session}}$), and \gls{snr}$_{\text{local}}$ was \SI{9.66}{\decibel} (using $\sigma_{\text{local}}$). Figure~\ref{fig:q2-eda-psd} shows the post-isolation \gls{psd}. Table~\ref{tab:q2-eda-metrics} summarizes the per-epoch metrics.
 
 \begin{figure}[!htbp]
   \centering
@@ -351,7 +351,7 @@ The post-isolation \gls{eda} characterization is reported in Section~\ref{sec:re
 \subsection{Q4 - Digital Filtering}
 \label{sec:results-q4}
 
-Figure~\ref{fig:q4-emg-waveform} shows a single contraction epoch from Session~1 across the four conditions: pre-isolation raw, pre-isolation filtered, post-isolation raw, and post-isolation filtered. The post-isolation panels show visibly more baseline noise than the pre-isolation panels.
+Figure~\ref{fig:q4-emg-waveform} shows a single contraction epoch from Session~1 across the four conditions: pre-isolation raw, pre-isolation filtered, post-isolation raw, and post-isolation filtered. The post-isolation panels show visibly more noise than the pre-isolation panels.
 
 \begin{figure}[!htbp]
   \centering
@@ -801,7 +801,7 @@ Figure~\ref{fig:q7-eda-bars} shows the per-session \gls{eda} scalar metrics acro
   \label{fig:q7-eda-by-block}
 \end{figure}
 
-Tables~\ref{tab:q7-eda-signal} and~\ref{tab:q7-eda-noise-snr} report the per-session per-block \gls{eda} measurements for Sessions 3 to 5. Table~\ref{tab:q7-eda-signal} groups the signal quantities, \gls{scl} and \gls{scr} amplitude. Table~\ref{tab:q7-eda-noise-snr} groups the noise floor and \gls{snr} metrics. The noise floor is reported under two conventions. $\sigma_{\text{local}}$ is computed from the \SI{2}{\second} pre-cue window per epoch and resolves block-level variation. $\sigma_{\text{session}}$ is computed from the 10-minute post-isolation baseline recorded before the test run and is therefore session-level rather than block-level.
+Tables~\ref{tab:q7-eda-signal} and~\ref{tab:q7-eda-noise-snr} report the per-session per-block \gls{eda} measurements for Sessions 3 to 5. Table~\ref{tab:q7-eda-signal} groups the signal quantities, \gls{scl} and \gls{scr} amplitude. Table~\ref{tab:q7-eda-noise-snr} groups the noise floor and \gls{snr} metrics. The noise floor is reported under two conventions. $\sigma_{\text{local}}$ is computed from the \SI{2}{\second} pre-cue window per epoch and resolves block-level variation.$\sigma_{\text{session}}$ is computed from the 10-minute post-isolation stabilization recording captured before the test run and is therefore session-level rather than block-level.
 \begin{table}[!htbp]
   \centering
   \caption{Per-session per-block \gls{eda} signal quantities, Sessions 3 to 5. Mean $\pm$ SD across each session-block's epochs ($n = \num{10}$ per block) for \gls{scl} and \gls{scr} amplitude.}
@@ -824,7 +824,7 @@ Tables~\ref{tab:q7-eda-signal} and~\ref{tab:q7-eda-noise-snr} report the per-ses
 
 \begin{table}[!htbp]
   \centering
-  \caption{Per-session per-block \gls{eda} noise floor and \gls{snr} metrics, Sessions 3 to 5. $\sigma_{\text{local}}$ is the mean per-epoch detrended SD over the \SI{2}{\second} pre-cue window, per block. $\sigma_{\text{session}}$ is the SD of the linearly detrended 10-minute post-isolation baseline, per session, and therefore takes one value per session. \gls{snr} values are session-block scalars without per-epoch SD.}
+  \caption{Per-session per-block \gls{eda} noise floor and \gls{snr} metrics, Sessions 3 to 5. $\sigma_{\text{local}}$ is the mean per-epoch detrended SD over the \SI{2}{\second} pre-cue window, per block. $\sigma_{\text{session}}$ is the SD of the linearly detrended 10-minute post-isolation stabilization recording, per session, and therefore takes one value per session. \gls{snr} values are session-block scalars without per-epoch SD.}
   \label{tab:q7-eda-noise-snr}
   \begin{tabular}{l l c c c c}
     \toprule

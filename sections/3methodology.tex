@@ -403,7 +403,7 @@ At each \gls{eda} stimulus cue, the participant inhaled deeply over 2~seconds fr
 
 \subsection{Recording Procedure}
 
-All sessions followed the same structure: a 30-minute stabilization period during which the final 10 minutes were recorded as baseline, followed by a 30-minute test run. Sessions 1 and 2 verified each circuit individually, with only one circuit connected at a time. Sessions 3 to 5 validated simultaneous operation with both circuits connected.
+All sessions followed the same structure: a 30-minute stabilization period during which the final 10 minutes were captured as the stabilization recording, followed by a 30-minute test run. Sessions 1 and 2 verified each circuit individually, with only one circuit connected at a time. Sessions 3 to 5 validated simultaneous operation with both circuits connected.
 
 \subsubsection{Session 1: EMG Circuit Verification} \label{sec:session1}
 Only the EMG circuit was connected. The EDA circuit was physically disconnected. Two channels were recorded simultaneously throughout:
@@ -415,7 +415,7 @@ Only the EMG circuit was connected. The EDA circuit was physically disconnected.
 \begin{enumerate}
     \item Electrodes were applied as described above (EMG electrodes only).
     \item The participant rested quietly for 30~minutes to allow the electrode-skin impedance to stabilize.
-    \item During the final 10~minutes of this period, baseline \gls{emg} was recorded on both channels.
+    \item During the final 10~minutes of this period, the \gls{emg} stabilization recording was captured on both channels.
     \item The 30-minute test run began. Every 15~seconds, a cue prompted the participant to perform one \gls{emg} stimulus of \SI{1}{\second}, followed by relaxation. This yielded 120 \gls{emg} stimuli.
 \end{enumerate}
 
@@ -431,7 +431,7 @@ Only the \gls{eda} circuit was connected. The \gls{emg} circuit was physically d
 \begin{enumerate}
     \item Electrodes were applied as described above (EDA electrodes only).
     \item The participant rested quietly for 30~minutes to allow the electrode-skin impedance to stabilize.
-    \item During the final 10~minutes of this period, baseline EDA was recorded on both channels. The post-isolation baseline served as the session-level EDA noise floor in the analysis described in Section~\ref{sec:eda_processing}.
+    \item During the final 10~minutes of this period, the \gls{eda} stabilization recording was captured on both channels. The post-isolation stabilization recording served as the data source for the session-level \gls{eda} noise floor in the analysis described in Section~\ref{sec:eda_processing}.
     \item The 30-minute test run began. Every 60~seconds, a cue prompted the participant to perform one deep-breath EDA stimulus. This yielded 30 EDA stimuli.
 \end{enumerate}
 
@@ -443,12 +443,12 @@ Both circuits were connected simultaneously. Unlike Sessions 1 and 2, which reco
     \item \gls{emg} post-isolation, unfiltered (raw)
     \item \gls{eda} post-isolation, unfiltered (raw)
 \end{itemize}
-Each session consisted of a 30-minute stabilization period during which the final 10 minutes were recorded as baseline, followed by a 30-minute test run.
+Each session consisted of a 30-minute stabilization period during which the final 10 minutes were captured as the stabilization recording, followed by a 30-minute test run.
 
 \begin{enumerate}
     \item \gls{emg} and \gls{eda} electrodes were applied as described above.
     \item The participant rested quietly for 30 minutes to allow the electrode-skin impedance to stabilize.
-    \item During the final 10~minutes of this period, baseline \gls{emg} and \gls{eda} signals were recorded while the participant remained still and breathed normally. The post-isolation \gls{eda} baseline served as the session-level \gls{eda} noise floor in the analysis described in Section~\ref{sec:eda_processing}. The \gls{emg} baseline was recorded as a sanity check and was not used as a noise floor. \gls{emg} noise is estimated per epoch as described in Section~\ref{sec:emg_processing}.
+    \item During the final 10~minutes of this period, \gls{emg} and \gls{eda} stabilization recordings were captured while the participant remained still and breathed normally. The post-isolation \gls{eda} stabilization recording served as the data source for the session-level \gls{eda} noise floor in the analysis described in Section~\ref{sec:eda_processing}. The \gls{emg} stabilization recording was captured as a sanity check and was not used as a noise-floor source. \gls{emg} noise is estimated per epoch as described in Section~\ref{sec:emg_processing}.
     \item The 30-minute test run consisted of three 10-minute blocks:
     \begin{enumerate}
         \item \textbf{Block 1: EDA-only (10 minutes)}\\ The participant remained seated with the left hand resting in the neutral position. Every 60 seconds, a cue prompted one deep-breath \gls{eda} stimulus. No voluntary hand or finger movement was performed. This block yielded 10 \gls{eda} stimuli.
@@ -517,7 +517,7 @@ Five methods were used throughout this thesis to answer Q1 to Q7 (Section~\ref{s
 
 % SNR: definition and purpose
 %SNR - general equation, S and N deferred
-\gls{snr} quantified the amplitude of a desired signal relative to the background noise floor and indicated whether the stimulus-evoked signal was distinguishable from baseline noise:
+\gls{snr} quantified the amplitude of a desired signal relative to the background noise floor and indicated whether the stimulus-evoked signal was distinguishable from the noise floor:
 \begin{equation}
     \text{SNR}_\text{dB} = 20\log_{10}\left(\frac{S}{N}\right)
     \label{eq:snr}
@@ -575,11 +575,11 @@ To address Q4, a three-stage digital filter chain was applied offline to the con
 This was narrower than the analog twin-T notch bandwidth of \SI{10.5}{\hertz} ($Q \approx 5$, Equation~\ref{eq:notch_q}). All subsequent processing steps were applied identically to both paths.
 
 %Contamination filter - empirical threshold, no citation
-A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically. No standard criterion exists in the EMG literature for this type of rejection. Epochs above the threshold were assumed to contain baseline interference that would corrupt both the noise-floor and contraction-RMS estimates.
+A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically. No standard criterion exists in the EMG literature for this type of rejection. Epochs above the threshold were assumed to contain pre-cue interference that would corrupt both the noise-floor and contraction-RMS estimates.
 %Epochs above the threshold likely contained motion artifacts or other baseline interference that would corrupt both the noise floor and contraction RMS estimates.
 
 %Noise floor - mean pre-cue RMS across clean epochs, why per-epoch
-The noise floor was the mean pre-cue RMS across all epochs that passed the contamination filter. This per-epoch approach tracked signal conditions at each contraction rather than relying on a session-level baseline that would not capture short-term changes in electrode contact or ambient noise.
+The noise floor was the mean pre-cue RMS across all epochs that passed the contamination filter. This per-epoch approach tracked signal conditions at each contraction rather than relying on a session-level noise floor that would not capture short-term changes in electrode contact or ambient noise.
 
 %Sliding window RMS - linear envelope, visualization only, clean epochs only
 Linear envelope detection was used to visualize the time course of muscle activation~\cite{kamen_essentials_2010}. The rectified EMG signal was processed with a \SI{100}{\milli\second} sliding RMS window, producing a smooth amplitude envelope that tracked muscle activity over time~\cite{konrad_abc_2006}. The \SI{100}{\milli\second} window balanced temporal resolution against stability of estimates. The sliding-window RMS was applied only to clean epochs and was not used in any metric computation.
@@ -606,7 +606,7 @@ where $f_0$ is the harmonic center frequency and $\Delta f = \SI{1.67}{\hertz}$.
 The following section describes how the EDA signal was quantified. As described in Section~\ref{sec:EDA_signal}, the EDA signal consists of a tonic component, the skin conductance level (SCL), and a phasic component, the skin conductance response (SCR). The sampled voltage $V_\text{EDA}$ was converted to skin conductance using Equation~\ref{eq:EDA_skin_resistance}, with measurements expressed in \si{\micro\siemens}.
 
 %Epoch extraction (-2 to +10s), baseline -2 to 0s, why 12s window
-The EDA recording was segmented into epochs time-locked to each breath-holding cue, as illustrated in Figure~\ref{fig:eda_epoch}A. Each epoch spanned from \SI{2}{\second} before to \SI{10}{\second} after the cue onset, giving a \SI{12}{\second} window per trial. The pre-cue segment from \SIrange{-2}{0}{\second} served as the per-epoch baseline for SCL and noise floor estimation. A longer pre-cue window than in the EMG case was used because EDA exhibits slower drift and requires more samples to obtain a stable tonic estimate. The post-cue window extended to \SI{10}{\second} to capture the full SCR morphology, including the recovery phase, which typically lasts several seconds after the response peak.
+The EDA recording was segmented into epochs time-locked to each breath-holding cue, as illustrated in Figure~\ref{fig:eda_epoch}A. Each epoch spanned from \SI{2}{\second} before to \SI{10}{\second} after the cue onset, giving a \SI{12}{\second} window per trial. The pre-cue segment from \SIrange{-2}{0}{\second} was used for per-epoch \gls{scl} and noise-floor estimation. A longer pre-cue window than in the EMG case was used because EDA exhibits slower drift and requires more samples to obtain a stable tonic estimate. The post-cue window extended to \SI{10}{\second} to capture the full SCR morphology, including the recovery phase, which typically lasts several seconds after the response peak.
 
 %No digital filtering + reason
 No digital filtering was applied to the EDA signal. The \SI{1.5}{\hertz} analog low-pass filter in the EDA front-end (Section~\ref{sec:EDA_frontend}) already bandlimits the signal to the relevant EDA frequency range. Additional digital filtering risked distorting the slow SCR waveform dynamics that carried the physiological information of interest.
@@ -618,11 +618,11 @@ Mean subtraction was not applied to the EDA signal. Unlike EMG, EDA is DC-couple
 The SCL was computed as the mean conductance over the per-epoch pre-cue window, shown as the grey region in Figure~\ref{fig:eda_epoch}B. This operationalization differs from the conventional session-level SCL estimate~\cite{boucsein_electrodermal_2012} and was chosen to provide a tonic estimate representative of signal conditions at the time of each stimulus, while capturing habituation-driven drift across the recording. The SCL also served as a between-condition comparator in Q5 to detect tonic contamination from simultaneous EMG operation.
 
 %Noise floor - two estimates, session-level circuit + per-epoch local, why not RMS
-Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift, and the standard deviation of the detrended residual was taken as the session-level noise floor $\sigma_\text{baseline, session}$. A separate $\sigma_\text{baseline, session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
+Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift, and the standard deviation of the detrended residual was taken as the session-level noise floor $\sigma_\text{session}$. A separate $\sigma_\text{session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
 
-The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue window of each stimulus epoch. Each window was linearly detrended, and the standard deviation of the residual was computed. The mean across all epochs in a block was taken as the local noise floor $\sigma_\text{baseline, local}$. This estimate represented the noise conditions immediately preceding each SCR, including circuit noise and non-specific activity. For brevity, $\sigma_\text{baseline,session}$ and $\sigma_\text{baseline,local}$ are abbreviated as $\sigma_\text{session}$ and $\sigma_\text{local}$ in the remainder of the thesis.
+The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue window of each stimulus epoch. Each window was linearly detrended, and the standard deviation of the residual was computed. The mean across all epochs in a block was taken as the local noise floor $\sigma_\text{local}$. This estimate represented the noise conditions immediately preceding each SCR, including circuit noise and non-specific activity. 
 
-RMS was not used for either estimate. EDA is DC-coupled, and an RMS over the baseline is dominated by the SCL mean and carries no noise-floor information.
+\gls{rms} was not used for either estimate. \gls{eda} is DC-coupled, and an \gls{rms} over the stabilization recording is dominated by the \gls{scl} mean and carries no noise-floor information.
 
 %SCR detection - Zangróniz criteria, onset, 250ms smoothing, unsmoothed amplitude, dominant response
 SCR detection followed the criteria described by~\textcite{zangroniz_electrodermal_2017}. A response was considered valid if its amplitude exceeded \SI{0.05}{\micro\siemens} and its onset fell within the \SIrange{1}{6}{\second} post-cue detection window shown as the green region in Figure~\ref{fig:eda_epoch}B. The \gls{scr} onset was identified as the conductance minimum within \SIrange{1}{3.5}{\second} post-cue, or up to the peak location if the peak fell before \SI{3.5}{\second}. The onset search used the smoothed signal to match the peak-detection procedure described below. Restricting the onset to this sub-window enforced physiologically plausible stimulus-response latency. The peak was still permitted anywhere within the full \SIrange{1}{6}{\second} detection window. To reduce bias from noise on the peak location, the signal was smoothed with a \SI{250}{\milli\second} moving average before applying the argmax. The window suppressed noise spikes that would otherwise shift the peak location away from the physiological SCR peak without smearing the SCR itself. The SCR rise time is typically several seconds. The window length was chosen empirically. The SCR amplitude was read from the smoothed signal at the detected peak index (Figure~\ref{fig:eda_epoch}B). For consistency with the peak-detection procedure, the amplitude was read from the smoothed signal rather than the unsmoothed one. The same smoothing was applied to the pre-isolation signal to keep the comparison symmetrical. The amplitude effect of smoothing on the pre-isolation signal is negligible because it carries no broadband noise. The SCR amplitude was computed as the peak-to-onset conductance difference. Where multiple threshold crossings occurred within a single epoch, only the dominant response was kept.
@@ -633,7 +633,7 @@ SCR detection followed the criteria described by~\textcite{zangroniz_electroderm
     \caption{%
         Epoch-based analysis of the EDA signal.
         \textbf{A)} A \SI{60}{\second} segment of the continuous EDA recording, showing the slow tonic drift (SCL) and a stimulus-evoked SCR at the cue event (dashed line). The shaded region marks the extracted epoch.
-        \textbf{B)} The extracted epoch referenced to the cue onset. The grey region is the \SI{2}{\second} pre-cue baseline used for per-epoch SCL and local noise floor estimation. The green region is the \SIrange{1}{6}{\second} detection window within which a valid SCR onset must fall. The SCR amplitude $A_\mathrm{SCR}$ is measured from the onset conductance minimum to the response peak. Rise time is the duration from onset to peak. Synthetic data for illustration.
+        \textbf{B)} The extracted epoch referenced to the cue onset. The grey region is the \SI{2}{\second} pre-cue window used for per-epoch \gls{scl} and local noise floor estimation. The green region is the \SIrange{1}{6}{\second} detection window within which a valid SCR onset must fall. The SCR amplitude $A_\mathrm{SCR}$ is measured from the onset conductance minimum to the response peak. Rise time is the duration from onset to peak. Synthetic data for illustration.
     }
     \label{fig:eda_epoch}
 \end{figure}
