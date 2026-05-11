@@ -83,7 +83,7 @@ After the instrumentation amplifier, the signal passed through three filter stag
 
 \paragraph{50\,Hz Notch Filter}
 Power-line interference appears as a large, narrowband disturbance at \SI{50}{\hertz} in the European grid environment. The \gls{semg} signal contains useful spectral content on both sides of \SI{50}{\hertz}, so a notch filter was used rather than raising the high-pass cutoff.
-A twin-T active notch topology was implemented, as shown in Figure~\ref{fig:emg-frontend-blocks}b, with the notch frequency set to \SI{50}{\hertz} by the passive network values. The active feedback path, implemented using an operational amplifier, increased the notch's quality factor beyond what a passive twin-T alone could achieve.
+A twin-T active notch topology was implemented, as shown in Figure~\ref{fig:emg-frontend-blocks}b, with the notch frequency set to \SI{50}{\hertz} by the passive network values. The active feedback path, implemented using an \gls{opamp}, increased the notch's quality factor beyond what a passive twin-T alone could achieve.
 The quality factor was determined from the simulated frequency response (Figure~\ref{fig:EMG_LTSpice_bode}):
 \begin{equation}
     Q = \frac{f_0}{f_\text{upper} - f_\text{lower}} 
@@ -95,7 +95,7 @@ where $f_\text{upper}$ and $f_\text{lower}$ are the upper and lower \SI{-3}{\dec
 
 \paragraph{High-Pass Filter} %Gain = 11
 \label{sec:EMG_hpf}
-The high-pass stage consisted of a passive RC filter followed by a non-inverting operational amplifier. From Figure~\ref{fig:emg-frontend-blocks}c, components $CG4 = \SI{1}{\micro\farad}$ and $RG6 = \SI{15}{\kilo\ohm}$ set the cutoff frequency to $f_c = \SI{10}{\hertz}$ using Eq.~\ref{eq:RC_fc}, and components $RG7 = \SI{10}{\kilo\ohm}$ and $RG8 = \SI{100}{\kilo\ohm}$ set the amplifier gain to \num{11}.
+The high-pass stage consisted of a passive RC filter followed by a non-inverting \gls{opamp}. From Figure~\ref{fig:emg-frontend-blocks}c, components $CG4 = \SI{1}{\micro\farad}$ and $RG6 = \SI{15}{\kilo\ohm}$ set the cutoff frequency to $f_c = \SI{10}{\hertz}$ using Eq.~\ref{eq:RC_fc}, and components $RG7 = \SI{10}{\kilo\ohm}$ and $RG8 = \SI{100}{\kilo\ohm}$ set the amplifier gain to \num{11}.
 The International Society for Electrophysiology and Kinesiology (ISEK) recommended a \SI{10}{\hertz} high-pass cutoff for sEMG recordings under controlled conditions, and \SI{20}{\hertz} for dynamic movements where motion artifacts were more pronounced~\cite{kamen_essentials_2010}. Since the protocol employed isometric contractions, \SI{10}{\hertz} was selected to preserve the low-frequency spectral content associated with motor unit firing patterns~\cite{kamen_essentials_2010}
 
 \paragraph{Low-Pass Filter} %Gain = 5/3
@@ -139,7 +139,7 @@ The \gls{eda} front-end followed the design of \textcite{zangroniz_electrodermal
 \end{figure}
 
 \subsubsection{Virtual Ground}
-In a single-supply configuration, the op-amp has no negative rail, so a stable mid-supply reference is needed for the current source to operate correctly~\cite{zangroniz_electrodermal_2017}. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by op-amp U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
+In a single-supply configuration, the op-amp has no negative rail, so a stable mid-supply reference is needed for the current source to operate correctly~\cite{zangroniz_electrodermal_2017}. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by \gls{opamp} U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
 
 \subsubsection{Current Source}
 \label{sec:EDA_current_source}
@@ -230,7 +230,7 @@ The \SI{5}{\volt} rail was derived from the VBUS pin of a USB-C receptacle, as d
 
 \subsubsection{EMG Power Supply}
 \label{sec:EMG_power}
-The \gls{emg} front-end required a dual-rail supply for the INA828 and signal-conditioning operational amplifiers (op-amps). A TPS65133DPDR generated \SI{\pm 5}{\volt} from the isolated \SI{5}{\volt} input on GND\_G, as illustrated in Figure~\ref{fig:power_blocks}b. The output filter adhered to the recommended application circuit from the datasheet~\cite{noauthor_tps65133_nodate}, with $L_{G1} = L_{G2} = \SI{4.7}{\micro\henry}$ and decoupling capacitors on both rails.
+The \gls{emg} front-end required a dual-rail supply for the INA828 and signal-conditioning \glspl{opamp}. A TPS65133DPDR generated \SI{\pm 5}{\volt} from the isolated \SI{5}{\volt} input on GND\_G, as illustrated in Figure~\ref{fig:power_blocks}b. The output filter adhered to the recommended application circuit from the datasheet~\cite{noauthor_tps65133_nodate}, with $L_{G1} = L_{G2} = \SI{4.7}{\micro\henry}$ and decoupling capacitors on both rails.
 
 \subsubsection{EDA Power Supply}
 \label{sec:EDA_power}
