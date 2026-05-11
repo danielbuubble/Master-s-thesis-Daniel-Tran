@@ -139,7 +139,7 @@ The \gls{eda} front-end followed the design of \textcite{zangroniz_electrodermal
 \end{figure}
 
 \subsubsection{Virtual Ground}
-In a single-supply configuration, the op-amp has no negative rail, so a stable mid-supply reference is needed for the current source to operate correctly~\cite{zangroniz_electrodermal_2017}. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by \gls{opamp} U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
+In a single-supply configuration, the \gls{opamp} has no negative rail, so a stable mid-supply reference is needed for the current source to operate correctly~\cite{zangroniz_electrodermal_2017}. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by \gls{opamp} U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
 
 \subsubsection{Current Source}
 \label{sec:EDA_current_source}
