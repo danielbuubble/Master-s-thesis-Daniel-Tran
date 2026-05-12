@@ -126,10 +126,11 @@ The output \texttt{EMG\_VLC} was passed to the galvanic isolation stage, describ
 The total voltage gain was the product of the instrumentation amplifier gain and the filter chain gain:
 \begin{equation}
     G_\text{total} = G_\text{INA828} \times G_\text{filters}
-    = G_\text{INA828} \times (G_\text{HPF} \times G_\text{LPF}) = \num{40} \times \num{11} \times \num{1.67} \approx \num{733.3}.
+    = G_\text{INA828} \times (G_\text{HPF} \times G_\text{LPF}) = \num{40} \cdot \num{11} \cdot \num{1.67} \approx \num{733.3}
     \label{eq:total-gain}
 \end{equation}
-At the maximum \gls{semg} amplitude of \SI{300}{\micro\volt} (Section~\ref{sec:sEMG_signal}), the front-end output reached approximately \SI{220}{\milli\volt}, well within the \SI{\pm5}{\volt} input range of the \gls{daq} card. The Bode plot in Figure~\ref{fig:EMG_LTSpice_bode} showed the simulated frequency response of the complete front-end.
+The front-end output reached approximately \SI{220}{\milli\volt} at the maximum \gls{semg} amplitude of \SI{300}{\micro\volt} (Section~\ref{sec:sEMG_signal}), well within the \SI{\pm5}{\volt} input range of the \gls{daq} card. The Bode plot in Figure~\ref{fig:EMG_LTSpice_bode} showed the simulated frequency response of the complete front-end.
+
 
 \begin{figure}[H] 
     \centering
@@ -176,7 +177,7 @@ Skin conductance was then obtained by taking the inverse of Equation~\ref{eq:EDA
 
 
 \subsubsection{Low-Pass Filter}\label{sec:EDA_LPF}
-The low-pass filter limited the signal to the EDA bandwidth with a cutoff frequency of \SI{1.5}{\hertz}~\cite{zangroniz_electrodermal_2017}. A second-order active Sallen-Key stage ($R_{A3}$, $R_{A5}$, $C_{A5}$, $C_{A6}$) with a Butterworth response was followed by a first-order passive RC stage ($R_{A7}$, $C_{A8}$), giving a third-order roll-off overall. The Sallen-Key feedback network ($R_{A4}$, $R_{A6}$) added a gain of \(\times 2\), expanding the output range to match the DAQ input better. The filter output is denoted by $V_{EDA}$ throughout this thesis. This cutoff imposed a lower bound of approximately \SI{0.67}{\second} on the \gls{scr} rise time observable through the filter.
+The low-pass filter limited the signal to the EDA bandwidth with a cutoff frequency of \SI{1.5}{\hertz}~\cite{zangroniz_electrodermal_2017}. A second-order active Sallen-Key stage ($R_{A3}$, $R_{A5}$, $C_{A5}$, $C_{A6}$) with a Butterworth response was followed by a first-order passive RC low-pass stage ($R_{A7}$, $C_{A8}$), giving a third-order roll-off overall. The Sallen-Key feedback network ($R_{A4}$, $R_{A6}$) added a gain of \(\times 2\), expanding the output range to match the DAQ input better. The filter output is denoted by $V_{EDA}$ throughout this thesis. This cutoff imposed a lower bound of approximately \SI{0.67}{\second} on the \gls{scr} rise time observable through the filter.
 
 The output $V_{EDA}$ was passed to the galvanic isolation stage, described in Section~\ref{sec:galvanic_isolation}.
 
@@ -202,7 +203,7 @@ Each front-end was powered by a dedicated NXE2S0505MC-R7 isolated DC-DC converte
 
 \subsubsection{Signal Isolation}
 
-For signal isolation, the ISO224 reinforced-isolated amplifier was used, implemented according to the recommended application circuit in the datasheet~\cite{noauthor_iso224_nodate}, as shown in Figure~\ref{fig:isolation_blocks}b. Both front-ends operated from a \SI{5}{\volt} supply, ensuring that all signals remained well within the ISO224's allowable input range of \SI{\pm 12}{\volt}. The ISO224 had a fixed gain of \(1/3\), determined by component availability rather than by a specific design target. On the non-isolated side, the output was differential with a common-mode voltage of \( V_{DD2}/2 = \SI{2.5}{\volt} \). A unity-gain differential amplifier (MAX44241AUK+T, using four matched \SI{10}{\kilo\ohm} resistors) converted this to a single-ended signal, effectively canceling the \SI{2.5}{\volt} offset, as illustrated in Figure~\ref{fig:isolation_blocks}c.
+For signal isolation, the ISO224 reinforced-isolated amplifier was used, implemented according to the recommended application circuit in the datasheet~\cite{noauthor_iso224_nodate}, as shown in Figure~\ref{fig:isolation_blocks}b. Both front-ends operated from a \SI{5}{\volt} supply, ensuring that all signals remained well within the ISO224's allowable input range of \SI{\pm 12}{\volt}. The ISO224 had a fixed gain of $1/3$, set by the available device variant rather than by a specific design target. On the non-isolated side, the output was differential with a common-mode voltage of \( V_{DD2}/2 = \SI{2.5}{\volt} \). A unity-gain differential amplifier (MAX44241AUK+T, using four matched \SI{10}{\kilo\ohm} resistors) converted this to a single-ended signal, effectively canceling the \SI{2.5}{\volt} offset, as illustrated in Figure~\ref{fig:isolation_blocks}c.
 
 The \gls{daq} (introduced in Section~\ref{sec:system_architecture}) input range was configured to \SI{\pm 5}{\volt}, chosen to provide sufficient headroom for the anticipated signals while optimizing ADC resolution. The validation of the isolated system is addressed in Section~\ref{sec:validation}.
 
@@ -317,8 +318,8 @@ This section describes the system designed to measure \gls{emg} simultaneously a
 \label{sec:validation_Q}
 The validation was organized around seven questions, denoted Q1 to Q7, that structure the analysis described in Section~\ref{sec:signal_processing}:
 \begin{enumerate}[label=\textbf{Q\arabic*}]
-    \item What are the signal characteristics of the \gls{emg} front-end during isolated muscle contraction, and what are its limitations?
-    \item What are the signal characteristics of the \gls{eda} front-end during isolated measurement, and what are its limitations?
+    \item What are the signal characteristics of the \gls{emg} front-end during EMG-only operation, and what are its limitations?
+    \item What are the signal characteristics of the \gls{eda} front-end during EDA-only operation, and what are its limitations?
     \item How does the galvanic isolation stage affect signal amplitude, frequency content, waveform morphology, and added noise?
     \item How does digital post-filtering affect \gls{emg} signal quality at the pre- and post-isolation stages?
     \item How does simultaneous \gls{emg} acquisition affect the \gls{eda} measurement?
@@ -471,6 +472,7 @@ Each session consisted of a 30-minute stabilization period during which the fina
     \item The block order was fixed across Sessions 3 to 5: EDA-only first, EMG-only second, and Combined last.
 \end{enumerate}
 
+The validation protocol structures seven questions (Q1 to Q7) into individual front-end characterization, isolation-stage effects, simultaneous operation, and across-session reproducibility. Session~1 and Session~2 verified each front-end with the other circuit physically disconnected. Sessions 3 to 5 ran both circuits together under three block conditions: EDA-only, EMG-only, and Combined. Chapter~\ref{ch:results} reports the metrics defined in Section~\ref{sec:signal_processing} against this protocol.
 
 \section{Signal Processing and Data Analysis} \label{sec:signal_processing}
 %Full validation chain is: isolation works (Q3) → each signal is clean in isolation (Q1/Q2) → simultaneous operation doesn't degrade either signal (Q5/Q6).
