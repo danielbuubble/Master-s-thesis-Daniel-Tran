@@ -380,7 +380,7 @@ Figure~\ref{fig:q4-emg-psd-four} shows the \gls{psd} for each of the four condit
 
 \begin{table}[!htbp]
   \centering
-  \caption{Per-condition \gls{emg} metrics, Session~1 ($n = \num{119}$). Mean $\pm$ SD across epochs. Harmonic powers computed from the active-window signal spectrum, reported as pooled Welch estimates without per-epoch SD.}
+  \caption{Per-condition \gls{emg} metrics, Session~1 ($n = \num{119}$). Mean $\pm$ SD across epochs. Harmonic powers computed from the active-window signal spectrum, reported as pooled Welch estimates without per-epoch SD. Notch depth at \SI{50}{\hertz} computed per chain from Equation~\ref{eq:notch_depth}. The value spans the (raw, filtered) column pair for that chain.}
   \label{tab:q4-emg-metrics}
   \begin{tabular}{l c c c c l}
     \toprule
@@ -393,6 +393,8 @@ Figure~\ref{fig:q4-emg-psd-four} shows the \gls{psd} for each of the four condit
     Harmonic power, \SI{50}{\hertz}  & \num{28.69} & \num{0.07} & \num{34.95} & \num{0.32} & \si{\micro\volt\squared} \\
     Harmonic power, \SI{100}{\hertz} & \num{4.11}  & \num{4.09} & \num{4.58}  & \num{4.56} & \si{\micro\volt\squared} \\
     Harmonic power, \SI{150}{\hertz} & \num{5.24}  & \num{5.23} & \num{6.54}  & \num{6.53} & \si{\micro\volt\squared} \\
+    \addlinespace
+    Notch depth, \SI{50}{\hertz} & \multicolumn{2}{c}{\num{26.18}} & \multicolumn{2}{c}{\num{20.40}} & \si{\decibel} \\
     \bottomrule
   \end{tabular}
 \end{table}

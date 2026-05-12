@@ -514,7 +514,7 @@ EDA & Post & $\times 3$, then Equation~\ref{eq:EDA_skin_resistance}, inverted & 
 
 % Section overview and forward pointer
 %Five methods used: RMS, SNR, amplitude preservation, Pearson correlation, PSD - signal-agnostic definitions only
-Five methods were used throughout this thesis to answer Q1 to Q7 (Section~\ref{sec:validation_Q}): \gls{rms}, \gls{snr}, amplitude preservation, Pearson correlation, and \gls{psd}. Each is defined here in signal-agnostic terms. Signal-specific implementations are given in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
+Five methods were used throughout this thesis to answer Q1 to Q7 (Section~\ref{sec:validation_Q}): \gls{rms}, \gls{snr}, amplitude preservation, Pearson correlation, and \gls{psd}. Each is defined here in modality-independent terms. Signal-specific implementations are given in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 
 % RMS: definition and EMG/EDA applicability
 %RMS definition and equation - EMG only, state this explicitly, why not EDA
@@ -554,9 +554,9 @@ where $\bar{x}$ and $\bar{y}$ are the sample means. The coefficient $r$ ranges f
 
 % PSD: spectral analysis via Welch's method with per-segment detrending + section handoff
 %PSD - Welch's method, per-segment detrending, pointers to signal-specific params
-\gls{psd} described the distribution of signal power across frequency. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Each segment was mean-subtracted before the Fourier transform. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
+\gls{psd} characterized the front-end's frequency-domain behavior from the acquired biosignals by describing the distribution of signal power across frequency. A bench frequency-response sweep would require controlled input stimuli at the front-end's electrode interface, incompatible with the biosignal-driven validation used here. Full bench characterization is named as future work in Section~\ref{sec:disc-future}. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 
-Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. The following two sections describe how each method was applied to the \gls{emg} and \gls{eda} signals, respectively.
+Each Welch segment was mean-subtracted before the Fourier transform to remove the DC pedestal that would otherwise dominate the lowest-frequency bin. Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. The following two sections describe how each method was applied to the \gls{emg} and \gls{eda} signals, respectively.
 %A session-wide RMS would collapse the entire recording to a single power estimate and lose temporal resolution. Moving the window sample by sample yielded one RMS value per sample, preserving the time course of muscle activity.
 
 %EMG is bipolar, so the signal was rectified before the window was applied. Without rectification, positive and negative values would partially cancel within each window, underestimating the true signal amplitude.
@@ -570,13 +570,15 @@ The following section describes, in pipeline order, how the core analysis method
 The continuous \gls{emg} recording was segmented into epochs time-locked to each contraction cue. Each epoch spanned from \SI{0.5}{\second} before to \SI{3.5}{\second} after the cue onset, giving a \SI{4}{\second} window per contraction. Cue onset timestamps were extracted from the event markers stored in the TDMS file during acquisition. Two sub-windows were defined within each epoch: the pre-cue window from \SIrange{-0.5}{0}{\second} relative to the cue for DC offset estimation and noise floor computation, and the contraction window from \SIrange{0.0}{1.0}{\second} for signal amplitude estimation. The remainder of the epoch from \SI{1.0}{\second} to \SI{3.5}{\second} was included in figures to display the post-contraction return to baseline
 
 %Per-epoch mean subtraction - pre-cue mean, not full epoch, reason
-After extraction, the DC offset was removed from each epoch individually. The mean of the pre-cue window was computed and subtracted from all samples in that epoch. Using the pre-cue window rather than the full epoch mean avoided bias from the contraction, which would otherwise elevate the epoch mean and suppress both the baseline and contraction estimates. This step removed static DC contributions from the voltage lifting circuit (Section~\ref{sec:EMG_frontend}), electrode half-cell potentials, and amplifier input offsets.
+\paragraph{Mean Subtraction} 
+After each epoch was extracted, the residual DC offset was removed by subtracting the pre-cue mean from all samples in that epoch. Using the pre-cue window rather than the full epoch mean avoided bias from the contraction, which would otherwise elevate the epoch mean and suppress both the baseline and contraction estimates. This step removed static DC contributions from the voltage lifting circuit (Section~\ref{sec:EMG_frontend}), electrode half-cell potentials, and amplifier input offsets.
 
 The \gls{emg} signal oscillates symmetrically around zero, so the arithmetic mean is uninformative. Squaring each sample before averaging removes the sign and yields a direct amplitude measure.  
 
 %Scalar RMS - two values per epoch 
 Two scalar RMS values were computed per epoch using Equation~\ref{eq:rms}. The pre-cue RMS was calculated across all samples within the pre-cue window and served as the per-epoch noise-floor estimate. The contraction RMS was calculated over all samples in the contraction window and served as the signal amplitude estimate.
 
+\paragraph{Digital Filter Chain (Q4)}
 %Q4 parallel path - filter chain after mean subtraction, zero-phase, notch BW
 To address Q4, a three-stage digital filter chain was applied offline to the continuous signal before epoch extraction, creating a parallel path alongside the unfiltered signal. Per-epoch mean subtraction was applied to both paths after extraction. The chain consisted of a second-order Butterworth HPF at \SI{20}{\hertz}, an IIR notch at \SI{50}{\hertz} with $Q = 30$, and a fourth-order Butterworth LPF at \SI{500}{\hertz}. All stages used zero-phase filtering, applying each filter in the forward and backward directions to eliminate phase distortion. Zero-phase filtering was not available in the real-time analog chain because it requires access to future samples. The digital notch bandwidth was
 \begin{equation}
@@ -584,25 +586,32 @@ To address Q4, a three-stage digital filter chain was applied offline to the con
     \label{eq:digital_notch_bw}
 \end{equation}
 %This was narrower than the analog twin-T notch bandwidth of \SI{10.5}{\hertz} ($Q \approx 5$, Equation~\ref{eq:notch_q}), preserving more EMG spectral content around \SI{50}{\hertz}. 
-This was narrower than the analog twin-T notch bandwidth of \SI{10.5}{\hertz} ($Q \approx 5$, Equation~\ref{eq:notch_q}). All subsequent processing steps were applied identically to both paths.
+This was narrower than the analog twin-T notch bandwidth of \SI{10.5}{\hertz} ($Q \approx 5$, Equation~\ref{eq:notch_q}). All subsequent processing steps were applied identically to the unfiltered and filtered signals.
 
 %Contamination filter - empirical threshold, no citation
-A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically. No standard criterion exists in the EMG literature for this type of rejection. Epochs above the threshold were assumed to contain pre-cue interference that would corrupt both the noise-floor and contraction-RMS estimates.
+\paragraph{Contamination Filter} 
+A contamination filter was applied to exclude epochs with elevated baseline activity before metric computation. An epoch was rejected if its pre-cue RMS exceeded twice the median pre-cue RMS across epochs in the same acquisition block ($\text{RMS}_\text{pre} > 2 \times \tilde{\text{RMS}}_\text{pre}$). This threshold was chosen empirically. Epochs above the threshold were assumed to contain pre-cue interference that would corrupt both the noise-floor and contraction-RMS estimates.
 %Epochs above the threshold likely contained motion artifacts or other baseline interference that would corrupt both the noise floor and contraction RMS estimates.
 
+
+\paragraph{Noise Floor}
 %Noise floor - mean pre-cue RMS across clean epochs, why per-epoch
 The noise floor was the mean pre-cue RMS across all epochs that passed the contamination filter. This per-epoch approach tracked signal conditions at each contraction rather than relying on a session-level noise floor that would not capture short-term changes in electrode contact or ambient noise.
 
-%Sliding window RMS - linear envelope, visualization only, clean epochs only
-Linear envelope detection was used to visualize the time course of muscle activation~\cite{kamen_essentials_2010}. The rectified EMG signal was processed with a \SI{100}{\milli\second} sliding RMS window, producing a smooth amplitude envelope that tracked muscle activity over time~\cite{konrad_abc_2006}. The \SI{100}{\milli\second} window balanced temporal resolution against stability of estimates. The sliding-window RMS was applied only to clean epochs and was not used in any metric computation.
 
+\paragraph{Sliding-Window Envelope} 
+%Sliding window RMS - linear envelope, visualization only, clean epochs only
+Linear envelope detection was used to visualize the time course of muscle activation~\cite{kamen_essentials_2010}. The rectified EMG signal was processed with a \SI{100}{\milli\second} sliding RMS window, producing a smooth amplitude envelope that tracked muscle activity over time~\cite{konrad_abc_2006}. The \SI{100}{\milli\second} window balanced temporal resolution against stability of estimates. The sliding-window envelope was applied only to clean epochs and was not used in any metric computation.
+
+\paragraph{SNR}
 %S and N definitions for EMG SNR - computation moved to comparative analysis
 For EMG, $S$ in Equation~\ref{eq:snr} was the mean contraction RMS across clean epochs, and $N$ was the noise floor as defined above.
 
+\paragraph{PSD} 
 %PSD parameters for EMG
 EMG used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The per-segment mean subtraction defined there removed the DC contribution of the voltage lifting circuit (Section~\ref{sec:EMG_frontend}) from the \gls{emg} spectrum. The active-window \gls{psd} was computed per epoch over the \SI{1}{\second} contraction window with a segment length of \SI{1}{\second}, and the per-epoch spectra were averaged across clean epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{1}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EMG recording with a segment length of \SI{1}{\second}. Each cue was excluded from $-\SI{0.5}{\second}$ to $+\SI{4.0}{\second}$ relative to cue onset.
 
-
+\paragraph{Mains Harmonic Power}
 %Mains harmonic power - quantify residual power-line interference
 Mains harmonic power was computed from the active-window \gls{psd} to quantify residual power-line interference in the \gls{emg} signal. Three harmonics were evaluated: the \SI{50}{\hertz} fundamental, and the \SI{100}{\hertz} and \SI{150}{\hertz} harmonics. For each harmonic, the power was integrated across a band of $\pm\Delta f$ around the center frequency, with $\Delta f$ from Equation~\ref{eq:digital_notch_bw}:
 \begin{equation}
@@ -619,27 +628,39 @@ where $f_0$ is the harmonic center frequency and $\Delta f = \SI{1.67}{\hertz}$.
 
 The following section describes how the EDA signal was quantified. As described in Section~\ref{sec:EDA_signal}, the EDA signal consists of a tonic component, the skin conductance level (SCL), and a phasic component, the skin conductance response (SCR). The sampled voltage $V_\text{EDA}$ was converted to skin conductance using Equation~\ref{eq:EDA_skin_resistance}, with measurements expressed in \si{\micro\siemens}.
 
+\paragraph{Epoch Extraction}
 %Epoch extraction (-2 to +10s), baseline -2 to 0s, why 12s window
 The EDA recording was segmented into epochs time-locked to each breath-holding cue, as illustrated in Figure~\ref{fig:eda_epoch}A. Each epoch spanned from \SI{2}{\second} before to \SI{10}{\second} after the cue onset, giving a \SI{12}{\second} window per trial. The pre-cue segment from \SIrange{-2}{0}{\second} was used for per-epoch \gls{scl} and noise-floor estimation. A longer pre-cue window than in the EMG case was used because EDA exhibits slower drift and requires more samples to obtain a stable tonic estimate. The post-cue window extended to \SI{10}{\second} to capture the full SCR morphology, including the recovery phase, which typically lasts several seconds after the response peak.
 
+\paragraph{No Filtering}
 %No digital filtering + reason
 No digital filtering was applied to the EDA signal. The \SI{1.5}{\hertz} analog low-pass filter in the EDA front-end (Section~\ref{sec:EDA_frontend}) already bandlimits the signal to the relevant EDA frequency range. Additional digital filtering risked distorting the slow SCR waveform dynamics that carried the physiological information of interest.
 
+\paragraph{No Mean Subtraction}
 %No mean subtraction + reason
 Mean subtraction was not applied to the EDA signal. Unlike EMG, EDA is DC-coupled, and its mean reflects the tonic skin conductance level. Removing the epoch mean would discard the SCL, which was itself a metric of interest.
 
 %SCL - per-epoch pre-cue mean, why per-epoch, use in Q5
-The SCL was computed as the mean conductance over the per-epoch pre-cue window, shown as the grey region in Figure~\ref{fig:eda_epoch}B. This operationalization differs from the conventional session-level SCL estimate~\cite{boucsein_electrodermal_2012} and was chosen to provide a tonic estimate representative of signal conditions at the time of each stimulus, while capturing habituation-driven drift across the recording. The SCL also served as a between-condition comparator in Q5 to detect tonic contamination from simultaneous EMG operation.
+\paragraph{SCL} 
+The SCL was computed as the mean conductance over the per-epoch pre-cue window, shown as the grey region in Figure~\ref{fig:eda_epoch}B. This operationalization differs from the conventional session-level SCL estimate~\cite{boucsein_electrodermal_2012}. The per-epoch form was chosen to provide a tonic estimate representative of signal conditions at the time of each stimulus, while capturing habituation-driven drift across the recording (the gradual decline in SCR responsiveness across repeated stimuli). The SCL also served as a between-condition comparator in Q5 to detect tonic contamination from simultaneous EMG operation.
 
+\paragraph{Noise Floors} 
 %Noise floor - two estimates, session-level circuit + per-epoch local, why not RMS
-Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift, and the standard deviation of the detrended residual was taken as the session-level noise floor $\sigma_\text{session}$. A separate $\sigma_\text{session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
+Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift. The standard deviation of the detrended residual was taken as the session-level noise floor $\sigma_\text{session}$. A separate $\sigma_\text{session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
 
 The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue window of each stimulus epoch. Each window was linearly detrended, and the standard deviation of the residual was computed. The mean across all epochs in a block was taken as the local noise floor $\sigma_\text{local}$. This estimate represented the noise conditions immediately preceding each SCR, including circuit noise and non-specific activity. 
 
 \gls{rms} was not used for either estimate. \gls{eda} is DC-coupled, and an \gls{rms} over the stabilization recording is dominated by the \gls{scl} mean and carries no noise-floor information.
 
 %SCR detection - Zangróniz criteria, onset, 250ms smoothing, unsmoothed amplitude, dominant response
-SCR detection followed the criteria described by~\textcite{zangroniz_electrodermal_2017}. A response was considered valid if its amplitude exceeded \SI{0.05}{\micro\siemens} and its onset fell within the \SIrange{1}{6}{\second} post-cue detection window shown as the green region in Figure~\ref{fig:eda_epoch}B. The \gls{scr} onset was identified as the conductance minimum within \SIrange{1}{3.5}{\second} post-cue, or up to the peak location if the peak fell before \SI{3.5}{\second}. The onset search used the smoothed signal to match the peak-detection procedure described below. Restricting the onset to this sub-window enforced physiologically plausible stimulus-response latency. The peak was still permitted anywhere within the full \SIrange{1}{6}{\second} detection window. To reduce bias from noise on the peak location, the signal was smoothed with a \SI{250}{\milli\second} moving average before applying the argmax. The window suppressed noise spikes that would otherwise shift the peak location away from the physiological SCR peak without smearing the SCR itself. The SCR rise time is typically several seconds. The window length was chosen empirically. The SCR amplitude was read from the smoothed signal at the detected peak index (Figure~\ref{fig:eda_epoch}B). For consistency with the peak-detection procedure, the amplitude was read from the smoothed signal rather than the unsmoothed one. The same smoothing was applied to the pre-isolation signal to keep the comparison symmetrical. The SCR amplitude was computed as the peak-to-onset conductance difference. Where multiple threshold crossings occurred within a single epoch, only the dominant response was kept.
+\paragraph{SCR Detection Criteria} 
+SCR detection followed the criteria described by~\textcite{zangroniz_electrodermal_2017}. A response was considered valid if its amplitude exceeded \SI{0.05}{\micro\siemens} and its onset fell within the \SIrange{1}{6}{\second} post-cue detection window shown as the green region in Figure~\ref{fig:eda_epoch}B. The \gls{scr} onset was identified as the conductance minimum within \SIrange{1}{3.5}{\second} post-cue, or up to the peak location if the peak fell before \SI{3.5}{\second}. Restricting the onset to this sub-window enforced physiologically plausible stimulus-response latency. The onset search used the smoothed signal to match the peak-detection procedure described below.
+
+\paragraph{Peak Detection} 
+The peak was permitted anywhere within the full \SIrange{1}{6}{\second} detection window. To reduce bias from noise on the peak location, the signal was smoothed with a \SI{250}{\milli\second} moving average before applying the argmax. The window suppressed noise spikes that would otherwise shift the peak location away from the physiological SCR peak without smearing the SCR itself. The SCR rise time is typically several seconds. The window length was chosen empirically.
+
+\paragraph{Amplitude Reading} 
+The SCR amplitude was read from the smoothed signal at the detected peak index (Figure~\ref{fig:eda_epoch}B). For consistency with the peak-detection procedure, the amplitude was read from the smoothed signal rather than the unsmoothed one. The same smoothing was applied to the pre-isolation signal to keep the comparison symmetrical. The SCR amplitude was computed as the peak-to-onset conductance difference. Where multiple threshold crossings occurred within a single epoch, only the dominant response (defined as the threshold crossing with the largest peak-to-onset amplitude within the detection window) was kept.
 
 \begin{figure}[H]
     \centering
@@ -652,11 +673,13 @@ SCR detection followed the criteria described by~\textcite{zangroniz_electroderm
     \label{fig:eda_epoch}
 \end{figure}
 
+\paragraph{Epoch Averaging}
 %Epoch averaging - noise suppression argument for post-isolation signal
 The SCR amplitude reported for each block was the mean across all detected epochs within that block. Averaging across stimulus-locked epochs reduced the contribution of stimulus-uncorrelated noise sources, since such noise cancels in the mean while the physiological response does not.
 
 %Averaging across stimulus-locked epochs reduced the noise contribution from the isolation stage, since broadband noise is uncorrelated with the stimulus and cancels in the mean, while the physiological response does not.
 
+\paragraph{SNR}
 %EDA SNR - two definitions, circuit and local, diagnostic meaning
 Two EDA SNR values were computed per condition using the noise floors defined above. The circuit SNR used the session-level noise floor as the denominator:
 \begin{equation}
@@ -670,6 +693,7 @@ The local SNR used the per-epoch noise floor:
 \end{equation}
 In both equations, $A_\text{SCR}$ was the mean SCR amplitude across detected epochs within the condition.
 
+\paragraph{PSD}
 EDA used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The active-window \gls{psd} was computed per epoch over the \SIrange{1}{6}{\second} \gls{scr} detection window with a segment length of \SI{5}{\second}, and the per-epoch spectra were averaged across all epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{10}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EDA recording with a segment length of \SI{10}{\second}. Each cue was excluded from $-\SI{2.0}{\second}$ to $+\SI{10.0}{\second}$ relative to cue onset. The \SI{10}{\second} segment gave a frequency resolution of \SI{0.1}{\hertz}.
 
 Section~\ref{sec:comparative_analysis} describes how these metrics were combined across sessions and conditions to answer Q1 to Q7.
@@ -802,7 +826,7 @@ Sess 3 to 5, \gls{eda}-only block (\gls{emg} at \gls{eda} cues) &
 \begin{tabitemize}
   \item Deviation amplitude (signed, \gls{emg} envelope)
   \item Deviation latency
-  \item \gls{rms} pre-cue and post-cue (matched 2 s windows on envelope)
+  \item Pre-cue and post-cue envelope \gls{rms} (matched 2 s windows)
 \end{tabitemize} \\
 \addlinespace
 
@@ -835,7 +859,7 @@ Q7 & Reproducibility &
 \subsubsection{Q1 - EMG Front-End Characterization}
 \label{sec:q1_emg_frontend_char}
 
-Q1 evaluated the signal quality of the EMG front-end during muscle contractions. The post-isolation signal from Session~1 was used, recorded with the EDA circuit physically disconnected. Session~1 contained 120 contraction epochs, each spanning \SIrange{-0.5}{+3.5}{\second} relative to the stimulation cue.
+Q1 evaluated the signal quality of the EMG front-end during muscle contractions. The post-isolation signal from Session~1 was used, recorded with the EDA circuit physically disconnected from the subject. Session~1 contained 120 contraction epochs, each spanning \SIrange{-0.5}{+3.5}{\second} relative to the stimulation cue.
 
 The noise floor was estimated as the mean pre-cue RMS across clean epochs, and the contraction RMS was computed over the 0 to \SI{1.0}{\second} window, following Section~\ref{sec:emg_processing}. SNR was computed as the ratio of contraction RMS to pre-cue RMS in decibels and averaged across all clean epochs using Equation~\ref{eq:snr}, to quantify how well the front-end resolves voluntary muscle activity against the ambient noise floor.
 
@@ -846,7 +870,7 @@ The active-window, stabilization, and cue-masked \gls{psd} types defined in Sect
 \subsubsection{Q2 - EDA Front-End Characterization}
 \label{sec:q2_eda_frontend_char}
 
-Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement. The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the breath-holding cue.
+Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement.The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected from the subject. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the breath-holding cue.
 
 The SCL, circuit noise floor, and local noise floor were computed following Section~\ref{sec:eda_processing}. SCR amplitude, rise time, and detection rate were extracted from each epoch and averaged across all detected epochs. The circuit SNR and local SNR were computed using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to quantify the front-end's ability to resolve phasic SCR responses above the hardware noise floor and to exceed the SCR threshold consistently across trials. The \gls{scr} rise time was bounded below by approximately \SI{0.67}{\second} (Section~\ref{sec:EDA_LPF}).
 
@@ -857,11 +881,11 @@ The active-window, stabilization, and cue-masked \gls{psd} types defined in Sect
 \subsubsection{Q3 - Isolation Stage Effect (EMG and EDA)}
 \label{sec:q3_isolation_stage}
 
-Q3 evaluated the effect of the galvanic isolation stage on the EMG and EDA signals across amplitude, frequency content, and waveform morphology. Data from Session~1 were used for the EMG comparison and data from Session~2 for the EDA comparison. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals using Equation~\ref{eq:pearson}, to assess whether the isolation stage preserved waveform morphology. Pearson $r$ was computed over the full epoch window: EMG \SIrange{-0.5}{3.5}{\second} and EDA \SIrange{-2}{10}{\second}. The mean and standard deviation were reported across clean epochs for EMG. For EDA, the mean, standard deviation, and median were reported across all epochs.
+Q3 evaluated the effect of the galvanic isolation stage on the EMG and EDA signals across amplitude, frequency content, and waveform morphology. Data from Session~1 were used for the EMG comparison and data from Session~2 for the EDA comparison. All Q3 metrics were computed pre- and post-isolation per modality.
 
-For \gls{emg}, amplitude preservation was computed using Equation~\ref{eq:amplitude_preservation}, with $X$ defined as the mean contraction RMS across clean epochs, to assess preservation across the isolation barrier. SNR was computed pre- and post-isolation using the mean pre-cue RMS as the noise floor to assess whether the isolator degraded the EMG signal. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:emg_processing} were computed for the pre- and post-isolation \gls{emg} channels of Session~1 to compare the two channels.
+For \gls{emg}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean contraction RMS across clean epochs. SNR was computed pre- and post-isolation using the mean pre-cue RMS as the noise floor to test whether the isolator degraded the \gls{emg} signal. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-0.5}{3.5}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean and standard deviation of Pearson $r$ were reported across clean epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:emg_processing} were computed for the pre- and post-isolation \gls{emg} channels of Session~1 to compare the two channels.
 
-For EDA, amplitude preservation was computed using Equation~\ref{eq:amplitude_preservation} with mean SCR amplitude as $X$. The circuit SNR, local SNR, and SCR detection rate were compared pre- and post-isolation using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to assess whether the ISO224 suppressed EDA phasic activity beyond the compensated gain. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for the pre- and post-isolation \gls{eda} channels of Session~2 to compare the two channels.
+For \gls{eda}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean SCR amplitude across detected epochs. The circuit SNR, local SNR, and SCR detection rate were compared pre- and post-isolation using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local} to test whether the isolation stage suppressed EDA phasic activity beyond the compensated gain. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-2}{10}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean, standard deviation, and median of Pearson $r$ were reported across all epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for the pre- and post-isolation \gls{eda} channels of Session~2 to compare the two channels.
 
 %Four signals: pre-isolation raw, pre-isolation filtered, post-isolation raw, post-isolation filtered
 %All filtering applied offline via filtfilt on raw data
@@ -869,17 +893,24 @@ For EDA, amplitude preservation was computed using Equation~\ref{eq:amplitude_pr
 \subsubsection{Q4 - Digital Filtering Effect (EMG Only)}
 \label{sec:q4_digital_filtering}
 
-Q4 evaluated how offline digital filtering affected EMG signal quality at both the pre- and post-isolation stages. Four signals were derived from the two raw channels recorded in Session~1: pre-isolation raw, pre-isolation filtered, post-isolation raw, and post-isolation filtered. All digital filtering was applied offline using the filter chain described in Section~\ref{sec:emg_processing}.
+\paragraph{Signal Derivation} 
+Q4 evaluated how offline digital filtering affected EMG signal quality at both the pre- and post-isolation stages. Four signals were derived from the two raw channels recorded in Session~1: pre-isolation raw, pre-isolation filtered, post-isolation raw, and post-isolation filtered. The filtered conditions used the digital filter chain defined in Section~\ref{sec:emg_processing}.
 
-The noise floor and SNR were computed for each of the four signals using the mean pre-cue RMS across clean epochs as the noise floor and contraction RMS as the signal amplitude, following Section~\ref{sec:emg_processing}. The notch depth at \SI{50}{\hertz} was computed for each filter chain (pre- and post-isolation) using
+\paragraph{Noise Floor, RMS, and SNR} 
+The noise floor and SNR were computed for each of the four signals using the mean pre-cue RMS across clean epochs as the noise floor and contraction RMS as the signal amplitude, following Section~\ref{sec:emg_processing}.
+
+\paragraph{Notch Depth and Harmonic Power} 
+The notch depth at \SI{50}{\hertz} was computed for each filter chain (pre- and post-isolation) using
 \begin{equation}
     D_\text{notch}(f_0) = 10\log_{10}\!\left(\frac{P_\text{raw}(f_0)}{P_\text{filtered}(f_0)}\right)
     \label{eq:notch_depth}
 \end{equation}
 where $P$ is the mains harmonic power at the harmonic centered on $f_0$ from Equation~\ref{eq:harmonic_power}, evaluated at $f_0 = \SI{50}{\hertz}$. This yielded two notch-depth values, one for the pre-isolation chain and one for the post-isolation chain. The mains harmonic power was computed at \SI{50}{\hertz}, \SI{100}{\hertz}, and \SI{150}{\hertz} using Equation~\ref{eq:harmonic_power} to quantify the per-harmonic suppression achieved by each filter chain. SNR, notch depth, and harmonic power comparisons between filtered and raw signals were used to quantify the signal quality recoverable through digital filtering.
 
+\paragraph{PSD}
 The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:emg_processing} were computed and compared across the four conditions.
 
+\paragraph{Single-epoch visualization}
 A single clean epoch was also shown, without envelope detection, to visualize the filter's effect on the raw EMG waveform.
 
 %Only post-isolated data
@@ -914,7 +945,7 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:emg
 % [Q6 extension: EDA-cue-locked EMG analysis]
 \paragraph{Q6b - EMG Response at EDA Cues}
 \label{sec:q6b_emg_at_eda_cues}
-An extension of Q6 evaluated whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only block of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset, and the \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The deviation amplitude was defined as the signed maximum of the envelope minus baseline over the \SIrange{0}{5}{\second} post-cue search window, with positive values indicating an upward rise above baseline. This sign convention is the inverse of the Q5b convention defined in Section~\ref{sec:q5b_eda_at_emg_cues}. The deviation latency was the time from cue onset to the deviation peak, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. RMS pre-cue and post-cue values were computed on the \gls{emg} envelope over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}.
+An extension of Q6 evaluated whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only block of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset, and the \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The deviation amplitude was defined as the signed maximum of the envelope minus baseline over the \SIrange{0}{5}{\second} post-cue search window, with positive values indicating an upward rise above baseline. This sign convention is the inverse of the Q5b convention defined in Section~\ref{sec:q5b_eda_at_emg_cues}. The deviation latency was the time from cue onset to the deviation peak, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were computed on the \gls{emg} envelope over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}.
 
 %Reproducibility across Sessions 3-5
 %EMG: EMG-only and Combined blocks. EDA: EDA-only and Combined blocks.
