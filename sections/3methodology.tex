@@ -172,7 +172,7 @@ The skin resistance followed from the measured output voltage as:
     \label{eq:EDA_skin_resistance}
 \end{equation}
 
-where $V_{EDA}$ is the signal at the low-pass filter output. Since $V_{EDA} = 2V_{out}$, substituting into the original expression from~\cite{zangroniz_electrodermal_2017} cancels the factor of two, giving Equation~\ref{eq:EDA_skin_resistance}.
+where $V_{EDA}$ is the signal at the low-pass filter output. The Sallen-Key low-pass filter adds a gain of 2 (Section~\ref{sec:EDA_LPF}), giving $V_{EDA} = 2 V_{out}$. Substituting into the original expression from~\cite{zangroniz_electrodermal_2017} cancels the factor of two and gives Equation~\ref{eq:EDA_skin_resistance}.
 Skin conductance was then obtained by taking the inverse of Equation~\ref{eq:EDA_skin_resistance}.
 
 
@@ -375,9 +375,11 @@ Environment & Quiet room, \SIrange{21}{24}{\celsius} & Recordings 09:00--12:00 \
 \end{table}
 
 \FloatBarrier
+
+
 \subsection{Acquisition Software}
 \label{sec:acquisition_software}
-A custom Python script, \texttt{daq\_gui\_multi\_validation.py}, handled data acquisition throughout all sessions. It interfaced with the NI USB-6356 via the \texttt{nidaqmx} library and sampled all active channels simultaneously at \SI{2}{\kilo\hertz}. Raw data were written to disk in TDMS format throughout each session. A real-time digital filter chain ran in parallel for visual monitoring and was excluded from the offline analysis. Stimulus cues were delivered through the graphical interface, and their onset timestamps were saved as event markers in the TDMS file for epoch extraction during post-processing.
+A custom Python script, \texttt{daq\_gui\_multi\_validation.py}, handled data acquisition throughout all sessions. It interfaced with the NI USB-6356 via the \texttt{nidaqmx} library and sampled all active channels simultaneously at \SI{2}{\kilo\hertz}. Raw data were written to disk in TDMS format throughout each session. A real-time digital filter chain ran in parallel for visual monitoring and was excluded from the offline analysis.
 
 \subsection{Electrode Placement and Skin Preparation}
 
@@ -471,6 +473,8 @@ Each session consisted of a 30-minute stabilization period during which the fina
     \item Sessions 3 to 5 were conducted on three separate days under the same conditions.
     \item The block order was fixed across Sessions 3 to 5: EDA-only first, EMG-only second, and Combined last.
 \end{enumerate}
+
+Stimulus cues were delivered through the graphical interface of the acquisition script (Section~\ref{sec:acquisition_software}). Cues are the participant-facing audiovisual prompts displayed at each scheduled time. Event markers are the corresponding TDMS timestamps recorded at each cue onset. The event markers were used downstream to segment the continuous recordings into epochs for analysis (Section~\ref{sec:signal_processing}).
 
 The validation protocol structures seven questions (Q1 to Q7) into individual front-end characterization, isolation-stage effects, simultaneous operation, and across-session reproducibility. Session~1 and Session~2 verified each front-end with the other circuit physically disconnected. Sessions 3 to 5 ran both circuits together under three block conditions: EDA-only, EMG-only, and Combined. Chapter~\ref{ch:results} reports the metrics defined in Section~\ref{sec:signal_processing} against this protocol.
 
@@ -710,11 +714,26 @@ Questions Q1 to Q4 characterized the individual front-ends and the isolation sta
 
 Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and sample standard deviation were computed across the combined arrays. Q7 reported per-session values and the mean and sample standard deviation across the three sessions ($n = 3$). The circuit and local \gls{snr} values reported in Q5 followed the Q7 pattern because they were computed as session-level scalars rather than per-epoch arrays.
 
+\paragraph{Deviation Amplitude and Latency}
+The Q5b and Q6b paragraphs below report two scalar metrics over their respective post-cue search windows. Deviation amplitude is the signed peak-to-baseline excursion of the prepared signal across the search window. Deviation latency is the time from cue onset to that peak. The sign convention differs between Q5b and Q6b to match the physiological direction of the expected response, as summarized in Table~\ref{tab:bystander-sign-conventions}. Search-window durations, baseline windows, and the per-question signal preparation are stated in the Q5b and Q6b paragraphs below.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Sign conventions for the Q5b and Q6b deviation amplitude.}
+  \label{tab:bystander-sign-conventions}
+  \begin{tabular}{l l}
+    \toprule
+    \textbf{Question} & \textbf{Positive direction} \\
+    \midrule
+    Q5b (\gls{eda} at \gls{emg} cues) & Downward dip in \gls{eda} from baseline. \\
+    Q6b (\gls{emg} envelope at \gls{eda} cues) & Upward rise in \gls{emg} envelope above baseline. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \newlength{\widetable}
 \setlength{\widetable}{\textwidth}
 \addtolength{\widetable}{2cm}
-
-
 
 \begin{table}[H]
 \centering
@@ -933,7 +952,7 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:eda
 % [Q5 extension: EMG-cue-locked EDA analysis]
 \paragraph{Q5b - EDA Response at EMG Cues}
 \label{sec:q5b_eda_at_emg_cues}
-An extension of Q5 evaluated whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 time-locked epochs to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. The deviation amplitude was defined as the signed peak-to-baseline excursion of the smoothed \gls{eda} signal over the \SIrange{0}{3}{\second} post-cue search window, with positive values indicating a downward deflection from baseline. The deviation latency was the time from cue onset to the deviation peak. The baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window, where smoothing followed the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}.
+An extension of Q5 evaluated whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 time-locked epochs to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The post-cue search window was \SIrange{0}{3}{\second}, and the baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window. Smoothing followed the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}.
 
 %Only post-isolated data
 %Three-way comparison: Sess1 EMG-only (clean ref) vs Sess3-5 EMG-only vs Sess3-5 Combined
@@ -950,7 +969,7 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:emg
 % [Q6 extension: EDA-cue-locked EMG analysis]
 \paragraph{Q6b - EMG Response at EDA Cues}
 \label{sec:q6b_emg_at_eda_cues}
-An extension of Q6 evaluated whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only block of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset, and the \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The deviation amplitude was defined as the signed maximum of the envelope minus baseline over the \SIrange{0}{5}{\second} post-cue search window, with positive values indicating an upward rise above baseline. This sign convention is the inverse of the Q5b convention defined in Section~\ref{sec:q5b_eda_at_emg_cues}. The deviation latency was the time from cue onset to the deviation peak, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were computed on the \gls{emg} envelope over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}.
+An extension of Q6 evaluated whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only block of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset, and the \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The post-cue search window was \SIrange{0}{5}{\second}, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were computed on the \gls{emg} envelope over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}.
 
 %Reproducibility across Sessions 3-5
 %EMG: EMG-only and Combined blocks. EDA: EDA-only and Combined blocks.
