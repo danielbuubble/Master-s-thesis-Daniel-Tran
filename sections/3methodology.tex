@@ -45,7 +45,7 @@ The power architecture operated on the same principle. A single \SI{5}{\volt} su
 
 \section{Hardware Development}
 %Describe how I implemented it
-This section describes the implementation of the \gls{emg} and \gls{eda} front-ends, the galvanic-isolation stage, and the power-supply architecture. In this thesis, the analog front-end is defined as the signal conditioning circuitry that runs from the measurement electrodes up to, but not including, the galvanic isolation stage.
+This section describes the implementation of the \gls{emg} and \gls{eda} front-ends, the galvanic-isolation stage, and the power-supply architecture. The analog front-end is the signal-conditioning circuit between the electrodes and the galvanic-isolation stage.
 
 The circuit was implemented on a custom four-layer \gls{pcb}, designed in KiCad and fabricated with help from ELAB at UiO.
 
@@ -70,17 +70,24 @@ The \gls{emg} front-end was inspired by the five-stage architecture proposed by 
 
 \subsubsection{Instrumentation Amplifier}
 \label{sec:ina828}
-The first stage was an INA828 instrumentation amplifier (Texas Instruments). Its CMRR of \SI{110}{\decibel} satisfied the \SI{80}{\decibel} minimum recommended for controlled isometric sEMG recordings~\cite{kamen_essentials_2010}. Gain was set to approximately \num{40} by connecting a \SI{1.28}{\kilo\ohm} resistor between the $R_G$ pins, following the relation given in the component datasheet~\cite{noauthor_ina828_nodate}:
+The first stage was an INA828 instrumentation amplifier (Texas Instruments). Its CMRR of \SI{110}{\decibel} satisfied the \SI{80}{\decibel} minimum recommended for controlled isometric sEMG recordings~\cite{kamen_essentials_2010}. The gain was set by a single external resistor $R_G$ via the datasheet relation~\cite{noauthor_ina828_nodate}:
 \begin{equation}
     G = 1 + \frac{\SI{50}{\kilo\ohm}}{R_G}.
     \label{eq:ina828-gain}
-\end{equation} 
+\end{equation}
+With $R_G = \SI{1.28}{\kilo\ohm}$ connected between the $R_G$ pins, the gain was $G = 1 + 50/1.28 \approx \num{40}$.
 
 \subsubsection{Analog Filter Chain}
 After the instrumentation amplifier, the signal passed through three filter stages. The RC corner frequency used in the filter calculations below is given by:
 \begin{equation}
     f_c = \frac{1}{2\pi RC}.
     \label{eq:RC_fc}
+\end{equation}
+
+The non-inverting amplifier gain, set by the feedback resistor $R_f$ and the input resistor $R_i$, is given by:
+\begin{equation}
+    G = 1 + \frac{R_f}{R_i}.
+    \label{eq:noninv_gain}
 \end{equation}
 
 \paragraph{50\,Hz Notch Filter}
@@ -95,15 +102,17 @@ The quality factor was determined from the simulated frequency response (Figure~
 \end{equation}
 where $f_\text{upper}$ and $f_\text{lower}$ are the upper and lower \SI{-3}{\decibel} frequencies from the Bode plot.
 
+
 \paragraph{High-Pass Filter} %Gain = 11
 \label{sec:EMG_hpf}
-The high-pass stage consisted of a passive RC filter followed by a non-inverting \gls{opamp}. From Figure~\ref{fig:emg-frontend-blocks}c, components $CG4 = \SI{1}{\micro\farad}$ and $RG6 = \SI{15}{\kilo\ohm}$ set the cutoff frequency to $f_c = \SI{10}{\hertz}$ using Equation~\ref{eq:RC_fc}, and components $RG7 = \SI{10}{\kilo\ohm}$ and $RG8 = \SI{100}{\kilo\ohm}$ set the amplifier gain to \num{11}.
-The International Society for Electrophysiology and Kinesiology (ISEK) recommended a \SI{10}{\hertz} high-pass cutoff for sEMG recordings under controlled conditions, and \SI{20}{\hertz} for dynamic movements where motion artifacts were more pronounced~\cite{kamen_essentials_2010}. Since the protocol (Section~\ref{sec:validation}) employed isometric contractions, \SI{10}{\hertz} was selected to preserve the low-frequency spectral content associated with motor unit firing patterns~\cite{kamen_essentials_2010}
+The high-pass stage consisted of a passive RC filter followed by a non-inverting amplifier stage. From Figure~\ref{fig:emg-frontend-blocks}c, components $CG4 = \SI{1}{\micro\farad}$ and $RG6 = \SI{15}{\kilo\ohm}$ set the cutoff frequency to $f_c = 1/(2\pi \cdot \SI{15}{\kilo\ohm} \cdot \SI{1}{\micro\farad}) \approx \SI{10.6}{\hertz}$ via Equation~\ref{eq:RC_fc}. The resistors $RG7 = \SI{10}{\kilo\ohm}$ and $RG8 = \SI{100}{\kilo\ohm}$ set the gain to $G = 1 + R_{G8}/R_{G7} = 1 + 100/10 = 11$ via Equation~\ref{eq:noninv_gain}.
+
+The International Society for Electrophysiology and Kinesiology (ISEK) recommended a \SI{10}{\hertz} high-pass cutoff for sEMG recordings under controlled conditions, and \SI{20}{\hertz} for dynamic movements where motion artifacts were more pronounced~\cite{kamen_essentials_2010}. The protocol (Section~\ref{sec:validation}) used isometric contractions, in which the muscle generates sustained force against an external resistance. The \SI{10}{\hertz} cutoff was selected to preserve the low-frequency spectral content associated with motor unit firing patterns~\cite{kamen_essentials_2010}.
+
 
 \paragraph{Low-Pass Filter} %Gain = 5/3
 \label{sec:EMG_lpf}
-The final stage was a second-order Sallen-Key low-pass filter. When both resistors and both capacitors are equal, the cutoff frequency reduces to the same expression as a passive RC circuit, given by Equation~\ref{eq:RC_fc}. From Figure~\ref{fig:emg-frontend-blocks}d, components $CG5 = CG6 = \SI{0.1}{\micro\farad}$ and $RG9 = RG10 = \SI{3.16}{\kilo\ohm}$ gave a calculated cutoff of $f_c \approx \SI{500}{\hertz}$, the upper bandwidth limit of the \gls{semg} spectrum~\cite{kamen_essentials_2010}. The filter gain was set to \num{1.67} by the feedback resistors $RG11 = \SI{15}{\kilo\ohm}$ and $RG12 = \SI{10}{\kilo\ohm}$, following $G = 1 + R_{G12}/R_{G11}$. The simulated cutoff was \SI{530}{\hertz}, as seen in Figure~\ref{fig:EMG_LTSpice_bode}.
-
+The final stage was a second-order Sallen-Key low-pass filter. When both resistors and both capacitors are equal, the cutoff frequency reduces to the same expression as a passive RC circuit, given by Equation~\ref{eq:RC_fc}~\cite{mancini_ron_op_2002}. From Figure~\ref{fig:emg-frontend-blocks}d, components $CG5 = CG6 = \SI{0.1}{\micro\farad}$ and $RG9 = RG10 = \SI{3.16}{\kilo\ohm}$ gave a calculated cutoff $f_c = 1/(2\pi \cdot \SI{3.16}{\kilo\ohm} \cdot \SI{0.1}{\micro\farad}) \approx \SI{504}{\hertz}$ via Equation~\ref{eq:RC_fc}, near the \SI{500}{\hertz} upper bandwidth limit of the \gls{semg} spectrum~\cite{kamen_essentials_2010}. From Equation~\ref{eq:noninv_gain}, the resistors $RG11 = \SI{15}{\kilo\ohm}$ and $RG12 = \SI{10}{\kilo\ohm}$ set the gain to $G = 1 + R_{G12}/R_{G11} = 1 + 10/15 \approx \num{1.67}$. The simulated cutoff was \SI{530}{\hertz}, as seen in Figure~\ref{fig:EMG_LTSpice_bode}.
 
 \subsubsection{Voltage Lifting Circuit} 
 \label{sec:EMG_voltage_lifter}
