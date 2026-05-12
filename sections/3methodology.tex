@@ -873,9 +873,9 @@ The active-window, stabilization, and cue-masked \gls{psd} types defined in Sect
 \subsubsection{Q2 - EDA Front-End Characterization}
 \label{sec:q2_eda_frontend_char}
 
-Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement.The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected from the subject. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the breath-holding cue.
+Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement. The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected from the subject. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the breath-holding cue.
 
-The SCL, circuit noise floor, and local noise floor were computed following Section~\ref{sec:eda_processing}. SCR amplitude, rise time, and detection rate were extracted from each epoch and averaged across all detected epochs. The circuit SNR and local SNR were computed using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to quantify the front-end's ability to resolve phasic SCR responses above the hardware noise floor and to exceed the SCR threshold consistently across trials. The \gls{scr} rise time was bounded below by approximately \SI{0.67}{\second} (Section~\ref{sec:EDA_LPF}).
+The SCL was computed following Section~\ref{sec:eda_processing} as the per-epoch tonic estimate. The circuit and local noise floors were also computed following Section~\ref{sec:eda_processing}. SCR amplitude, rise time, and detection rate were extracted from each epoch and averaged across all detected epochs. The circuit SNR and local SNR were computed using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to quantify the front-end's ability to resolve phasic SCR responses above the hardware noise floor and to exceed the SCR threshold consistently across trials. The \gls{scr} rise time was bounded below by approximately \SI{0.67}{\second} (Section~\ref{sec:EDA_LPF}).
 
 The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for Session~2 to characterize the \gls{eda} spectral content.
 
