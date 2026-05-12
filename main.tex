@@ -70,6 +70,9 @@ style=ieee
 %I acknowledge that parts of this thesis have been rephrased using artificially generated text by GPT UiO. Additionally, GitHub Copilot was used to assist with debugging and coding. No additional content or information has been added by AI beyond what I personally developed and decided to include.
 
 \makeglossaries
+% Reset glossary first-use flags at every chapter start so each chapter re-introduces acronyms.
+\usepackage{etoolbox}
+\preto\chapter{\glsresetall}
 
 
 \graphicspath{{uio_files/}}
