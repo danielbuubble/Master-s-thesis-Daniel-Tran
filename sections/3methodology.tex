@@ -70,7 +70,8 @@ The \gls{emg} front-end was inspired by the five-stage architecture proposed by 
 
 \subsubsection{Instrumentation Amplifier}
 \label{sec:ina828}
-The first stage was an INA828 instrumentation amplifier (Texas Instruments). Its CMRR of \SI{110}{\decibel} satisfied the \SI{80}{\decibel} minimum recommended for controlled isometric sEMG recordings~\cite{kamen_essentials_2010}. The gain was set by a single external resistor $R_G$ via the datasheet relation~\cite{noauthor_ina828_nodate}:
+The first stage was an INA828 instrumentation amplifier (Texas Instruments). Its CMRR of \SI{110}{\decibel} satisfied the \SI{80}{\decibel} minimum recommended for controlled isometric sEMG recordings~\cite{kamen_essentials_2010}. Its input impedance of \SI{100}{\giga\ohm}~\cite{noauthor_ina828_nodate} far exceeded the \SIrange{1}{10}{\mega\ohm} range recommended for \gls{semg} amplifiers~\cite{konrad_abc_2006} and ensured negligible loading of the electrode-skin source. The gain was set by a single external resistor $R_G$ via the datasheet relation~\cite{noauthor_ina828_nodate}:
+
 \begin{equation}
     G = 1 + \frac{\SI{50}{\kilo\ohm}}{R_G}.
     \label{eq:ina828-gain}
@@ -566,6 +567,7 @@ Each Welch segment was mean-subtracted before the Fourier transform to remove th
 
 The following section describes, in pipeline order, how the core analysis methods were applied to the EMG signal.
 
+\paragraph{Epoch Extraction}
 %Epoch extraction (-0.5 to +3.5s), contraction window (0-1.2s), pre-cue (-0.5 to 0s), recovery for visualisation
 The continuous \gls{emg} recording was segmented into epochs time-locked to each contraction cue. Each epoch spanned from \SI{0.5}{\second} before to \SI{3.5}{\second} after the cue onset, giving a \SI{4}{\second} window per contraction. Cue onset timestamps were extracted from the event markers stored in the TDMS file during acquisition. Two sub-windows were defined within each epoch: the pre-cue window from \SIrange{-0.5}{0}{\second} relative to the cue for DC offset estimation and noise floor computation, and the contraction window from \SIrange{0.0}{1.0}{\second} for signal amplitude estimation. The remainder of the epoch from \SI{1.0}{\second} to \SI{3.5}{\second} was included in figures to display the post-contraction return to baseline
 
@@ -575,6 +577,7 @@ After each epoch was extracted, the residual DC offset was removed by subtractin
 
 The \gls{emg} signal oscillates symmetrically around zero, so the arithmetic mean is uninformative. Squaring each sample before averaging removes the sign and yields a direct amplitude measure.  
 
+\paragraph{Scalar RMS}
 %Scalar RMS - two values per epoch 
 Two scalar RMS values were computed per epoch using Equation~\ref{eq:rms}. The pre-cue RMS was calculated across all samples within the pre-cue window and served as the per-epoch noise-floor estimate. The contraction RMS was calculated over all samples in the contraction window and served as the signal amplitude estimate.
 
