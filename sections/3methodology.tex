@@ -1,6 +1,10 @@
 \label{chap:methods}
-This chapter describes the design and implementation of a system that simultaneously acquires EMG and EDA signals from a single muscle site, with galvanic isolation as the central design requirement.
+This chapter describes the design and implementation of a system that simultaneously acquires \gls{emg} and \gls{eda} signals from a single muscle site, with galvanic isolation as the central design requirement.
+
+Section~\ref{sec:design_specifications} states the system-level design specifications. Section~\ref{sec:system_architecture} introduces the top-level topology. Section~\ref{sec:hardware_development} details the analog hardware. Section~\ref{sec:equipment_software_tools} lists the equipment and software tools used. Section~\ref{sec:validation} describes the validation protocol. Section~\ref{sec:signal_processing} describes the signal-processing pipeline that produced the metrics reported in Chapter~\ref{ch:results}.
+
 \section{Design Specifications}
+\label{sec:design_specifications}
 %What the system needs
 The system was designed to simultaneously acquire EMG and EDA signals from a single muscle site and digitize them using a National Instruments USB-6356 data acquisition card. The specifications common to both acquisition channels are summarized in Table~\ref{tab:design_specs}.
 
@@ -28,7 +32,7 @@ Galvanic isolation         & Required between \gls{emg} and \gls{eda} front-ends
 \section{System Architecture}
 \label{sec:system_architecture}
 %Here is the problem and our top-level solution
-This section describes the system designed to measure \gls{emg} simultaneously and \gls{eda} at the same muscle site. The main hardware components are illustrated in Figure~\ref{fig:system_architecture} and included two dedicated front-end units, one per modality, galvanic isolation stages, and a common data acquisition unit connected to a PC.
+Figure~\ref{fig:system_architecture} shows the system topology that supports simultaneous \gls{emg} and \gls{eda} acquisition from a single muscle site. The architecture comprises two dedicated front-end units (one per modality), galvanic isolation stages between each front-end and the data acquisition unit, and a single \gls{daq} card connected to a PC. The galvanic isolation places each front-end in its own ground domain so that simultaneous acquisition does not introduce coupling between the two measurement circuits.
 
 Each modality was equipped with its own set of surface electrodes placed over the target measurement site. The raw signals were processed within their respective front-end units, where they were amplified and filtered according to the bandwidth and dynamic range of each modality. After conditioning, the signals from each front-end passed through an isolated amplifier stage that provided galvanic isolation. On the system side of the isolation barrier, the \gls{emg} and \gls{eda} channels were directed to separate analog input channels on the NI USB-6356. These channels were sampled simultaneously and transmitted to a PC for offline analysis.
 
@@ -44,17 +48,17 @@ The power architecture operated on the same principle. A single \SI{5}{\volt} su
 \FloatBarrier
 
 \section{Hardware Development}
+\label{sec:hardware_development}
 %Describe how I implemented it
-This section describes the implementation of the \gls{emg} and \gls{eda} front-ends, the galvanic-isolation stage, and the power-supply architecture. The analog front-end is the signal-conditioning circuit between the electrodes and the galvanic-isolation stage.
+The analog front-end is the signal-conditioning circuit between the electrodes and the galvanic isolation stage. The \gls{emg} and \gls{eda} front-ends each have their own signal chain, described in Sections~\ref{sec:EMG_frontend} and~\ref{sec:EDA_frontend}. Section~\ref{sec:galvanic_isolation} describes the galvanic isolation stage that follows each front-end, and Section~\ref{sec:PSU} describes the power-supply architecture that feeds both chains.
 
 The circuit was implemented on a custom four-layer \gls{pcb}, designed in KiCad and fabricated with help from ELAB at UiO.
-
 \subsection{EMG Front-End}
 \label{sec:EMG_frontend}
 %Total gain = 733.3
 
 %The component designators in the PCB layout differ from those in the schematic figures, as the schematic was redrawn for clarity.
-The \gls{emg} front-end was inspired by the five-stage architecture proposed by \textcite{yang_detection_2020}. The instrumentation amplifier, \SI{50}{\hertz} notch, and voltage-lifting stages use the same topologies as Yang's design with updated component values, while the high-pass and low-pass filter stages were redesigned with different topologies. From the electrodes, the signal passed through an instrumentation amplifier, a \SI{50}{\hertz} notch filter, a high-pass filter with an amplification stage, a Sallen-Key low-pass filter, and a voltage-lifting circuit. Each stage was powered by an isolated \SI{\pm 5}{\volt} dual rail from the TPS65133, described in Section~\ref{sec:EMG_power}. The resulting block diagram is shown in Figure~\ref{fig:emg-frontend-blocks}.
+The \gls{emg} front-end was inspired by the five-stage architecture proposed by \textcite{yang_detection_2020}. The instrumentation amplifier, \SI{50}{\hertz} notch, and voltage-lifting stages use the same topologies as Yang's design with updated component values. The high-pass and low-pass filter stages were redesigned with different topologies, described in Sections~\ref{sec:EMG_hpf} and~\ref{sec:EMG_lpf}. From the electrodes, the signal passed through an instrumentation amplifier, a \SI{50}{\hertz} notch filter, a high-pass filter with an amplification stage, a Sallen-Key low-pass filter, and a voltage-lifting circuit. Each stage was powered by an isolated \SI{\pm 5}{\volt} dual rail from the TPS65133, described in Section~\ref{sec:EMG_power}. The resulting block diagram is shown in Figure~\ref{fig:emg-frontend-blocks}.
 
 %As mentioned in \ref{sec:sEMG_signal} the useful frequency contents spans from \SIrange{10}{500}{\hertz}, with amplitude from active contraction of the muscle at \SIrange{60}{300}{\micro\volt}.
 
@@ -117,7 +121,7 @@ The final stage was a second-order Sallen-Key low-pass filter. When both resisto
 
 \subsubsection{Voltage Lifting Circuit} 
 \label{sec:EMG_voltage_lifter}
-A voltage-lifting circuit (shown in Figure~\ref{fig:emg-frontend-blocks}e) offset the \gls{emg} output to a \SI{1.237}{\volt} midpoint, set by an LM285 precision voltage reference. The biphasic \gls{semg} waveform was thereby centered within the \gls{daq} input range, keeping both signal rails clear of clipping.
+The voltage-lifting stage preserves compatibility with single-rail \glspl{adc} that would otherwise require restructuring the front-end. The bipolar \gls{semg} output is centered at a positive midpoint of \SI{1.237}{\volt}, set by an LM285 precision voltage reference, as shown in Figure~\ref{fig:emg-frontend-blocks}e. The NI USB-6356 \gls{daq} used in this thesis accepts bipolar input directly, so the centering is not required for the validation but maintains design portability.
 
 The output \texttt{EMG\_VLC} was passed to the galvanic isolation stage, described in Section~\ref{sec:galvanic_isolation}.
 
@@ -152,7 +156,7 @@ The \gls{eda} front-end followed the design of \textcite{zangroniz_electrodermal
 \end{figure}
 
 \subsubsection{Virtual Ground}
-In a single-supply configuration, the \gls{opamp} has no negative rail, so a stable mid-supply reference is needed for the current source to operate correctly~\cite{zangroniz_electrodermal_2017}. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by \gls{opamp} U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
+Under single-supply operation, the \gls{opamp} output cannot swing below ground~\cite{zangroniz_electrodermal_2017}. A mid-supply reference at \SI{1.65}{\volt} provides headroom for the \gls{eda} signal's tonic \gls{scl} baseline and the superimposed phasic \gls{scr}s that ride on it. A resistor divider ($R_{A1} = R_{A2} = \SI{100}{\kilo\ohm}$) split the \SI{3.3}{\volt} supply to give \SI{1.65}{\volt}, buffered by \gls{opamp} U3A to hold a low-impedance reference at the non-inverting input of U3B, as shown in Figure~\ref{fig:EDA-frontend-blocks}a. $C_{A1}$ formed a low-pass filter with the divider impedance to keep supply noise off the reference node. $C_{b1}$, $C_{b2}$, and $C_b$ bypassed the \SI{3.3}{\volt} rail.
 
 \subsubsection{Current Source}
 \label{sec:EDA_current_source}
@@ -184,7 +188,7 @@ The output $V_{EDA}$ was passed to the galvanic isolation stage, described in Se
 
 \subsection{Implementation of Galvanic Isolation}
 \label{sec:galvanic_isolation}
-Without isolation, the \gls{emg} ground electrode (Section~\ref{sec:sEMG_electrodes}) and the \gls{eda} return electrode would share a common ground, creating a parallel current path through the body and establishing the conditions for a ground loop as described in Section~\ref{sec:ground_loops}. This shared path would allow the \gls{eda} excitation current to be diverted from the reference resistor, corrupting the conductance measurement. Galvanic isolation resolved the problem by giving each front-end its own ground domain, breaking the shared current path. Both front-ends used the same isolation scheme, comprising power isolation and signal isolation, as illustrated in Figure~\ref{fig:isolation_blocks}.
+Without isolation, the \gls{emg} ground electrode (Section~\ref{sec:sEMG_electrodes}) and the \gls{eda} return electrode would share a common ground, creating a parallel current path through the body and establishing the conditions for a ground loop as described in Section~\ref{sec:ground_loops}. On the \gls{eda} side, this shared path would allow the excitation current to be diverted from the reference resistor, corrupting the conductance measurement. On the \gls{emg} side, the same path would couple the \gls{eda} excitation current into the high-gain \gls{emg} input, introducing a \gls{dc} offset and a current-injection artifact. Galvanic isolation resolved the problem by giving each front-end its own ground domain, breaking the shared current path. Both front-ends used the same isolation scheme, comprising power isolation and signal isolation, as illustrated in Figure~\ref{fig:isolation_blocks}.
 
 \begin{figure}[H]
     \centering
@@ -210,7 +214,7 @@ The \gls{daq} (introduced in Section~\ref{sec:system_architecture}) input range 
 
 \subsection{Power Supply}
 \label{sec:PSU}
-The circuit operated from a USB-C power supply, which provided \SI{5}{\volt} on the non-isolated ground (GND) domain. Each front-end derived its own isolated rail from this supply using the NXE2S0505MC-R7 DC-DC converters, as described in Section~\ref{sec:galvanic_isolation}. The \gls{daq} card was powered independently from the mains, with no shared power path with the circuit. The power supply building blocks were illustrated in Figure~\ref{fig:power_blocks}.
+The power supply architecture maintained three distinct ground domains. The non-isolated domain (GND) hosted the USB-C input that supplied \SI{5}{\volt} to the circuit, and it connected to the \gls{daq} card on the system side of the isolation barrier. The isolated GND\_G domain hosted the \gls{emg} front-end together with its TPS65133 dual-rail converter. The isolated GND\_A domain hosted the \gls{eda} front-end together with its AMS1117-3.3 regulator. Each front-end derived its isolated rail from the USB-C \SI{5}{\volt} supply through the NXE2S0505MC-R7 DC-DC converters described in Section~\ref{sec:galvanic_isolation}. The \gls{daq} card was powered independently from the mains, with no shared power path with the circuit. The power supply building blocks are illustrated in Figure~\ref{fig:power_blocks}.
 
 \begin{figure}[H]
     \centering
@@ -254,6 +258,7 @@ The equipment and software used to validate this hardware are described in the f
 
 
 \section{Equipment, Materials, and Software tools}
+\label{sec:equipment_software_tools}
 Table~\ref{tab:hardware_tools} describes the custom hardware developed for this thesis. Table~\ref{tab:software_tools} lists the software tools used for design, acquisition, and analysis. The equipment used in the validation protocol is listed in Table~\ref{tab:validation_equipment}.
 
 \begin{table}[H]
@@ -312,7 +317,7 @@ The validation protocol that used this equipment is described in the following s
 \section{Validation Protocol}
 \label{sec:validation}
 
-This section describes the system designed to measure \gls{emg} simultaneously and \gls{eda} at the same muscle site. Validation proceeds in two stages: individual circuit verification in Sessions 1 and 2, followed by simultaneous measurement validation in Sessions 3 to 5.
+The validation of the acquisition system proceeded across five recording sessions. A session is a discrete data-gathering recording during which the participant followed a fixed protocol on a single calendar day. Sessions 1 and 2 verified each front-end individually with the other circuit physically disconnected, isolating the per-circuit behavior from any cross-modal interaction. Sessions 3 to 5 acquired \gls{emg} and \gls{eda} simultaneously through the post-isolation channels, providing the data on which cross-modality and reproducibility were assessed. Section~\ref{sec:validation_Q} introduces the seven validation questions that structured the analysis.
 
 \subsection{Validation Questions}
 \label{sec:validation_Q}
