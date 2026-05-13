@@ -644,7 +644,7 @@ The following section describes how the EDA signal was quantified. As described 
 
 \paragraph{Epoch Extraction}
 %Epoch extraction (-2 to +10s), baseline -2 to 0s, why 12s window
-The EDA recording was segmented into epochs time-locked to each breath-holding cue, as illustrated in Figure~\ref{fig:eda_epoch}A. Each epoch spanned from \SI{2}{\second} before to \SI{10}{\second} after the cue onset, giving a \SI{12}{\second} window per trial. The pre-cue segment from \SIrange{-2}{0}{\second} was used for per-epoch \gls{scl} and noise-floor estimation. A longer pre-cue window than in the EMG case was used because EDA exhibits slower drift and requires more samples to obtain a stable tonic estimate. The post-cue window extended to \SI{10}{\second} to capture the full SCR morphology, including the recovery phase, which typically lasts several seconds after the response peak.
+The EDA recording was segmented into epochs time-locked to each deep-inhalation cue, as illustrated in Figure~\ref{fig:eda_epoch}A. Each epoch spanned from \SI{2}{\second} before to \SI{10}{\second} after the cue onset, giving a \SI{12}{\second} window per trial. The pre-cue segment from \SIrange{-2}{0}{\second} was used for per-epoch \gls{scl} and noise-floor estimation. A longer pre-cue window than in the EMG case was used because EDA exhibits slower drift and requires more samples to obtain a stable tonic estimate. The post-cue window extended to \SI{10}{\second} to capture the full SCR morphology, including the recovery phase, which typically lasts several seconds after the response peak.
 
 \paragraph{No Filtering}
 %No digital filtering + reason
@@ -671,7 +671,7 @@ The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue wi
 SCR detection followed the criteria described by~\textcite{zangroniz_electrodermal_2017}. A response was considered valid if its amplitude exceeded \SI{0.05}{\micro\siemens} and its onset fell within the \SIrange{1}{6}{\second} post-cue detection window shown as the green region in Figure~\ref{fig:eda_epoch}B. The \gls{scr} onset was identified as the conductance minimum within \SIrange{1}{3.5}{\second} post-cue, or up to the peak location if the peak fell before \SI{3.5}{\second}. Restricting the onset to this sub-window enforced physiologically plausible stimulus-response latency. The onset search used the smoothed signal to match the peak-detection procedure described below.
 
 \paragraph{Peak Detection} 
-The peak was permitted anywhere within the full \SIrange{1}{6}{\second} detection window. To reduce bias from noise on the peak location, the signal was smoothed with a \SI{250}{\milli\second} moving average before applying the argmax. The window suppressed noise spikes that would otherwise shift the peak location away from the physiological SCR peak without smearing the SCR itself. The SCR rise time is typically several seconds. The window length was chosen empirically.
+The peak was permitted anywhere within the full \SIrange{1}{6}{\second} detection window. To reduce bias from noise on the peak location, the signal was smoothed with a \SI{250}{\milli\second} moving average before identifying the sample of maximum amplitude in the search window. The window suppressed noise spikes that would otherwise shift the peak location away from the physiological SCR peak without smearing the SCR itself. The SCR rise time is typically several seconds. The window length was chosen empirically.
 
 \paragraph{Amplitude Reading} 
 The SCR amplitude was read from the smoothed signal at the detected peak index (Figure~\ref{fig:eda_epoch}B). For consistency with the peak-detection procedure, the amplitude was read from the smoothed signal rather than the unsmoothed one. The same smoothing was applied to the pre-isolation signal to keep the comparison symmetrical. The SCR amplitude was computed as the peak-to-onset conductance difference. Where multiple threshold crossings occurred within a single epoch, only the dominant response (defined as the threshold crossing with the largest peak-to-onset amplitude within the detection window) was kept.
@@ -680,7 +680,7 @@ The SCR amplitude was read from the smoothed signal at the detected peak index (
     \centering
     \includegraphics[width=\textwidth]{figures/eda_epoch_figure.pdf}
     \caption{%
-        Epoch-based analysis of the EDA signal.
+        Epoch-based analysis of the synthetic EDA signal.
         \textbf{A)} A \SI{60}{\second} segment of the continuous EDA recording, showing the slow tonic drift (SCL) and a stimulus-evoked SCR at the cue event (dashed line). The shaded region marks the extracted epoch.
         \textbf{B)} The extracted epoch referenced to the cue onset. The grey region is the \SI{2}{\second} pre-cue window used for per-epoch \gls{scl} and local noise floor estimation. The green region is the \SIrange{1}{6}{\second} detection window within which a valid SCR onset must fall. The SCR amplitude $A_\mathrm{SCR}$ is measured from the onset conductance minimum to the response peak. Rise time is the duration from onset to peak. Synthetic data for illustration.
     }
@@ -901,7 +901,7 @@ The active-window, stabilization, and cue-masked \gls{psd} types defined in Sect
 \subsubsection{Q2 - EDA Front-End Characterization}
 \label{sec:q2_eda_frontend_char}
 
-Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement. The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected from the subject. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the breath-holding cue.
+Q2 evaluated the signal quality of the EDA front-end during electrodermal measurement. The post-isolation signal from Session~2 was used, recorded with the EMG circuit physically disconnected from the subject. Session~2 contained 30 stimulus epochs, each spanning \SIrange{-2}{+10}{\second} relative to the deep-inhalation cue.
 
 The SCL was computed following Section~\ref{sec:eda_processing} as the per-epoch tonic estimate. The circuit and local noise floors were also computed following Section~\ref{sec:eda_processing}. SCR amplitude, rise time, and detection rate were extracted from each epoch and averaged across all detected epochs. The circuit SNR and local SNR were computed using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to quantify the front-end's ability to resolve phasic SCR responses above the hardware noise floor and to exceed the SCR threshold consistently across trials. The \gls{scr} rise time was bounded below by approximately \SI{0.67}{\second} (Section~\ref{sec:EDA_LPF}).
 
