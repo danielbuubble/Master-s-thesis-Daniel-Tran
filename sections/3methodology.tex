@@ -714,6 +714,8 @@ Questions Q1 to Q4 characterized the individual front-ends and the isolation sta
 
 Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and sample standard deviation were computed across the combined arrays. Q7 reported per-session values and the mean and sample standard deviation across the three sessions ($n = 3$). The circuit and local \gls{snr} values reported in Q5 followed the Q7 pattern because they were computed as session-level scalars rather than per-epoch arrays.
 
+Across Q5, Q5b, Q6, and Q6b, the Session~1 EMG-only and Session~2 EDA-only recordings serve as clean references. Each was acquired with the other modality's circuit physically disconnected, free of cross-modal interference.
+
 \paragraph{Deviation Amplitude and Latency}
 The Q5b and Q6b paragraphs below report two scalar metrics over their respective post-cue search windows. Deviation amplitude is the signed peak-to-baseline excursion of the prepared signal across the search window. Deviation latency is the time from cue onset to that peak. The sign convention differs between Q5b and Q6b to match the physiological direction of the expected response, as summarized in Table~\ref{tab:bystander-sign-conventions}. Search-window durations, baseline windows, and the per-question signal preparation are stated in the Q5b and Q6b paragraphs below.
 
@@ -943,7 +945,7 @@ A single clean epoch was also shown, without envelope detection, to visualize th
 \subsubsection{Q5 - EMG Effect on EDA}
 \label{sec:q5_emg_effect_on_eda}
 
-Q5 evaluated whether simultaneous \gls{emg} operation contaminated the \gls{eda} signal. Three conditions were compared: Session~2 EDA-only as the clean reference, the EDA-only block from Sessions 3 to 5, and the Combined block from Sessions 3 to 5.
+Q5 evaluated whether simultaneous \gls{emg} operation contaminated the \gls{eda} signal. Three conditions were compared: the EDA-only reference from Session~2, the EDA-only block from Sessions 3 to 5, and the Combined block from Sessions 3 to 5.
 
 The \gls{scl} was computed as the per-epoch pre-cue mean and compared across all three conditions to detect any tonic offset introduced by simultaneous \gls{emg} operation, following Section~\ref{sec:eda_processing}. The \gls{scl} shift was computed as the per-session difference between Combined and EDA-only mean \gls{scl}, averaged across Sessions 3 to 5 with sample standard deviation across $n = 3$ sessions. \gls{scr} amplitude, detection rate, circuit \gls{snr}, and local \gls{snr} were computed for each condition using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to test whether the galvanic isolation stage prevents \gls{emg} interference from reaching the \gls{scr}.
 
@@ -952,15 +954,14 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:eda
 % [Q5 extension: EMG-cue-locked EDA analysis]
 \paragraph{Q5b - EDA Response at EMG Cues}
 \label{sec:q5b_eda_at_emg_cues}
-An extension of Q5 evaluated whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 time-locked epochs to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The post-cue search window was \SIrange{0}{3}{\second}, and the baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window. Smoothing followed the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}.
+Q5 compared the \gls{eda} signal across the three conditions at the block level. Q5b extended this to a cue-locked test of whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 epochs time-locked to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{eda} signal was smoothed using the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}. The post-cue search window was \SIrange{0}{3}{\second}, and the baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window. Deviation amplitude and deviation latency were reported as the pooled mean and sample standard deviation across the 120 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
 
 %Only post-isolated data
 %Three-way comparison: Sess1 EMG-only (clean ref) vs Sess3-5 EMG-only vs Sess3-5 Combined
 %Compares noise floor, contraction RMS, SNR, PSD <10Hz across conditions
 \subsubsection{Q6 - EDA Effect on EMG}
 \label{sec:q6_eda_effect_on_emg}
-
-Q6 evaluated whether simultaneous \gls{eda} operation contaminated the \gls{emg} signal. Three conditions were compared: Session~1 EMG-only as the clean reference, the EMG-only block from Sessions 3 to 5, and the Combined block from Sessions 3 to 5.
+Q6 evaluated whether simultaneous \gls{eda} operation contaminated the \gls{emg} signal. Three conditions were compared: the EMG-only reference from Session~1, the EMG-only block from Sessions 3 to 5, and the Combined block from Sessions 3 to 5.
 
 The noise floor, contraction RMS, and SNR were computed for each condition using the mean pre-cue RMS across clean epochs as the noise floor, following Section~\ref{sec:emg_processing}, to detect any interference introduced by the EDA excitation current into the EMG signal.
 
@@ -969,7 +970,7 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:emg
 % [Q6 extension: EDA-cue-locked EMG analysis]
 \paragraph{Q6b - EMG Response at EDA Cues}
 \label{sec:q6b_emg_at_eda_cues}
-An extension of Q6 evaluated whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only block of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset, and the \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The post-cue search window was \SIrange{0}{5}{\second}, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were computed on the \gls{emg} envelope over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}.
+Q6 compared the \gls{emg} signal across the three conditions at the block level. Q6b extended this to a cue-locked test of whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only blocks of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The post-cue search window was \SIrange{0}{5}{\second}, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were also computed over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}. The four metrics were reported as the pooled mean and sample standard deviation across the 30 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
 
 %Reproducibility across Sessions 3-5
 %EMG: EMG-only and Combined blocks. EDA: EDA-only and Combined blocks.
