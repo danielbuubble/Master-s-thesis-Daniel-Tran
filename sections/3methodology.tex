@@ -207,7 +207,8 @@ Each front-end was powered by a dedicated NXE2S0505MC-R7 isolated DC-DC converte
 
 \subsubsection{Signal Isolation}
 
-For signal isolation, the ISO224 reinforced-isolated amplifier was used, implemented according to the recommended application circuit in the datasheet~\cite{noauthor_iso224_nodate}, as shown in Figure~\ref{fig:isolation_blocks}b. Both front-ends operated from a \SI{5}{\volt} supply, ensuring that all signals remained well within the ISO224's allowable input range of \SI{\pm 12}{\volt}. The ISO224 had a fixed gain of $1/3$, set by the available device variant rather than by a specific design target. On the non-isolated side, the output was differential with a common-mode voltage of \( V_{DD2}/2 = \SI{2.5}{\volt} \). A unity-gain differential amplifier (MAX44241AUK+T, using four matched \SI{10}{\kilo\ohm} resistors) converted this to a single-ended signal, effectively canceling the \SI{2.5}{\volt} offset, as illustrated in Figure~\ref{fig:isolation_blocks}c.
+For signal isolation, the ISO224 reinforced-isolated amplifier was used, implemented according to the recommended application circuit in the datasheet~\cite{noauthor_iso224_nodate}, as shown in Figure~\ref{fig:isolation_blocks}b. Both front-ends operated from a \SI{5}{\volt} supply, ensuring that all signals remained well within the ISO224's allowable input range of \SI{\pm 12}{\volt}. The ISO224 had a fixed gain of $1/3$, set by the available device variant rather than by a specific design target.On the non-isolated side, the ISO224 produced a differential output centered on \( V_{DD2}/2 = \SI{2.5}{\volt} \). This common-mode bias is part of the device's output stage and allows bipolar signal swing on the unipolar \( V_{DD2} \) supply~\cite{noauthor_iso224_nodate}. A unity-gain differential amplifier (MAX44241AUK+T, using four matched \SI{10}{\kilo\ohm} resistors) converted this to a single-ended signal, effectively canceling the \SI{2.5}{\volt} offset, as illustrated in Figure~\ref{fig:isolation_blocks}c.
+
 
 The \gls{daq} (introduced in Section~\ref{sec:system_architecture}) input range was configured to \SI{\pm 5}{\volt}, chosen to provide sufficient headroom for the anticipated signals while optimizing ADC resolution. The validation of the isolated system is addressed in Section~\ref{sec:validation}.
 
@@ -405,7 +406,7 @@ For EDA, two electrodes were placed on the hypothenar eminence of the left palm 
 \begin{figure}[H]
     \centering
     \colorbox{white}{\includegraphics[width=0.5\linewidth]{figures/hand_electrode_placement (converted) (pdfresizer.com).pdf}}
-    \caption{Electrode placement on the left palm. Blue: EMG active electrodes over the thenar eminence (thumb). Orange: EDA electrodes over the hypothenar eminence (little finger). The EMG ground electrode on the back of the wrist is not shown.}
+    \caption{Electrode placement on the left palm. Blue: EMG active electrodes over the thenar eminence (thumb). Orange: EDA electrodes over the hypothenar eminence (little finger). The EMG ground electrode on the back of the wrist is not shown. Base image from \href{https://www.magnific.com/free-photo/hand-man-counting-five_1203964.htm}{https://www.magnific.com/free-photo/hand-man-counting-five\_1203964.htm}.}
     \label{fig:hand_electrode_placement}
 \end{figure}
 
@@ -496,7 +497,7 @@ EMG and EDA signals were processed through separate pipelines, each matched to t
 \end{figure}
 
 \subsection{Gain Compensation}\label{sec:gain_compensation}
-Both front-ends introduce gain that must be removed before computing any metrics. Gain compensation was applied once at data load, converting all channels to physical units (\si{\micro\volt} for EMG, \si{\micro\siemens} for EDA). The compensation steps for each channel type are listed in Table~\ref{tab:gain_compensation}. The EMG chain gain of \num{733.3} is derived in Section~\ref{sec:EMG_total_gain}. For EDA, the $\times 2$ low-pass filter gain is absorbed into Equation~\ref{eq:EDA_skin_resistance}, so no additional correction is needed beyond the $\times 3$ ISO224 factor for post-isolation channels, as described in Section~\ref{sec:EDA_frontend}. 
+Both front-ends introduce gain that must be compensated before computing any metrics. Gain compensation was applied once at data load, converting all channels to physical units (\si{\micro\volt} for EMG, \si{\micro\siemens} for EDA). The compensation steps for each channel type are listed in Table~\ref{tab:gain_compensation}. The EMG chain gain of \num{733.3} is derived in Section~\ref{sec:EMG_total_gain}. For EDA, the $\times 2$ low-pass filter gain is absorbed into Equation~\ref{eq:EDA_skin_resistance}, so no additional correction is needed beyond the $\times 3$ ISO224 factor for post-isolation channels, as described in Section~\ref{sec:EDA_frontend}. 
 
 \begin{table}[H]
 \centering
@@ -510,9 +511,9 @@ EMG & Pre  & $\div 733.3$                                                & \si{\
 \addlinespace
 EMG & Post & $\times 3 \div 733.3$                                       & \si{\micro\volt} \\
 \addlinespace
-EDA & Pre  & Equation~\ref{eq:EDA_skin_resistance}, inverted             & \si{\micro\siemens} \\
+EDA & Pre  & Equation~\ref{eq:EDA_skin_resistance}, then $1/R$            & \si{\micro\siemens} \\
 \addlinespace
-EDA & Post & $\times 3$, then Equation~\ref{eq:EDA_skin_resistance}, inverted & \si{\micro\siemens} \\
+EDA & Post & $\times 3$, then Equation~\ref{eq:EDA_skin_resistance}, then $1/R$ & \si{\micro\siemens} \\
 \bottomrule
 \end{tabularx}
 \end{table}
