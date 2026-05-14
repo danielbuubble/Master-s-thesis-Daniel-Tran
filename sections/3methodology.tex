@@ -568,7 +568,9 @@ where $\bar{x}$ and $\bar{y}$ are the sample means. The coefficient $r$ ranges f
 %PSD - Welch's method, per-segment detrending, pointers to signal-specific params
 \gls{psd} characterized the front-end's frequency-domain behavior from the acquired biosignals by describing the distribution of signal power across frequency. A bench frequency-response sweep would require controlled input stimuli at the front-end's electrode interface, incompatible with the biosignal-driven validation used here. Full bench characterization is named as future work in Section~\ref{sec:disc-future}. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 
-Each Welch segment was mean-subtracted before the Fourier transform to remove the DC pedestal that would otherwise dominate the lowest-frequency bin. Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. The following two sections describe how each method was applied to the \gls{emg} and \gls{eda} signals, respectively.
+Each Welch segment was mean-subtracted before the Fourier transform to remove the DC pedestal that would otherwise dominate the lowest-frequency bin. Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. 
+
+The following two sections describe how each method was applied to the EMG and EDA signals, respectively. The metrics produced by these methods are tagged as state (steady-state descriptors such as noise floors and tonic levels), per-event (single-stimulus responses such as contraction \gls{rms} and \gls{scr} amplitude), or change-comparison (relations between two values such as \gls{snr}, amplitude preservation, and \gls{scl} shift), and each metric is listed with its class in the inventory tables at the close of Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 %A session-wide RMS would collapse the entire recording to a single power estimate and lose temporal resolution. Moving the window sample by sample yielded one RMS value per sample, preserving the time course of muscle activity.
 
 %EMG is bipolar, so the signal was rectified before the window was applied. Without rectification, positive and negative values would partially cancel within each window, underestimating the true signal amplitude.
@@ -634,7 +636,69 @@ Mains harmonic power was computed from the active-window \gls{psd} to quantify r
 \end{equation}
 where $f_0$ is the harmonic center frequency and $\Delta f = \SI{1.67}{\hertz}$. The total mains harmonic power was the sum across the three harmonics. The EDA signal required a different processing approach due to its DC-coupled nature and slower response dynamics, as described in the following section.
 
+The metrics produced by the \gls{emg} signal processing are summarized in Table~\ref{tab:emg-metrics}, with classes following the taxonomy introduced in Section~\ref{sec:core_analysis}. Some metrics are defined later in Sections~\ref{sec:comparative_analysis} or in Q-specific paragraphs and are listed here for reference, with section pointers in the definition column.
 
+
+\newlength{\widetable}
+\setlength{\widetable}{\textwidth}
+\addtolength{\widetable}{2cm}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{\gls{emg} metrics used in this chapter. Classes follow the taxonomy introduced in Section~\ref{sec:core_analysis}.}
+\label{tab:emg-metrics}
+\makebox[\textwidth][c]{%
+\begin{tabularx}{\widetable}{>{\raggedright\arraybackslash}p{3.6cm} l >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Metric} & \textbf{Class} & \textbf{Definition and default reported form} \\
+\midrule
+
+NF\textsubscript{EMG} & State &
+Mean pre-cue \gls{rms} across clean epochs over the \SIrange{-0.5}{0}{\second} pre-cue window. Mean~$\pm$ within-block SD, \si{\micro\volt} \gls{rms}. \\
+\addlinespace
+
+Contraction \gls{rms} & Per-event &
+\gls{rms} over the \SIrange{0}{1}{\second} contraction window, per epoch (Equation~\ref{eq:rms}). Mean~$\pm$ within-block SD, \si{\micro\volt}. \\
+\addlinespace
+
+Mains harmonic power & State &
+Integrated power at \SI{50}{\hertz}, \SI{100}{\hertz}, and \SI{150}{\hertz} over $\pm\Delta f$ (Equation~\ref{eq:harmonic_power}). \si{\micro\volt^2}. \\
+\addlinespace
+
+\gls{snr}\textsubscript{EMG} & Change-comparison &
+$20\log_{10}(\text{contraction \gls{rms}} / \text{pre-cue \gls{rms}})$ per epoch (Equation~\ref{eq:snr}). Mean~$\pm$ within-block SD, \si{\decibel}. \\
+\addlinespace
+
+Amplitude preservation (\gls{emg}) & Change-comparison &
+$20\log_{10}(\text{post-iso contraction \gls{rms}} / \text{pre-iso contraction \gls{rms}})$ (Equation~\ref{eq:amplitude_preservation}). Used in Q3. \si{\decibel}. \\
+\addlinespace
+
+Pearson~$r$ (\gls{emg}) & Change-comparison &
+Per-epoch correlation between pre- and gain-corrected post-isolation \gls{emg} over \SIrange{-0.5}{3.5}{\second} (Equation~\ref{eq:pearson}). Used in Q3. Mean~$\pm$ within-block SD. \\
+\addlinespace
+
+Notch depth (\SI{50}{\hertz}) & Change-comparison &
+$10\log_{10}(P_\text{raw}(50) / P_\text{filtered}(50))$ (Equation~\ref{eq:notch_depth}). Used in Q4. \si{\decibel}. \\
+\addlinespace
+
+\gls{psd} exceedance (\SIrange{0}{10}{\hertz}) & Change-comparison &
+Percentage of frequency bins exceeding the Session~1 reference cue-masked \gls{psd} plus \SI{3}{\decibel} threshold. Used in Q6. \si{\percent}. \\
+\addlinespace
+
+Deviation amplitude (\gls{emg} envelope) & Per-event &
+Signed peak excursion of the \gls{emg} envelope from baseline over the \SIrange{0}{5}{\second} search window. Defined in Section~\ref{sec:comparative_analysis}. Used in Q6b. Positive direction: upward rise above baseline. Mean~$\pm$ within-block SD, \si{\micro\volt}. \\
+\addlinespace
+
+Deviation latency (\gls{emg} envelope) & Per-event &
+Time from cue onset to the deviation peak in the \SIrange{0}{5}{\second} search window. Defined in Section~\ref{sec:comparative_analysis}. Used in Q6b. Mean~$\pm$ within-block SD, \si{\second}. \\
+
+\bottomrule
+\end{tabularx}%
+}
+\end{table}
+
+\FloatBarrier
 
 \subsection{EDA Signal Processing}
 \label{sec:eda_processing}
@@ -660,9 +724,9 @@ The SCL was computed as the mean conductance over the per-epoch pre-cue window, 
 
 \paragraph{Noise Floors} 
 %Noise floor - two estimates, session-level circuit + per-epoch local, why not RMS
-Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift. The standard deviation of the detrended residual was taken as the session-level noise floor $\sigma_\text{session}$. A separate $\sigma_\text{session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
+Two noise floor estimates were used for the EDA signal. The first was a session-level estimate computed from the \SI{10}{\minute} stabilization recording at the start of each session, during which the subject sat still with no stimulus. The recording was linearly detrended to remove residual SCL drift. The standard deviation of the detrended residual (population SD, dividing by $n$) was taken as the session-level noise floor $\sigma_\text{session}$. A separate $\sigma_\text{session}$ was computed for the pre- and post-isolation channels, since these correspond to different physical circuits with potentially different noise characteristics. This estimate represented the circuit noise floor of each EDA front-end stage under quiet conditions.
 
-The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue window of each stimulus epoch. Each window was linearly detrended, and the standard deviation of the residual was computed. The mean across all epochs in a block was taken as the local noise floor $\sigma_\text{local}$. This estimate represented the noise conditions immediately preceding each SCR, including circuit noise and non-specific activity. 
+The second was a per-epoch estimate computed from the \SI{2}{\second} pre-cue window of each stimulus epoch. Each window was linearly detrended, and the standard deviation of the residual was computed. The per-epoch SDs (population SD, dividing by $n$) were averaged across all epochs in a block to give the local noise floor $\sigma_\text{local}$. This estimate represented the noise conditions immediately preceding each SCR, including circuit noise and non-specific activity. 
 
 \gls{rms} was not used for either estimate. \gls{eda} is DC-coupled, and an \gls{rms} over the stabilization recording is dominated by the \gls{scl} mean and carries no noise-floor information.
 
@@ -710,42 +774,96 @@ In both equations, $A_\text{SCR}$ was the mean SCR amplitude across detected epo
 \paragraph{PSD}
 EDA used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The active-window \gls{psd} was computed per epoch over the \SIrange{1}{6}{\second} \gls{scr} detection window with a segment length of \SI{5}{\second}, and the per-epoch spectra were averaged across all epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{10}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EDA recording with a segment length of \SI{10}{\second}. Each cue was excluded from $-\SI{2.0}{\second}$ to $+\SI{10.0}{\second}$ relative to cue onset. The \SI{10}{\second} segment gave a frequency resolution of \SI{0.1}{\hertz}.
 
+The metrics produced by the \gls{eda} signal processing are summarized in Table~\ref{tab:eda-metrics}, with classes following the taxonomy introduced in Section~\ref{sec:core_analysis}. As with Table~\ref{tab:emg-metrics}, some metrics are defined later in Section~\ref{sec:comparative_analysis} or in Q-specific paragraphs and are listed here for reference with section pointers.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{\gls{eda} metrics used in this chapter. Classes follow the taxonomy introduced in Section~\ref{sec:core_analysis}.}
+\label{tab:eda-metrics}
+\makebox[\textwidth][c]{%
+\begin{tabularx}{\widetable}{>{\raggedright\arraybackslash}p{3.6cm} l >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Metric} & \textbf{Class} & \textbf{Definition and default reported form} \\
+\midrule
+
+$\sigma_\text{session}$ & State &
+Population SD of the linearly detrended \SI{10}{\minute} stabilization recording, per session, per channel. \si{\micro\siemens}. \\
+\addlinespace
+
+$\sigma_\text{local}$ & State &
+Mean across blocks of the per-epoch detrended pre-cue SD over the \SIrange{-2}{0}{\second} window. Population SD, \si{\micro\siemens}. \\
+\addlinespace
+
+\gls{scl} & State &
+Per-epoch mean conductance over the \SIrange{-2}{0}{\second} pre-cue window, averaged across epochs per condition. Mean~$\pm$ within-block SD, \si{\micro\siemens}. \\
+\addlinespace
+
+\gls{scr} amplitude & Per-event &
+Peak minus onset on the \SI{250}{\milli\second}-smoothed signal, detected in the \SIrange{1}{6}{\second} window with amplitude exceeding \SI{0.05}{\micro\siemens}. Mean~$\pm$ within-block SD across detected epochs, \si{\micro\siemens}. \\
+\addlinespace
+
+\gls{scr} rise time & Per-event &
+Time from \gls{scr} onset to peak. Mean~$\pm$ within-block SD across detected epochs, \si{\second}. \\
+\addlinespace
+
+Detection rate & Per-event aggregate &
+Fraction of epochs with a detected \gls{scr}, reported per block. \si{\percent}. \\
+\addlinespace
+
+\gls{snr}\textsubscript{circuit} & Change-comparison &
+$20\log_{10}(\text{mean \gls{scr} amplitude} / \sigma_\text{session})$ (Equation~\ref{eq:eda_snr_circuit}). Per-session scalar. Mean~$\pm$ cross-session SD, \si{\decibel}. \\
+\addlinespace
+
+\gls{snr}\textsubscript{local} & Change-comparison &
+$20\log_{10}(\text{mean \gls{scr} amplitude} / \text{mean }\sigma_\text{local})$ (Equation~\ref{eq:eda_snr_local}). Per-session scalar. Mean~$\pm$ cross-session SD, \si{\decibel}. \\
+\addlinespace
+
+Amplitude preservation (\gls{eda}) & Change-comparison &
+$20\log_{10}(\text{post-iso mean \gls{scr} amp} / \text{pre-iso mean \gls{scr} amp})$ (Equation~\ref{eq:amplitude_preservation}). Used in Q3. \si{\decibel}. \\
+\addlinespace
+
+Pearson~$r$ (\gls{eda}) & Change-comparison &
+Per-epoch correlation between pre- and gain-corrected post-isolation \gls{eda} over \SIrange{-2}{10}{\second} (Equation~\ref{eq:pearson}). Used in Q3. Mean and within-block SD reported across all epochs. Median added because the distribution is bimodal. \\
+\addlinespace
+
+\gls{scl} shift & Change-comparison &
+Combined minus \gls{eda}-only per-session mean \gls{scl}. Defined in Section~\ref{sec:comparative_analysis}. Used in Q5. Mean~$\pm$ cross-session SD, \si{\micro\siemens}. \\
+\addlinespace
+
+Deviation amplitude (\gls{eda}) & Per-event &
+Signed peak excursion of the \gls{eda} signal from baseline over the \SIrange{0}{3}{\second} search window. Defined in Section~\ref{sec:comparative_analysis}. Used in Q5b. Positive direction: downward dip from baseline. Mean~$\pm$ within-block SD, \si{\micro\siemens}. \\
+\addlinespace
+
+Deviation latency (\gls{eda}) & Per-event &
+Time from cue onset to the deviation peak in the \SIrange{0}{3}{\second} search window. Defined in Section~\ref{sec:comparative_analysis}. Used in Q5b. Mean~$\pm$ within-block SD, \si{\second}. \\
+
+\bottomrule
+\end{tabularx}%
+}
+\end{table}
+
 Section~\ref{sec:comparative_analysis} describes how these metrics were combined across sessions and conditions to answer Q1 to Q7.
 
+\FloatBarrier
 
 \subsection{Comparative Analysis}
 \label{sec:comparative_analysis}
-Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately, while Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} summarize the sessions, conditions, and metrics for each question. The seven questions together provide a comprehensive characterization of the front-end, from individual signal quality to cross-circuit interference to session-to-session consistency.
+Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately. Questions Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} map metrics to questions and indicate which sessions and conditions each question uses. Metric definitions are in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics}.
 
-Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and sample standard deviation were computed across the combined arrays. Q7 reported per-session values and the mean and sample standard deviation across the three sessions ($n = 3$). The circuit and local \gls{snr} values reported in Q5 followed the Q7 pattern because they were computed as session-level scalars rather than per-epoch arrays.
+Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and within-block SD were computed across the combined arrays. Q7 reported per-session values and the mean and cross-session SD across the three sessions ($n = 3$). The circuit and local \gls{snr} values in Q5 followed the Q7 pattern because they were computed as session-level scalars.
 
-Across Q5, Q5b, Q6, and Q6b, the Session~1 EMG-only and Session~2 EDA-only recordings serve as clean references. Each was acquired with the other modality's circuit physically disconnected, free of cross-modal interference.
+Standard error of the mean was not reported in this chapter. Where an empirical distribution showed clear skew or multimodality, as in the bimodal Pearson~$r$ distribution for Q3 \gls{eda} (Figure~\ref{fig:q3-eda-preservation}), the median and inter-quartile range were added or substituted.
+S
+Across Q5, Q5b, Q6, and Q6b, the Session~1 \gls{emg}-only and Session~2 \gls{eda}-only recordings serve as clean references. Each was acquired with the other modality's circuit physically disconnected, free of cross-modal interference.
 
-\paragraph{Deviation Amplitude and Latency}
-The Q5b and Q6b paragraphs below report two scalar metrics over their respective post-cue search windows. Deviation amplitude is the signed peak-to-baseline excursion of the prepared signal across the search window. Deviation latency is the time from cue onset to that peak. The sign convention differs between Q5b and Q6b to match the physiological direction of the expected response, as summarized in Table~\ref{tab:bystander-sign-conventions}. Search-window durations, baseline windows, and the per-question signal preparation are stated in the Q5b and Q6b paragraphs below.
+Two additional metrics appear in Q5b and Q6b: deviation amplitude and deviation latency. Deviation amplitude is the signed peak-to-baseline excursion of the prepared signal across the post-cue search window. Deviation latency is the time from cue onset to that peak. The sign convention differs between Q5b and Q6b to match the physiological direction of the expected response. Q5b reports positive values for downward dips in the \gls{eda} signal, while Q6b reports positive values for upward rises in the \gls{emg} envelope. Search-window durations, baseline windows, and the per-question signal preparation are stated in the Q5b and Q6b paragraphs below.
 
-\begin{table}[!htbp]
-  \centering
-  \caption{Sign conventions for the Q5b and Q6b deviation amplitude.}
-  \label{tab:bystander-sign-conventions}
-  \begin{tabular}{l l}
-    \toprule
-    \textbf{Question} & \textbf{Positive direction} \\
-    \midrule
-    Q5b (\gls{eda} at \gls{emg} cues) & Downward dip in \gls{eda} from baseline. \\
-    Q6b (\gls{emg} envelope at \gls{eda} cues) & Upward rise in \gls{emg} envelope above baseline. \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\newlength{\widetable}
-\setlength{\widetable}{\textwidth}
-\addtolength{\widetable}{2cm}
 
 \begin{table}[H]
 \centering
 \small
-\caption{Overview of validation questions Q1 to Q4: data sources and metrics.}
+\caption{Validation questions Q1 to Q4: sessions, blocks, and metrics used. Metric definitions in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics}.}
 \label{tab:validation_overview_a}
 \makebox[\textwidth][c]{%
 \begin{tabularx}{\widetable}{>{\centering\arraybackslash}p{0.5cm} >{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X}
@@ -756,9 +874,10 @@ The Q5b and Q6b paragraphs below report two scalar metrics over their respective
 Q1 & \gls{emg} front-end characterization &
 Sess 1 post-isolation &
 \begin{tabitemize}
-  \item Noise floor (mean pre-cue \gls{rms}, \si{\micro\volt})
+  \item NF\textsubscript{EMG}
   \item Contraction \gls{rms}
-  \item \gls{snr}
+  \item \gls{snr}\textsubscript{EMG}
+  \item Active-window, stabilization, and cue-masked \gls{psd}
 \end{tabitemize} \\
 \addlinespace
 
@@ -766,36 +885,39 @@ Q2 & \gls{eda} front-end characterization &
 Sess 2 post-isolation &
 \begin{tabitemize}
   \item \gls{scl}
-  \item Noise floor (session and local)
+  \item $\sigma_\text{session}$, $\sigma_\text{local}$
   \item \gls{scr} amplitude
-  \item Rise time
+  \item \gls{scr} rise time
   \item Detection rate
-  \item \gls{eda} \gls{snr} (circuit and local)
+  \item \gls{snr}\textsubscript{circuit}, \gls{snr}\textsubscript{local}
+  \item Active-window, stabilization, and cue-masked \gls{psd}
 \end{tabitemize} \\
 \addlinespace
 
-Q3 & Isolation stage effect &
+Q3 & Isolation stage effect (pre vs post per modality) &
 \begin{tabitemize}
-  \item Sess 1: \gls{emg} pre vs post
-  \item Sess 2: \gls{eda} pre vs post
+  \item Sess 1: \gls{emg} pre and post
+  \item Sess 2: \gls{eda} pre and post
 \end{tabitemize} &
 \begin{tabitemize}
-  \item Amplitude preservation ($X$ = contraction \gls{rms} for \gls{emg}, mean \gls{scr} amplitude for \gls{eda})
-  \item \gls{emg} \gls{snr} pre vs post
-  \item \gls{eda} \gls{snr} pre vs post (circuit and local)
-  \item \gls{scr} detection rate (\gls{eda})
-  \item Pearson correlation (pre vs gain-corrected post)
+  \item Amplitude preservation (\gls{emg}, \gls{eda})
+  \item \gls{snr}\textsubscript{EMG} pre and post
+  \item \gls{snr}\textsubscript{circuit}, \gls{snr}\textsubscript{local} pre and post
+  \item Detection rate (\gls{eda}) pre and post
+  \item Pearson~$r$ (\gls{emg}, \gls{eda})
+  \item Active-window, stabilization, and cue-masked \gls{psd} pre and post
 \end{tabitemize} \\
 \addlinespace
 
-Q4 & Digital filtering effect &
-Sess 1: pre- and post-isolation, raw vs filtered &
+Q4 & Digital filtering effect (raw vs filtered $\times$ pre vs post) &
+Sess 1: four conditions (pre-raw, pre-filtered, post-raw, post-filtered) &
 \begin{tabitemize}
-  \item Noise floor: pre-raw, pre-filtered, post-raw, post-filtered
-  \item Contraction \gls{rms}: pre-raw, pre-filtered, post-raw, post-filtered
-  \item \gls{snr}: pre-raw, pre-filtered, post-raw, post-filtered
-  \item Notch depth at \SI{50}{\hertz} (dB)
-  \item Mains harmonic power (\SI{50}{\hertz}, \SI{100}{\hertz}, \SI{150}{\hertz})
+  \item NF\textsubscript{EMG} per condition
+  \item Contraction \gls{rms} per condition
+  \item \gls{snr}\textsubscript{EMG} per condition
+  \item Notch depth at \SI{50}{\hertz}
+  \item Mains harmonic power
+  \item Active-window and cue-masked \gls{psd}
 \end{tabitemize} \\
 
 \bottomrule
@@ -807,7 +929,7 @@ Sess 1: pre- and post-isolation, raw vs filtered &
 \begin{table}[H]
 \centering
 \small
-\caption{Overview of validation questions Q5 to Q7: data sources and metrics.}
+\caption{Validation questions Q5 to Q7: sessions, blocks, and metrics used. Metric definitions in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics}.}
 \label{tab:validation_overview_b}
 \makebox[\textwidth][c]{%
 \begin{tabularx}{\widetable}{>{\centering\arraybackslash}p{0.5cm} >{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X}
@@ -815,74 +937,73 @@ Sess 1: pre- and post-isolation, raw vs filtered &
 \textbf{Q} & \textbf{Question} & \textbf{Sessions / blocks} & \textbf{Metrics} \\
 \midrule
 
-Q5 & \gls{emg} effect on \gls{eda} &
+Q5 & \gls{emg} effect on \gls{eda} (three-way) &
 \begin{tabitemize}
-  \item Sess 2 \gls{eda}-only (clean ref)
+  \item Sess 2 \gls{eda}-only (reference)
   \item Sess 3 to 5 \gls{eda}-only block
   \item Sess 3 to 5 Combined block
 \end{tabitemize} &
 \begin{tabitemize}
-  \item \gls{scl} (three-way comparison)
-  \item \gls{scl} shift (Combined minus \gls{eda}-only, $n = 3$)
+  \item \gls{scl} per condition
+  \item \gls{scl} shift (Combined minus \gls{eda}-only)
   \item \gls{scr} amplitude
   \item Detection rate
-  \item \gls{eda} \gls{snr} (circuit and local)
+  \item \gls{snr}\textsubscript{circuit}, \gls{snr}\textsubscript{local}
+  \item Active-window and cue-masked \gls{psd}
 \end{tabitemize} \\
 \addlinespace
 
 Q5b & \gls{eda} response at \gls{emg} cues &
 Sess 3 to 5, \gls{emg}-only block (\gls{eda} at \gls{emg} cues) &
 \begin{tabitemize}
-  \item Deviation amplitude (signed, \gls{eda})
-  \item Deviation latency
+  \item Deviation amplitude (\gls{eda})
+  \item Deviation latency (\gls{eda})
 \end{tabitemize} \\
 \addlinespace
 
-Q6 & \gls{eda} effect on \gls{emg} &
+Q6 & \gls{eda} effect on \gls{emg} (three-way) &
 \begin{tabitemize}
-  \item Sess 1 \gls{emg}-only (clean ref)
+  \item Sess 1 \gls{emg}-only (reference)
   \item Sess 3 to 5 \gls{emg}-only block
   \item Sess 3 to 5 Combined block
 \end{tabitemize} &
 \begin{tabitemize}
-  \item Noise floor
+  \item NF\textsubscript{EMG}
   \item Contraction \gls{rms}
-  \item \gls{snr} (three-way comparison)
-  \item \gls{psd} exceedance vs Session 1 + \SI{3}{\decibel} threshold (\SIrange{0}{10}{\hertz})
+  \item \gls{snr}\textsubscript{EMG}
+  \item \gls{psd} exceedance (\SIrange{0}{10}{\hertz})
+  \item Active-window and cue-masked \gls{psd}
 \end{tabitemize} \\
 \addlinespace
 
 Q6b & \gls{emg} response at \gls{eda} cues &
 Sess 3 to 5, \gls{eda}-only block (\gls{emg} at \gls{eda} cues) &
 \begin{tabitemize}
-  \item Deviation amplitude (signed, \gls{emg} envelope)
-  \item Deviation latency
-  \item Pre-cue and post-cue envelope \gls{rms} (matched 2 s windows)
+  \item Deviation amplitude (\gls{emg} envelope)
+  \item Deviation latency (\gls{emg} envelope)
+  \item Pre-cue and post-cue envelope \gls{rms} (matched \SI{2}{\second} windows)
 \end{tabitemize} \\
 \addlinespace
 
-Q7 & Reproducibility &
+Q7 & Reproducibility across Sess 3 to 5 (per block) &
 \begin{tabitemize}
   \item Sess 3 to 5, \gls{emg}-only and Combined (\gls{emg})
   \item Sess 3 to 5, \gls{eda}-only and Combined (\gls{eda})
 \end{tabitemize} &
 \begin{tabitemize}
-  \item Contamination filter exclusion (per session-block)
-  \item \gls{emg} noise floor per block (mean $\pm$ SD)
-  \item \gls{emg} contraction \gls{rms} per block (mean $\pm$ SD)
-  \item \gls{emg} \gls{snr} per block (mean $\pm$ SD)
-  \item \gls{eda} \gls{scl} per block (mean $\pm$ SD)
-  \item \gls{eda} \gls{scr} amplitude per block (mean $\pm$ SD)
-  \item \gls{eda} detection rate per block
-  \item \gls{eda} $\sigma_{\text{local}}$ per block
-  \item \gls{eda} $\sigma_{\text{session}}$ per session
-  \item \gls{eda} \gls{snr} per block (local and circuit)
+  \item NF\textsubscript{EMG}, Contraction \gls{rms}, \gls{snr}\textsubscript{EMG} per block
+  \item \gls{scl}, \gls{scr} amplitude per block
+  \item Detection rate per block
+  \item $\sigma_\text{local}$ per block, $\sigma_\text{session}$ per session
+  \item \gls{snr}\textsubscript{circuit}, \gls{snr}\textsubscript{local} per block
+  \item Contamination filter exclusion per session-block (quality indicator)
 \end{tabitemize} \\
 
 \bottomrule
 \end{tabularx}%
 }
 \end{table}
+
 
 \FloatBarrier
 %Compares baseline vs contraction
@@ -914,9 +1035,9 @@ The active-window, stabilization, and cue-masked \gls{psd} types defined in Sect
 
 Q3 evaluated the effect of the galvanic isolation stage on the EMG and EDA signals across amplitude, frequency content, and waveform morphology. Data from Session~1 were used for the EMG comparison and data from Session~2 for the EDA comparison. All Q3 metrics were computed pre- and post-isolation per modality.
 
-For \gls{emg}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean contraction RMS across clean epochs. SNR was computed pre- and post-isolation using the mean pre-cue RMS as the noise floor to test whether the isolator degraded the \gls{emg} signal. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-0.5}{3.5}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean and standard deviation of Pearson $r$ were reported across clean epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:emg_processing} were computed for the pre- and post-isolation \gls{emg} channels of Session~1 to compare the two channels.
+For \gls{emg}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean contraction RMS across clean epochs. SNR was computed pre- and post-isolation using the mean pre-cue RMS as the noise floor to test whether the isolator degraded the \gls{emg} signal. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-0.5}{3.5}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean and within-block SD of Pearson~$r$ were reported across clean epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:emg_processing} were computed for the pre- and post-isolation \gls{emg} channels of Session~1 to compare the two channels.
 
-For \gls{eda}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean SCR amplitude across detected epochs. The circuit SNR, local SNR, and SCR detection rate were compared pre- and post-isolation using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local} to test whether the isolation stage suppressed EDA phasic activity beyond the compensated gain. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-2}{10}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean, standard deviation, and median of Pearson $r$ were reported across all epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for the pre- and post-isolation \gls{eda} channels of Session~2 to compare the two channels.
+For \gls{eda}, amplitude preservation across the isolation barrier was computed using Equation~\ref{eq:amplitude_preservation} with $X$ as the mean SCR amplitude across detected epochs. The circuit SNR, local SNR, and SCR detection rate were compared pre- and post-isolation using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local} to test whether the isolation stage suppressed EDA phasic activity beyond the compensated gain. Pearson $r$ was computed per epoch between the gain-corrected pre- and post-isolation signals over the full epoch window from \SIrange{-2}{10}{\second} using Equation~\ref{eq:pearson} to test whether the isolation stage preserved waveform morphology. The mean, within-block SD, and median of Pearson~$r$ were reported across all epochs. The active-window, stabilization, and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for the pre- and post-isolation \gls{eda} channels of Session~2 to compare the two channels.
 
 %Four signals: pre-isolation raw, pre-isolation filtered, post-isolation raw, post-isolation filtered
 %All filtering applied offline via filtfilt on raw data
@@ -952,14 +1073,14 @@ A single clean epoch was also shown, without envelope detection, to visualize th
 
 Q5 evaluated whether simultaneous \gls{emg} operation contaminated the \gls{eda} signal. Three conditions were compared: the EDA-only reference from Session~2, the EDA-only block from Sessions 3 to 5, and the Combined block from Sessions 3 to 5.
 
-The \gls{scl} was computed as the per-epoch pre-cue mean and compared across all three conditions to detect any tonic offset introduced by simultaneous \gls{emg} operation, following Section~\ref{sec:eda_processing}. The \gls{scl} shift was computed as the per-session difference between Combined and EDA-only mean \gls{scl}, averaged across Sessions 3 to 5 with sample standard deviation across $n = 3$ sessions. \gls{scr} amplitude, detection rate, circuit \gls{snr}, and local \gls{snr} were computed for each condition using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to test whether the galvanic isolation stage prevents \gls{emg} interference from reaching the \gls{scr}.
+The \gls{scl} was computed as the per-epoch pre-cue mean and compared across all three conditions to detect any tonic offset introduced by simultaneous \gls{emg} operation, following Section~\ref{sec:eda_processing}. The \gls{scl} shift is a change-comparison metric: the per-session difference between Combined and \gls{eda}-only mean \gls{scl}, reported across Sessions 3 to 5 as the across-session mean and cross-session SD ($n = 3$). \gls{scr} amplitude, detection rate, circuit \gls{snr}, and local \gls{snr} were computed for each condition using Equations~\ref{eq:eda_snr_circuit} and~\ref{eq:eda_snr_local}, to test whether the galvanic isolation stage prevents \gls{emg} interference from reaching the \gls{scr}.
 
 The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:eda_processing} were computed for the Session~2 reference, the EDA-only block, and the Combined block to compare the three conditions. Active-window \gls{psd}s were pooled across Sessions 3 to 5 per condition, and cue-masked \gls{psd}s were averaged across Sessions 3 to 5 per condition.
 
 % [Q5 extension: EMG-cue-locked EDA analysis]
 \paragraph{Q5b - EDA Response at EMG Cues}
 \label{sec:q5b_eda_at_emg_cues}
-Q5 compared the \gls{eda} signal across the three conditions at the block level. Q5b extended this to a cue-locked test of whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 epochs time-locked to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{eda} signal was smoothed using the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}. The post-cue search window was \SIrange{0}{3}{\second}, and the baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window. Deviation amplitude and deviation latency were reported as the pooled mean and sample standard deviation across the 120 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
+Q5 compared the \gls{eda} signal across the three conditions at the block level. Q5b extended this to a cue-locked test of whether \gls{emg} contractions alone produced time-locked excursions in the \gls{eda} signal. The \gls{eda} signal from the EMG-only blocks of Sessions 3 to 5 was segmented into 120 epochs time-locked to \gls{emg} contraction cues, with 40 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{3.5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{eda} signal was smoothed using the \SI{250}{\milli\second} moving-average procedure defined in Section~\ref{sec:eda_processing}. The post-cue search window was \SIrange{0}{3}{\second}, and the baseline was the mean of the smoothed signal over the \SIrange{-2}{0}{\second} pre-cue window. Deviation amplitude and deviation latency were reported as the pooled mean and within-block SD across the 120 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
 
 %Only post-isolated data
 %Three-way comparison: Sess1 EMG-only (clean ref) vs Sess3-5 EMG-only vs Sess3-5 Combined
@@ -975,7 +1096,7 @@ The active-window and cue-masked \gls{psd} types defined in Section~\ref{sec:emg
 % [Q6 extension: EDA-cue-locked EMG analysis]
 \paragraph{Q6b - EMG Response at EDA Cues}
 \label{sec:q6b_emg_at_eda_cues}
-Q6 compared the \gls{emg} signal across the three conditions at the block level. Q6b extended this to a cue-locked test of whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only blocks of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The post-cue search window was \SIrange{0}{5}{\second}, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were also computed over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}. The four metrics were reported as the pooled mean and sample standard deviation across the 30 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
+Q6 compared the \gls{emg} signal across the three conditions at the block level. Q6b extended this to a cue-locked test of whether \gls{eda} stimuli alone produced time-locked excursions in the \gls{emg} signal. The \gls{emg} signal from the EDA-only blocks of Sessions 3 to 5 was segmented into 30 epochs time-locked to \gls{eda} stimulus cues, with 10 epochs per session. Each epoch spanned from \SI{2}{\second} before to \SI{5}{\second} after the cue onset. Deviation amplitude and deviation latency followed the definitions and sign conventions stated at the start of Section~\ref{sec:comparative_analysis}. The \gls{emg} envelope was constructed following Section~\ref{sec:emg_processing}. The post-cue search window was \SIrange{0}{5}{\second}, and the baseline was the mean of the envelope over the \SIrange{-2}{0}{\second} pre-cue window. Pre-cue and post-cue envelope \gls{rms} were also computed over matched \SI{2}{\second} windows spanning \SIrange{-2}{0}{\second} and \SIrange{0}{2}{\second}. The four metrics were reported as the pooled mean and within-block SD across the 30 epochs, following the pooling rule in Section~\ref{sec:comparative_analysis}.
 
 %Reproducibility across Sessions 3-5
 %EMG: EMG-only and Combined blocks. EDA: EDA-only and Combined blocks.
@@ -985,7 +1106,7 @@ Q6 compared the \gls{emg} signal across the three conditions at the block level.
 
 Q7 evaluated the consistency of simultaneous \gls{emg} and \gls{eda} measurements across repeated sessions. Data from Sessions 3 to 5 were used, with all metrics computed per session and reported as mean~$\pm$~standard deviation across the three sessions.
 
-For \gls{emg}, the noise floor, contraction RMS, and SNR were reported separately for the EMG-only and Combined blocks. Between-session standard deviations were used to assess front-end stability during repeated simultaneous operation in the presence of known sources of variability, such as electrode placement and skin preparation.
+For \gls{emg}, the noise floor, contraction RMS, and SNR were reported separately for the EMG-only and Combined blocks. Cross-session SDs were used to assess front-end stability during repeated simultaneous operation in the presence of known sources of variability, such as electrode placement and skin preparation.
 
 For EDA, the SCL, SCR amplitude, detection rate, circuit SNR, and local SNR were reported separately for the EDA-only and Combined blocks. The per-block SCL split preserved the within-session habituation drift described in Section~\ref{sec:EDA_signal}.
 
