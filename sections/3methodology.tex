@@ -322,7 +322,8 @@ The validation of the acquisition system proceeded across five recording session
 
 \subsection{Validation Questions}
 \label{sec:validation_Q}
-The validation was organized around seven questions, denoted Q1 to Q7, that structure the analysis described in Section~\ref{sec:signal_processing}:
+The validation was organized around seven questions, denoted Q1 to Q7, that structure the analysis described in Section~\ref{sec:signal_processing}. The questions are:
+
 \begin{enumerate}[label=\textbf{Q\arabic*}]
     \item What are the signal characteristics of the \gls{emg} front-end during EMG-only operation, and what are its limitations?
     \item What are the signal characteristics of the \gls{eda} front-end during EDA-only operation, and what are its limitations?
@@ -412,6 +413,8 @@ For EDA, two electrodes were placed on the hypothenar eminence of the left palm 
 
 \subsection{Stimulation Instructions}
 
+Cues are the participant-facing audiovisual prompts displayed at each scheduled time. Event markers are the corresponding TDMS timestamps recorded at each cue onset.
+
 %Stimulation cue onset timestamps were saved as event markers in the TDMS file during acquisition.
 \paragraph{EMG Stimulation}
 The participant sat with the left forearm resting on the table, elbow flexed approximately \SI{90}{\degree} and the palm facing up. The fingers were relaxed in a neutral, slightly open position. 
@@ -480,7 +483,7 @@ Each session consisted of a 30-minute stabilization period during which the fina
     \item The block order was fixed across Sessions 3 to 5: EDA-only first, EMG-only second, and Combined last.
 \end{enumerate}
 
-Stimulus cues were delivered through the graphical interface of the acquisition script (Section~\ref{sec:acquisition_software}). Cues are the participant-facing audiovisual prompts displayed at each scheduled time. Event markers are the corresponding TDMS timestamps recorded at each cue onset. The event markers were used downstream to segment the continuous recordings into epochs for analysis (Section~\ref{sec:signal_processing}).
+Stimulus cues were delivered through the graphical interface of the acquisition script (Section~\ref{sec:acquisition_software}). The event markers were used downstream to segment the continuous recordings into epochs for analysis (Section~\ref{sec:signal_processing}).
 
 The validation protocol structures seven questions (Q1 to Q7) into individual front-end characterization, isolation-stage effects, simultaneous operation, and across-session reproducibility. Session~1 and Session~2 verified each front-end with the other circuit physically disconnected. Sessions 3 to 5 ran both circuits together under three block conditions: EDA-only, EMG-only, and Combined. Chapter~\ref{ch:results} reports the metrics defined in Section~\ref{sec:signal_processing} against this protocol.
 
@@ -569,9 +572,9 @@ where $\bar{x}$ and $\bar{y}$ are the sample means. The coefficient $r$ ranges f
 %PSD - Welch's method, per-segment detrending, pointers to signal-specific params
 \gls{psd} characterized the front-end's frequency-domain behavior from the acquired biosignals by describing the distribution of signal power across frequency. A bench frequency-response sweep would require controlled input stimuli at the front-end's electrode interface, incompatible with the biosignal-driven validation used here. Full bench characterization is named as future work in Section~\ref{sec:disc-future}. The estimate used Welch's method~\cite{kamen_essentials_2010}, which averaged periodograms of overlapping windowed segments to reduce spectral variance at the cost of frequency resolution. The segments overlapped by 50\%. Window length was set per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
 
-Each Welch segment was mean-subtracted before the Fourier transform to remove the DC pedestal that would otherwise dominate the lowest-frequency bin. Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording. 
+Each Welch segment was mean-subtracted before the Fourier transform to remove the DC pedestal that would otherwise dominate the lowest-frequency bin. The frequency bins are the discrete frequency intervals of the \gls{psd} output, with width set by the segment length and sampling rate. Three types of \gls{psd} were used: active-window, stabilization, and cue-masked. The chain noise is the noise contribution from the analog front-end and isolation stage measured when no biosignal is active. The active-window \gls{psd} captured the signal spectrum during stimulus response and was computed from the contraction window for \gls{emg} and the \gls{scr} detection window for \gls{eda}. The stabilization \gls{psd} captured the chain noise floor at rest and was computed from the \SI{10}{\minute} pre-session stabilization recording. The cue-masked \gls{psd} captured the chain noise floor during the test phase and was computed from the inter-cue windows of each recording.
 
-The following two sections describe how each method was applied to the EMG and EDA signals, respectively. The metrics produced by these methods are tagged as state (steady-state descriptors such as noise floors and tonic levels), per-event (single-stimulus responses such as contraction \gls{rms} and \gls{scr} amplitude), or change-comparison (relations between two values such as \gls{snr}, amplitude preservation, and \gls{scl} shift), and each metric is listed with its class in the inventory tables at the close of Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
+The following two sections describe how each method was applied to the EMG and EDA signals, respectively. Scalar metrics are the single-value summaries reported per session or per condition, in contrast to the spectrum-valued \gls{psd} outputs presented separately as figures. Each scalar metric in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics} is tagged with one of four classes. The state class names steady-state descriptors (noise floors and tonic levels) and the per-event class names single-stimulus responses (contraction \gls{rms} and \gls{scr} amplitude). The per-event aggregate class names counts or fractions pooled across events (detection rate) and the change-comparison class names relations between two values (amplitude preservation and \gls{snr}).
 %A session-wide RMS would collapse the entire recording to a single power estimate and lose temporal resolution. Moving the window sample by sample yielded one RMS value per sample, preserving the time course of muscle activity.
 
 %EMG is bipolar, so the signal was rectified before the window was applied. Without rectification, positive and negative values would partially cancel within each window, underestimating the true signal amplitude.
@@ -849,7 +852,7 @@ Section~\ref{sec:comparative_analysis} describes how these metrics were combined
 
 \subsection{Comparative Analysis}
 \label{sec:comparative_analysis}
-Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately. Questions Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} map metrics to questions and indicate which sessions and conditions each question uses. Metric definitions are in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics}.
+Questions Q1 to Q4 characterized the individual front-ends and the isolation stage separately. Questions Q5 to Q7 evaluated system behavior during simultaneous operation. Tables~\ref{tab:validation_overview_a} and~\ref{tab:validation_overview_b} map metrics to questions and indicate which sessions and conditions each question uses. Metric definitions are in Tables~\ref{tab:emg-metrics} and~\ref{tab:eda-metrics}. Q5b and Q6b extend Q5 and Q6 with a bystander analysis, which examines one modality time-locked to the cues of the other modality to expose cross-modal sensitivity.
 
 Pooling across Sessions 3 to 5 followed two patterns. For Q5, Q5b, Q6, and Q6b, per-epoch arrays were combined across the three sessions, and the pooled mean and within-block SD were computed across the combined arrays. Q7 reported per-session values and the mean and cross-session SD across the three sessions ($n = 3$). The circuit and local \gls{snr} values in Q5 followed the Q7 pattern because they were computed as session-level scalars.
 
