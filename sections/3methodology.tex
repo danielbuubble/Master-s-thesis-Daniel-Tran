@@ -553,7 +553,7 @@ Amplitude preservation quantified how well the isolation stage preserved signal 
     A_\text{dB} = 20\log_{10}\left(\frac{X_\text{post}}{X_\text{pre}}\right)
     \label{eq:amplitude_preservation}
 \end{equation}
-where $X$ is an amplitude measure defined per signal in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}.
+where $X$ is the contraction \gls{rms} for \gls{emg} (Section~\ref{sec:emg_processing}) and the mean \gls{scr} amplitude for \gls{eda} (Section~\ref{sec:eda_processing}).
 
 % Pearson correlation: morphology preservation check
 %Pearson correlation - morphology preservation, used in Q1
@@ -625,8 +625,7 @@ For EMG, $S$ in Equation~\ref{eq:snr} was the mean contraction RMS across clean 
 
 \paragraph{PSD} 
 %PSD parameters for EMG
-EMG used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The per-segment mean subtraction defined there removed the DC contribution of the voltage lifting circuit (Section~\ref{sec:EMG_frontend}) from the \gls{emg} spectrum. The active-window \gls{psd} was computed per epoch over the \SI{1}{\second} contraction window with a segment length of \SI{1}{\second}, and the per-epoch spectra were averaged across clean epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{1}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EMG recording with a segment length of \SI{1}{\second}. Each cue was excluded from $-\SI{0.5}{\second}$ to $+\SI{4.0}{\second}$ relative to cue onset.
-
+EMG used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The per-segment mean subtraction defined there removed the DC contribution of the voltage lifting circuit (Section~\ref{sec:EMG_frontend}) from the \gls{emg} spectrum. The active-window \gls{psd} was computed per epoch over the \SI{1}{\second} contraction window with a segment length of \SI{1}{\second}, and the per-epoch spectra were averaged across clean epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{1}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EMG recording with a segment length of \SI{1}{\second}. Each \gls{emg} cue was excluded from $-\SI{0.5}{\second}$ to $+\SI{3.5}{\second}$ relative to cue onset. 
 \paragraph{Mains Harmonic Power}
 %Mains harmonic power - quantify residual power-line interference
 Mains harmonic power was computed from the active-window \gls{psd} to quantify residual power-line interference in the \gls{emg} signal. Three harmonics were evaluated: the \SI{50}{\hertz} fundamental, and the \SI{100}{\hertz} and \SI{150}{\hertz} harmonics. For each harmonic, the power was integrated across a band of $\pm\Delta f$ around the center frequency, with $\Delta f$ from Equation~\ref{eq:digital_notch_bw}:
@@ -772,7 +771,7 @@ The local SNR used the per-epoch noise floor:
 In both equations, $A_\text{SCR}$ was the mean SCR amplitude across detected epochs within the condition.
 
 \paragraph{PSD}
-EDA used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The active-window \gls{psd} was computed per epoch over the \SIrange{1}{6}{\second} \gls{scr} detection window with a segment length of \SI{5}{\second}, and the per-epoch spectra were averaged across all epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{10}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EDA recording with a segment length of \SI{10}{\second}. Each cue was excluded from $-\SI{2.0}{\second}$ to $+\SI{10.0}{\second}$ relative to cue onset. The \SI{10}{\second} segment gave a frequency resolution of \SI{0.1}{\hertz}.
+EDA used the three \gls{psd} types defined in Section~\ref{sec:core_analysis}. The active-window \gls{psd} was computed per epoch over the \SIrange{1}{6}{\second} \gls{scr} detection window with a segment length of \SI{5}{\second}, and the per-epoch spectra were averaged across all epochs. The stabilization \gls{psd} was computed from the \SI{10}{\minute} pre-session stabilization recording with a segment length of \SI{10}{\second}. The cue-masked \gls{psd} was computed from the inter-cue windows of the EDA recording with a segment length of \SI{10}{\second}. Each \gls{eda} cue was excluded from $-\SI{2.0}{\second}$ to $+\SI{10.0}{\second}$ relative to cue onset. The \SI{10}{\second} segment gave a frequency resolution of \SI{0.1}{\hertz}.
 
 The metrics produced by the \gls{eda} signal processing are summarized in Table~\ref{tab:eda-metrics}, with classes following the taxonomy introduced in Section~\ref{sec:core_analysis}. As with Table~\ref{tab:emg-metrics}, some metrics are defined later in Section~\ref{sec:comparative_analysis} or in Q-specific paragraphs and are listed here for reference with section pointers.
 
