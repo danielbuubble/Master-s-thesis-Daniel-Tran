@@ -38,12 +38,12 @@
 %   anchor reference document is Analysis/anchor_reference_v2.md.
 % ========================================================================
 
-%\chapter{Results}
+\chapter{Results}
 \label{ch:results}
 
 This chapter reports the validation measurements obtained from five acquisition sessions following the protocol described in Section~\ref{sec:validation}. Sessions~1 and~2 verified each circuit individually with the other circuit physically disconnected, yielding 120 \gls{emg} contraction epochs from Session~1 and 30 \gls{eda} epochs from Session~2 across the pre- and post-isolation channels. Sessions~3 to~5 acquired \gls{emg} and \gls{eda} simultaneously on the post-isolation channels through three sequential blocks: an EDA-only block, an EMG-only block, and a Combined block. Across all sessions, 360 \gls{emg} contraction epochs and 90 \gls{eda} epochs were acquired. The bystander analyses described in Sections~\ref{sec:results-q5b} and~\ref{sec:results-q6b} use derived epochs from the Sessions~3 to~5 recordings, with epoch counts reported in those sections.
 
-The chapter is organized around the seven validation questions defined in Section~\ref{sec:validation_Q}. Section~\ref{sec:results-frontend} reports the front-end and isolation-stage characterization. Section~\ref{sec:results-crosscontamination} reports the cross-modality contamination assessment. Section~\ref{sec:results-reproducibility} reports the per-session reproducibility analysis. Each subsection corresponds to a Methods question, sharing its Q-number (Section~\ref{sec:validation_Q}).
+The chapter is organized around the seven validation questions defined in Section~\ref{sec:validation_Q}. Section~\ref{sec:results-frontend} reports the front-end and isolation-stage characterization. Section~\ref{sec:results-crosscontamination} reports the cross-modality contamination assessment. Section~\ref{sec:results-reproducibility} reports the per-session reproducibility analysis. Each subsection corresponds to a Methods question and shares its Q-number (Section~\ref{sec:validation_Q}).
 
 Metric definitions are given in Sections~\ref{sec:emg_processing} and~\ref{sec:eda_processing}. Per-session and aggregate values are reported as mean $\pm$ sample standard deviation. Interpretation of the results is reported in Chapter~\ref{ch:discussion}.
 
@@ -306,7 +306,7 @@ The post-isolation \gls{eda} characterization is reported in Section~\ref{sec:re
 
 \begin{table}[!htbp]
   \centering
-  \caption{Isolation stage change metrics for both modalities. Amplitude preservation reported in dB as $20\log_{10}(\text{post} / \text{pre})$. Pearson $r$ reported as mean $\pm$ SD across per-epoch values for EMG and as median across per-epoch values for EDA. \gls{snr} drop computed as post minus pre.}
+  \caption{Change-comparison metrics for the isolation stage, both modalities. Amplitude preservation reported in dB as $20\log_{10}(\text{post} / \text{pre})$. Pearson $r$ is reported as the mean $\pm$ SD across per-epoch values for both modalities, with a median added for \gls{eda} because the distribution is bimodal. \gls{snr} drop computed as post minus pre.}
   \label{tab:q3-isolation-change}
   \begin{tabular}{l c l}
     \toprule
@@ -466,7 +466,7 @@ Figure~\ref{fig:q5-eda-means} shows the across-epoch mean conductance per condit
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{result_figures/q5_eda_metric_bars.pdf}
-  \caption{\gls{eda} scalar metrics by condition: \gls{scl}, \gls{scr} amplitude, \gls{snr}$_{\text{circuit}}$, and \gls{snr}$_{\text{local}}$. Bars show the Session~2 reference value alongside the Sessions 3 to 5 EDA-only and Combined block means. \gls{scl} and \gls{scr} amplitude bars show the pooled mean across epochs ($n = \num{30}$) with $\pm 1$ SD error bars. \gls{snr}$_{\text{circuit}}$ and \gls{snr}$_{\text{local}}$ bars show the across-session mean ($n = 3$ sessions) without per-epoch SD. The Session~2 reference is a single-session value. Per-epoch SDs are reported in Section~\ref{sec:results-q2}.}
+  \caption{\gls{eda} scalar metrics by condition: \gls{scl}, \gls{scr} amplitude, \gls{snr}$_{\text{circuit}}$, and \gls{snr}$_{\text{local}}$. Bars show the Session~2 reference value alongside the EDA-only and Combined block means for Sessions 3 to 5. \gls{scl} and \gls{scr} amplitude bars show the pooled mean across epochs ($n = \num{30}$) with $\pm 1$ SD error bars. \gls{snr}$_{\text{circuit}}$ and \gls{snr}$_{\text{local}}$ bars show the across-session mean ($n = 3$ sessions) without per-epoch SD. The Session~2 reference is a single-session value. Per-epoch SDs are reported in Section~\ref{sec:results-q2}.}
   \label{fig:q5-eda-bars}
 \end{figure}
 
@@ -585,7 +585,7 @@ The noise floor was $\num{21.70} \pm \num{0.99}$\,\si{\micro\volt} \gls{rms} for
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{result_figures/q6_emg_metric_bars.pdf}
-  \caption{\gls{emg} scalar metrics by condition: noise floor, contraction \gls{rms}, and \gls{snr}. Bars show the Session~1 reference value alongside the Sessions 3 to 5 EMG-only, and Combined block means. Pooled means span $n = \num{120}$ epochs per block, with $\pm 1$ SD error bars. The Session~1 reference is a single-session value ($n = \num{119}$). Per-epoch SDs are reported in Section~\ref{sec:results-q1}.}
+  \caption{\gls{emg} scalar metrics by condition: noise floor, contraction \gls{rms}, and \gls{snr}. Bars show the Session~1 reference value alongside the EMG-only means for Sessions 3 to 5 and the Combined block means. Pooled means span $n = \num{120}$ epochs per block, with $\pm 1$ SD error bars. The Session~1 reference is a single-session value ($n = \num{119}$). Per-epoch SDs are reported in Section~\ref{sec:results-q1}.}
   \label{fig:q6-emg-bars}
 \end{figure}
 

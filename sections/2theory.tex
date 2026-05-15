@@ -1,4 +1,7 @@
-The hardware design and validation described in Chapter~\ref{chap:methods} rest on three theoretical foundations. Section~\ref{sec:human_physiology} covers the physiological systems used by \gls{emg} and \gls{eda} in this thesis. Sections~\ref{sec:EMG} and~\ref{sec:EDA} cover each modality, including the signal characteristics and measurement constraints that shape the circuit design. Section~\ref{sec:ground_loops} covers the ground loop problem that arises from co-locating the two measurement circuits.
+\chapter{Theory}
+\label{ch:theory}
+
+The hardware design and validation described in Chapter~\ref{ch:methods} rest on three theoretical foundations. Section~\ref{sec:human_physiology} covers the physiological systems used by \gls{emg} and \gls{eda} in this thesis. Sections~\ref{sec:EMG} and~\ref{sec:EDA} cover each modality, including the signal characteristics and measurement constraints that shape the circuit design. Section~\ref{sec:ground_loops} covers the ground loop problem that arises from co-locating the two measurement circuits.
 
 \section{Physiological Background} \label{sec:human_physiology}
 
@@ -10,7 +13,7 @@ The human nervous system is divided into two main parts: the central nervous sys
 
 The \gls{pns} is further divided into the somatic nervous system and the autonomic nervous system~\cite{bazira_overview_2021}. The somatic nervous system is responsible for controlling voluntary movements by transmitting motor commands to skeletal muscles~\cite{bazira_overview_2021, kamen_essentials_2010}. This is the nervous system branch involved in \gls{emg} measurements. The autonomic nervous system regulates involuntary bodily functions and is further divided into the sympathetic, parasympathetic, and enteric subdivisions~\cite{bazira_overview_2021}. The \gls{sns} is relevant to this thesis because it controls eccrine sweat gland activity, which is the basis of \gls{eda}~\cite{boucsein_electrodermal_2012, ellaway_sweat_2010, banganho_electrodermal_2022}. Section~\ref{sec:sweat} describes the structure and location of these glands.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/human_nervous_system.drawio (cropped) (pdfresizer.com).pdf}
     \caption{Overview of the human nervous system. Branches relevant to the thesis are bolded.}
@@ -23,7 +26,7 @@ EDA and surface EMG are acquired through electrodes placed on the skin surface. 
 \subsubsection{Skin Structure} \label{sec:skin_structure}
 The skin is composed of three layers: the epidermis, the dermis, and the hypodermis~\cite{lopez-ojeda_anatomy_2025}. Figure~\ref{fig:skin_layers} illustrates these layers and the underlying muscle tissue. The epidermis is the outermost layer, with a thickness that ranges from \SIrange{50}{200}{\micro\metre} at most body sites but reaches approximately \SI{1}{\milli\metre} at the palms and soles~\cite{boucsein_electrodermal_2012}. The stratum corneum is the outermost sublayer of the epidermis and consists of dead cells with low moisture content~\cite{banganho_electrodermal_2022}. The dermis lies beneath the epidermis, is much thicker, and contains sweat glands and blood vessels~\cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}. The hypodermis is the deepest layer and connects the skin to the underlying muscle tissue.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.55\textwidth]{figures/skin_layer.jpg}
     \caption{Layered structure of the skin, showing the epidermis, dermis, hypodermis (subcutaneous tissue), and underlying muscle. Image from \href{https://www.vecteezy.com/vector-art/445514-layers-of-human-skin-concept}{https://www.vecteezy.com/vector-art/445514-layers-of-human-skin-concept}.}
@@ -33,7 +36,7 @@ The skin is composed of three layers: the epidermis, the dermis, and the hypoder
 \subsubsection{Sweat Glands \& Sweat Ducts} \label{sec:sweat}
 The eccrine sweat glands introduced in Section~\ref{sec:human_nervous_system} are one of two types of sweat glands. The other type is apocrine~\cite{cacioppo_handbook_2007}. The apocrine glands are found mainly in the axillae and genitals and contribute little to overall sweating~\cite{boucsein_electrodermal_2012}. The eccrine glands are distributed across most of the body. Each gland sits in the hypodermis or dermis and connects to the skin surface through a narrow duct that passes through the dermis and the epidermis~\cite{boucsein_electrodermal_2012}, as shown in Figure~\ref{fig:sweat_glands}. When the gland activates, sweat fills the duct. Because sweat contains ions, the filled duct acts as a low-resistance pathway through the stratum corneum~\cite{tronstad_current_2022}. The palmar and plantar regions have higher densities of eccrine glands and are more responsive to emotional stimuli than the trunk and limbs~\cite{tronstad_current_2022, boucsein_electrodermal_2012}. These sweating dynamics determine the electrical behavior of the skin at the measurement site.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.45\textwidth]{figures/sweat_glands.pdf}
     \caption{Cross-section of skin showing an apocrine sweat gland, an eccrine sweat gland, and their ducts opening at the skin surface. A hair follicle is shown for anatomical context. Adapted from Glafoululle des Alpes (2022), \textit{Skin Glandes}, \href{https://commons.wikimedia.org/wiki/File:Skin_Glandes_-_FR.svg}{https://commons.wikimedia.org/wiki/File:Skin\_Glandes\_-\_FR.svg}, CC BY-SA 4.0.}
@@ -55,7 +58,7 @@ EMG and EDA have opposing skin preparation requirements. EMG recordings benefit 
 %Mention that muscle tissue is anisotropic - Ørjan sin bok
 Skeletal muscle consists of bundles of muscle fibers~\cite{mukund_skeletal_2020}. Each fiber is a long, cylindrical cell with an excitable membrane that generates electrical signals~\cite{kamen_essentials_2010}. Motoneurons innervate these muscle fibers. A single motoneuron and all of the fibers it innervates together form a \gls{mu}~\cite{whittaker_fundamentals_2012, konrad_abc_2006}, illustrated in Figure~\ref{fig:motor_unit}. The \gls{mu} is the smallest unit of muscle activation. When the motoneuron fires, all of its fibers contract simultaneously. The electrical and functional properties of \glspl{mu} are discussed in Section~\ref{sec:EMG_signal}.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/Motor_Unit.pdf}
     \caption{Schematic of a motor unit: one motoneuron innervating a bundle of skeletal muscle fibers. Adapted from ScholarJay (2022), \textit{Motor Unit}, \href{https://commons.wikimedia.org/wiki/File:Motor_Unit.png}{https://commons.wikimedia.org/wiki/File:Motor\_Unit.png}, CC BY-SA 4.0.}
@@ -85,7 +88,7 @@ As described in Section~\ref{sec:muscle}, skeletal muscle is organized into \gls
 % From fiber to measurable unit
 The dipoles from fibers belonging to the same \gls{mu} sum into a single compound waveform. This waveform is the \gls{muap}, shown in Figure~\ref{fig:muap}. The \gls{muap} is the smallest unit of muscle activity that can be detected at the skin with surface electrodes and a suitable amplifier~\cite{kamen_essentials_2010}. It is therefore the basic building block of the recorded \gls{emg} signal.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{figures/MUAP_superposition.png}
     \caption{Individual MFAPs summing into a MUAP. Reproduced from~\textcite{konrad_abc_2006} with permission.}
@@ -142,7 +145,7 @@ The raw \gls{semg} signal amplitude at the skin surface spans \SIrange{10}{5000}
 
 % sEMG focus justified in Section 2.2.2.1
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/raw_semg_illustration.pdf}
      \caption{Illustrative composite of three voluntary contraction bursts recorded from the thumb muscles in this thesis. Each burst is followed by a rest period at baseline. The inter-burst intervals are shortened for display. The original recording used a \qty{15}{\second} inter-stimulus interval.}
@@ -191,11 +194,11 @@ Motion artifacts occur when relative movement between the electrode and the skin
 Crosstalk is contamination of the recorded signal by \gls{emg} activity from neighboring muscles. Contamination is typically \SIrange{10}{15}{\percent} of the signal and is reduced with smaller electrodes, shorter inter-electrode distances, and electrode placement away from adjacent muscle bellies~\cite{konrad_abc_2006}.
 
 % Hand-off to methods
-The amplitude range, frequency content, and noise sources described in Section~\ref{sec:EMG_signal} and Section~\ref{sec:sEMG} together define the requirements on the \gls{emg} acquisition hardware. These requirements determine the amplifier choice, filter bands, and electrode configuration described in Section~\ref{sec:EMG_frontend}.
+The amplitude range, frequency content, and noise sources described in Sections~\ref {sec:EMG_signal} and~\ref {sec:sEMG} together define the requirements for the \gls{emg} acquisition hardware. These requirements determine the amplifier choice, filter bands, and electrode configuration described in Section~\ref{sec:EMG_frontend}.
 
 \section{Electrodermal Activity} \label{sec:EDA}
 % Section pipeline: Definition + mechanism + clinical motivation → Section roadmap → SC/SP framework (tonic/phasic) → Spectral and amplitude decomposition (hardware resolution hook) → Endo/exo taxonomy → DC advantages → DC disadvantages → AC admittance definition → AC advantages → AC disadvantages → DC chosen for this thesis (hand-off to methods).
-% Chapter role: Supplies the DC exosomatic method choice, the SCR band (1.5 Hz) and amplitude threshold (0.05 µS), and the 0.5 V / 10 µA/cm² / 0.8 V-per-site operating envelope that methods' sec:EDA_frontend implements.
+% Chapter role: Supplies the DC exosomatic method choice, the SCR band (1.5 Hz) and amplitude threshold (0.05 µS), and the 0.5 V / 10 µA/cm² / 0.8 V-per-site operating envelope that the methods' sec: EDA_frontend implements.
 
 % Definition + physiological mechanism + clinical motivation
 \gls{eda} refers to variations in the electrical properties of the skin driven by sweat gland activity~\cite{bari_disturbances_2024}. The sympathetic branch of the autonomic nervous system controls the sweat glands. When activated, they produce sweat, an ionic solution of minerals, lactic acid, and urea~\cite{posada-quintero_innovations_2020}. Sweat lowers skin resistance, raising its conductance and altering its potential and capacitance~\cite{tronstad_current_2022}. \Gls{sc} is the conductance measured between two skin electrodes under an external excitation source. \Gls{sp} is the potential difference measured between two skin sites without applied current. Sweat glands primarily support thermoregulation, but they also respond to psychologically significant stimuli~\cite{cacioppo_handbook_2007}. \gls{eda} therefore serves as an objective measure of sudomotor activity and a quantitative marker of autonomic arousal~\cite{ellaway_sweat_2010, benedek_continuous_2010}. The signal is a standard measurement in clinical psychophysiology, in the assessment of anxiety-related conditions, and as a component of polygraph examinations~\cite{boucsein_electrodermal_2012, banganho_electrodermal_2022}.
@@ -210,10 +213,10 @@ Section~\ref{sec:EDA_signal} describes the signal structure of \gls{eda}, includ
 \Gls{eda} is measured as either \gls{sc} or \gls{sp}. Both signals contain a slowly varying tonic component and a faster phasic component superimposed on it~\cite{boucsein_electrodermal_2012, tronstad_current_2022, banganho_electrodermal_2022}. For \gls{sc}, the tonic component is the \glsreset{scl}\gls{scl}, which represents the baseline conductance between sudomotor bursts. \Gls{scl} habituates across repeated stimulus exposures, drifting downward over a recording as the response to each successive cue dampens~\cite{boucsein_electrodermal_2012}. The phasic components are \glsreset{scr}\glspl{scr}, short transients with a fast rise and a slower decay~\cite{tronstad_current_2022, posada-quintero_innovations_2020}. Sudomotor activation drives sweat into the ducts, raising local conductance and producing the fast \gls{scr} rise (Section~\ref{sec:human_el_properties}). Slow stratum corneum hydration following repeated sudomotor activity shifts the \gls{scl} over longer timescales, underlying the habituation drift~\cite{boucsein_electrodermal_2012}. The equivalent components for \gls{sp} are the \gls{spl} and the \gls{spr}~\cite{tronstad_current_2022}.
 
 % Spectral and amplitude decomposition of SC + hardware resolution hook
-The recorded \gls{sc} signal is the sum of a slowly varying \gls{scl} and superimposed \glspl{scr}. The \gls{scl} varies at frequencies up to approximately \SI{0.05}{\hertz}, and \glspl{scr} occupy the \qtyrange{0.05}{1.5}{\hertz} band~\cite{zangroniz_electrodermal_2017}. Resting \gls{scl} values typically range from \qtyrange{2}{20}{\micro\siemens} across healthy adults under quiet conditions~\cite{cacioppo_handbook_2007, boucsein_electrodermal_2012}. Stimulus-evoked \glspl{scr} typically range from \qtyrange{0.1}{1.0}{\micro\siemens} in amplitude~\cite{cacioppo_handbook_2007, boucsein_electrodermal_2012}. Skin conductance is measured in microsiemens, and the \gls{scl} varies with both individual and recording conditions. Commercial instruments typically cover \gls{scl} values up to \qty{100}{\micro\siemens}~\cite{boucsein_electrodermal_2012}. The \glspl{scr} superimposed on this baseline have an accepted minimum detection amplitude of \qty{0.05}{\micro\siemens}~\cite{boucsein_electrodermal_2012}. The dynamic range between the \gls{scl} span and the smallest \gls{scr} of interest sets a resolution requirement on the acquisition hardware. This relationship between the tonic and phasic components is illustrated in Figure~\ref{fig:eda_signal_decomp}.
+The recorded \gls{sc} signal is the sum of a slowly varying \gls{scl} and superimposed \glspl{scr}. The \gls{scl} varies at frequencies up to approximately \SI{0.05}{\hertz}, and \glspl{scr} occupy the \qtyrange{0.05}{1.5}{\hertz} band~\cite{zangroniz_electrodermal_2017}. Resting \gls{scl} values typically range from \qtyrange{2}{20}{\micro\siemens} across healthy adults under quiet conditions~\cite{cacioppo_handbook_2007, boucsein_electrodermal_2012}. Stimulus-evoked \glspl{scr} typically range from \qtyrange{0.1}{1.0}{\micro\siemens} in amplitude~\cite{cacioppo_handbook_2007, boucsein_electrodermal_2012}. Skin conductance is measured in microsiemens, and the \gls{scl} varies with both individual and recording conditions. Commercial instruments typically cover \gls{scl} values up to \qty{100}{\micro\siemens}~\cite{boucsein_electrodermal_2012}. The \glspl{scr} superimposed on this baseline has an accepted minimum detection amplitude of \qty{0.05}{\micro\siemens}~\cite{boucsein_electrodermal_2012}. The dynamic range between the \gls{scl} span and the smallest \gls{scr} of interest sets a resolution requirement on the acquisition hardware. This relationship between the tonic and phasic components is illustrated in Figure~\ref{fig:eda_signal_decomp}.
 
 %Find info about SCR and SCL
-\begin{figure}[H]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=\textwidth]{figures/eda_tonic_phasic.pdf}
     \caption{%
@@ -268,7 +271,7 @@ Palmar recording sites are conventional in \gls{eda} measurement because the ecc
 
 %1. Definition of Ground Loop  
 % Generic definition of ground loop
-In electrical measurements, all voltages are referenced to a common ground point. A ground loop forms when a circuit contains more than one conductive path to that ground, which allows unintended currents to circulate around the loop. These circulating currents appear as noise or bias in the recorded signal~\cite{kamen_essentials_2010}.
+In electrical measurements, all voltages are referenced to a common ground point. A ground loop forms when a circuit contains more than one conductive path to that ground, which allows unintended currents to circulate through the loop. These circulating currents appear as noise or bias in the recorded signal~\cite{kamen_essentials_2010}.
 
 %2. How It Arises in Biopotential Measurements
 % Specific case: biopotential + bioimpedance co-measurement on the same subject
