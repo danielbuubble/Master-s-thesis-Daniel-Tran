@@ -122,7 +122,7 @@ The final stage was a second-order Sallen-Key low-pass filter. When both resisto
 
 \subsubsection{Voltage Lifting Circuit} 
 \label{sec:EMG_voltage_lifter}
-The voltage-lifting stage preserves compatibility with single-rail \glspl{adc} that would otherwise require restructuring the front-end. The bipolar \gls{semg} output is centered at a positive midpoint of \SI{1.237}{\volt}, set by an LM285 precision voltage reference, as shown in Figure~\ref{fig:emg-frontend-blocks}e. The NI USB-6356 \gls{daq} used in this thesis accepts bipolar input directly, so the centering is not required for the validation but maintains design portability.
+The voltage-lifting stage preserves compatibility with single-rail \glspl{adc} that would otherwise require restructuring the front-end. The bipolar \gls{semg} output is centered at a positive midpoint of \SI{1.237}{\volt}, set by an LM285 precision voltage reference, as shown in Figure~\ref{fig:emg-frontend-blocks}e. The NI USB-6356 \gls{daq} used in this thesis accepts bipolar input directly, so the centering is not required for the validation, but maintains design portability.
 
 The output \texttt{EMG\_VLC} was passed to the galvanic isolation stage, described in Section~\ref{sec:galvanic_isolation}.
 
@@ -444,7 +444,7 @@ At each \gls{eda} stimulus cue, the participant inhaled deeply over 2~seconds fr
 
 \subsection{Recording Procedure}
 
-All sessions followed the same structure: a 30-minute stabilization period during which the final 10 minutes were captured as the stabilization recording, followed by a 30-minute test run. Sessions 1 and 2 verified each circuit individually, with only one circuit connected at a time. Sessions 3 to 5 validated simultaneous operation with both circuits connected.
+All sessions followed the same structure: a 30-minute stabilization period during which the final 10 minutes were captured as the stabilization recording, followed by a 30-minute test run. Sessions 1 and 2 verified each circuit individually, with only one circuit connected at a time. Sessions 3 to 5 validated simultaneous operation with both circuits connected. The stabilization period allowed the electrode-skin impedance to settle to its steady-state value before the test run began~\cite{boucsein_electrodermal_2012}.
 
 \subsubsection{Session 1: EMG Circuit Verification} \label{sec:session1}
 Only the EMG circuit was connected. The EDA circuit was physically disconnected. Two channels were recorded simultaneously throughout:
